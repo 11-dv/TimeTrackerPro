@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TimeTrack Pro — Attendance Monitoring System</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090f;--bg2:#0d1117;--bg3:#111827;--panel:#0f1724;
+  --border:#1e2d45;--border2:#243550;
+  --accent:#00e5ff;--text:#c9d8ef;--text-dim:#5a7a9a;--text-muted:#1e3550;
+  --green:#00ff88;--green-bg:#002d1a;
+  --purple:#b57bff;--purple-bg:#1a0d33;
+  --red:#ff4466;--red-bg:#2d0010;
+  --yellow:#ffd700;--yellow-bg:#2a2000;
+  --blue:#4499ff;--blue-bg:#00142d;
+  --teal:#00e5c9;--teal-bg:#002a25;
+  --orange:#ff8c42;--orange-bg:#2a1400;
+  --mono:'Share Tech Mono',monospace;
+  --head:'Rajdhani',sans-serif;
+  --body:'Exo 2',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13px;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,255,.012) 2px,rgba(0,229,255,.012) 4px);pointer-events:none;z-index:9999;}
+
+/* ══ SHARED INPUTS ══ */
+input.di,select.di,textarea.di{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:9px 12px;font-family:var(--mono);font-size:12px;outline:none;transition:border-color .2s,box-shadow .2s;resize:none;}
+input.di:focus,select.di:focus,textarea.di:focus{border-color:var(--accent);box-shadow:0 0 8px rgba(0,229,255,.15);}
+input.di::placeholder,textarea.di::placeholder{color:var(--text-muted);}
+.fl{font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:5px;text-transform:uppercase;}
+.fi{margin-bottom:14px;}
+.btn-p{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:9px 18px;font-family:var(--head);font-size:12px;font-weight:700;letter-spacing:3px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn-p:hover{background:rgba(0,229,255,.1);box-shadow:0 0 16px rgba(0,229,255,.2);}
+.btn-g{background:transparent;border:1px solid var(--green);color:var(--green);padding:9px 18px;font-family:var(--head);font-size:12px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn-g:hover{background:rgba(0,255,136,.1);}
+.btn-r{background:transparent;border:1px solid var(--red);color:var(--red);padding:9px 18px;font-family:var(--head);font-size:12px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn-r:hover{background:rgba(255,68,102,.1);}
+.btn-y{background:transparent;border:1px solid var(--yellow);color:var(--yellow);padding:9px 14px;font-family:var(--head);font-size:11px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn-y:hover{background:rgba(255,215,0,.1);}
+.btn-sm{padding:5px 12px;font-size:10px;letter-spacing:2px;}
+.divv{width:1px;height:22px;background:var(--border2);}
+
+/* ══════════════ LOGIN ══════════════ */
+#login-screen{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+.login-wrap{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%;max-width:420px;}
+.login-box{width:100%;border:1px solid var(--accent);background:var(--panel);padding:36px 40px;box-shadow:0 0 60px rgba(0,229,255,.1),inset 0 0 40px rgba(0,229,255,.03);position:relative;}
+.login-box::before,.login-box::after{content:'';position:absolute;width:12px;height:12px;border-color:var(--accent);border-style:solid;}
+.login-box::before{top:-1px;left:-1px;border-width:2px 0 0 2px;}
+.login-box::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0;}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo .icon{width:50px;height:50px;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:20px;color:var(--accent);}
+.login-logo h1{font-family:var(--head);font-size:22px;font-weight:700;letter-spacing:6px;color:var(--accent);text-shadow:0 0 20px rgba(0,229,255,.5);}
+.login-logo p{color:var(--text-dim);font-size:10px;letter-spacing:3px;margin-top:4px;}
+.login-role-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border:1px solid;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:var(--mono);margin:0 auto 16px;display:block;width:fit-content;}
+.lerr{color:var(--red);font-size:11px;letter-spacing:1px;margin-top:8px;display:none;}
+.login-hint{font-size:11px;color:var(--text-dim);text-align:center;font-family:var(--mono);letter-spacing:1px;}
+
+/* ══════════════ APP SHELL ══════════════ */
+#app{display:none;flex-direction:column;height:100vh;}
+#app.show{display:flex;}
+.topbar{background:var(--panel);border-bottom:1px solid var(--border);padding:0 20px;height:46px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:200;}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--head);font-size:17px;font-weight:700;letter-spacing:4px;color:var(--accent);text-shadow:0 0 15px rgba(0,229,255,.4);margin-right:20px;}
+.nav{display:flex;gap:2px;}
+.nb{background:none;border:none;cursor:pointer;padding:5px 13px;font-family:var(--head);font-size:12px;font-weight:600;letter-spacing:1px;color:var(--text-dim);border-bottom:2px solid transparent;transition:all .15s;text-transform:uppercase;}
+.nb:hover{color:var(--text);}
+.nb.act{color:var(--accent);border-bottom-color:var(--accent);}
+.topbar-r{display:flex;align-items:center;gap:14px;}
+.role-chip{padding:3px 10px;font-family:var(--mono);font-size:10px;letter-spacing:2px;border:1px solid;text-transform:uppercase;}
+.chip-super{border-color:var(--purple);color:var(--purple);}
+.chip-admin{border-color:var(--accent);color:var(--accent);}
+.chip-editor{border-color:var(--green);color:var(--green);}
+.chip-viewer{border-color:var(--blue);color:var(--blue);}
+.ubadge{font-size:11px;color:var(--text-dim);letter-spacing:1px;font-family:var(--mono);}
+.logoutbtn{background:none;border:1px solid var(--border2);cursor:pointer;color:var(--text-dim);padding:4px 10px;font-family:var(--head);font-size:10px;letter-spacing:2px;transition:all .15s;}
+.logoutbtn:hover{border-color:var(--red);color:var(--red);}
+.company-banner{background:rgba(0,229,255,.05);border-bottom:1px solid var(--border);padding:4px 20px;font-size:11px;letter-spacing:2px;color:var(--accent);font-family:var(--mono);flex-shrink:0;}
+
+/* Pages */
+.page{display:none;flex:1;overflow:hidden;flex-direction:column;}
+.page.show{display:flex;}
+.pg-body{flex:1;overflow-y:auto;padding:20px;}
+
+/* ══ SECTION TITLES ══ */
+.pg-tl{font-family:var(--head);font-size:22px;font-weight:700;letter-spacing:2px;margin-bottom:4px;}
+.sec-title{font-family:var(--head);font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);padding-left:10px;border-left:2px solid var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+
+/* ══════════════ SUPER ADMIN — COMPANIES ══════════════ */
+.companies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:16px;}
+.company-card{background:var(--panel);border:1px solid var(--border);padding:18px;position:relative;transition:border-color .2s;}
+.company-card:hover{border-color:var(--border2);}
+.company-card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.company-name{font-family:var(--head);font-size:16px;font-weight:700;letter-spacing:1px;color:var(--text);}
+.company-plan{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:var(--mono);}
+.plan-basic{color:var(--blue);}
+.plan-pro{color:var(--purple);}
+.plan-enterprise{color:var(--yellow);}
+.company-meta{font-size:11px;color:var(--text-dim);margin-bottom:4px;font-family:var(--mono);}
+.company-stats{display:flex;gap:16px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);}
+.cstat{display:flex;flex-direction:column;gap:2px;}
+.cstat-val{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--text);}
+.cstat-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);}
+.company-actions{display:flex;gap:6px;margin-top:12px;}
+.status-active{background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.3);padding:2px 8px;font-size:10px;letter-spacing:1px;font-family:var(--mono);}
+.status-inactive{background:rgba(255,68,102,.15);color:var(--red);border:1px solid rgba(255,68,102,.3);padding:2px 8px;font-size:10px;letter-spacing:1px;font-family:var(--mono);}
+
+/* ══ SUPER ADMIN OVERVIEW ══ */
+.sa-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.sa-card{background:var(--panel);border:1px solid var(--border);padding:16px 20px;}
+.sa-card-val{font-family:var(--mono);font-size:28px;font-weight:700;line-height:1;color:var(--accent);}
+.sa-card-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-top:4px;}
+
+/* ══ COMPANY ALL-USERS VIEW (super admin) ══ */
+.all-users-tbl{width:100%;border-collapse:collapse;}
+.all-users-tbl th{background:var(--bg3);padding:9px 14px;text-align:left;font-family:var(--head);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);border-bottom:2px solid var(--border2);}
+.all-users-tbl td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);}
+.all-users-tbl tr:hover td{background:rgba(0,229,255,.02);}
+.co-tag{padding:2px 8px;font-size:10px;letter-spacing:1px;font-family:var(--mono);border:1px solid var(--border2);color:var(--text-dim);}
+
+/* ══════════════ DASHBOARD ══════════════ */
+.dash-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.dcard{border-radius:8px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;}
+.dcard.dc-tl{background:linear-gradient(135deg,#0d7a74,#14b8a6);}
+.dcard.dc-gn{background:linear-gradient(135deg,#166534,#22c55e);}
+.dcard.dc-rd{background:linear-gradient(135deg,#991b1b,#ef4444);}
+.dcard.dc-or{background:linear-gradient(135deg,#92400e,#f59e0b);}
+.dcard-l .dlbl{font-size:11px;opacity:.85;margin-bottom:4px;letter-spacing:.5px;}
+.dcard-l .dval{font-size:32px;font-weight:800;font-family:var(--mono);line-height:1;}
+.dcard-ico{font-size:32px;opacity:.3;}
+.dash-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.chart-box{background:var(--panel);border:1px solid var(--border);padding:16px;}
+.chart-title{font-family:var(--head);font-size:13px;font-weight:700;letter-spacing:2px;margin-bottom:12px;}
+canvas{display:block;width:100%!important;height:210px!important;}
+
+/* ══ ATTENDANCE ══ */
+.att-hdr{background:var(--panel);border-bottom:1px solid var(--border);padding:10px 18px;flex-shrink:0;}
+.att-tl-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.page-title{font-family:var(--head);font-size:17px;font-weight:700;letter-spacing:3px;text-transform:uppercase;border-left:3px solid var(--accent);padding-left:12px;}
+.legend{display:flex;gap:5px;flex-wrap:wrap;}
+.badge{display:inline-flex;align-items:center;padding:3px 7px;font-family:var(--mono);font-size:9px;font-weight:600;border:1px solid;}
+.badge-pd{background:rgba(0,255,136,.1);border-color:var(--green);color:var(--green);}
+.badge-pn{background:rgba(181,123,255,.1);border-color:var(--purple);color:var(--purple);}
+.badge-a{background:rgba(255,68,102,.1);border-color:var(--red);color:var(--red);}
+.badge-l{background:rgba(255,215,0,.1);border-color:var(--yellow);color:var(--yellow);}
+.badge-wo{background:rgba(68,153,255,.1);border-color:var(--blue);color:var(--blue);}
+.badge-ph{background:rgba(0,229,201,.1);border-color:var(--teal);color:var(--teal);}
+.badge-hd{background:rgba(255,140,66,.1);border-color:var(--orange);color:var(--orange);}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-bottom:7px;}
+select.sf{background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:7px 9px;font-family:var(--mono);font-size:12px;outline:none;cursor:pointer;}
+select.sf:focus{border-color:var(--accent);}
+.sw{position:relative;}
+.sw input{padding-left:27px;min-width:190px;}
+.sico{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:12px;pointer-events:none;}
+.lbl-sm{font-size:10px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;white-space:nowrap;}
+.qf-bar{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:rgba(0,0,0,.3);border:1px solid var(--border);padding:6px 12px;}
+.stats-strip{display:flex;gap:1px;background:var(--border);flex-shrink:0;}
+.scard{flex:1;padding:7px 14px;background:var(--panel);}
+.sc-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;}
+.sc-val{font-family:var(--mono);font-size:24px;font-weight:700;line-height:1;}
+.scard.s-tot .sc-val{color:var(--accent);}
+.scard.s-pre .sc-val{color:var(--green);}
+.scard.s-abs .sc-val{color:var(--red);}
+.scard.s-lv .sc-val{color:var(--yellow);}
+.scard.s-per .sc-val{color:var(--text);font-size:14px;padding-top:4px;}
+.tbl-wrap{flex:1;overflow:auto;position:relative;}
+.tbl-wrap::-webkit-scrollbar{width:7px;height:7px;}
+.tbl-wrap::-webkit-scrollbar-track{background:var(--bg2);}
+.tbl-wrap::-webkit-scrollbar-thumb{background:var(--border2);}
+.sum-section{min-width:max-content;}
+.sum-lbl-bar{font-family:var(--head);font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent);padding:5px 16px;background:var(--bg2);border-bottom:1px solid var(--border);text-transform:uppercase;position:sticky;top:0;z-index:60;}
+table{border-collapse:collapse;min-width:100%;}
+th,td{border-right:1px solid var(--border);}
+.sum-hdr th{position:sticky;top:27px;background:var(--bg2);border-bottom:1px solid var(--border);padding:4px 2px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-dim);min-width:44px;white-space:nowrap;z-index:50;}
+.sum-hdr .thf{position:sticky;left:0;top:27px;background:var(--bg2);text-align:left;padding-left:14px;min-width:250px;z-index:70;font-size:10px;letter-spacing:2px;}
+.sum-row td{padding:4px 2px;text-align:center;font-family:var(--mono);font-size:12px;font-weight:700;border-bottom:1px solid rgba(0,0,0,.4);min-width:44px;}
+.sum-row .tdf{position:sticky;left:0;text-align:left;padding-left:14px;font-family:var(--head);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;min-width:250px;z-index:30;}
+.sum-row.r-tot{background:rgba(0,229,255,.07);} .sum-row.r-tot td{color:var(--accent);} .sum-row.r-tot .tdf{background:rgba(0,229,255,.09);}
+.sum-row.r-pd{background:rgba(0,255,136,.05);} .sum-row.r-pd td{color:var(--green);} .sum-row.r-pd .tdf{background:rgba(0,255,136,.07);}
+.sum-row.r-pn{background:rgba(181,123,255,.05);} .sum-row.r-pn td{color:var(--purple);} .sum-row.r-pn .tdf{background:rgba(181,123,255,.07);}
+.sum-row.r-abs{background:rgba(255,68,102,.05);} .sum-row.r-abs td{color:var(--red);} .sum-row.r-abs .tdf{background:rgba(255,68,102,.07);}
+.sum-row.r-lv{background:rgba(255,215,0,.05);} .sum-row.r-lv td{color:var(--yellow);} .sum-row.r-lv .tdf{background:rgba(255,215,0,.07);}
+.emp-section{min-width:max-content;border-top:2px solid var(--border2);}
+.emp-hdr th{position:sticky;top:0;background:var(--bg3);padding:6px 2px;font-family:var(--head);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2px solid var(--border2);white-space:nowrap;min-width:44px;text-align:center;color:var(--text-dim);z-index:50;}
+.emp-hdr .th-sr{position:sticky;left:0;top:0;background:var(--bg3);min-width:38px;z-index:70;}
+.emp-hdr .th-id{position:sticky;left:38px;top:0;background:var(--bg3);min-width:68px;z-index:70;text-align:left;padding-left:8px;}
+.emp-hdr .th-nm{position:sticky;left:106px;top:0;background:var(--bg3);min-width:170px;z-index:70;text-align:left;padding-left:8px;}
+.emp-hdr .th-dp{position:sticky;left:276px;top:0;background:var(--bg3);min-width:150px;z-index:70;text-align:left;padding-left:8px;}
+.emp-hdr .th-pd{background:var(--green-bg);color:var(--green)!important;min-width:40px;}
+.emp-hdr .th-pn{background:var(--purple-bg);color:var(--purple)!important;min-width:40px;}
+.emp-hdr .th-a{background:var(--red-bg);color:var(--red)!important;min-width:40px;}
+.emp-hdr .th-l{background:var(--yellow-bg);color:var(--yellow)!important;min-width:40px;}
+.emp-hdr .th-date.we{color:var(--red)!important;}
+.dt{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.dt-d{font-family:var(--mono);font-size:10px;}
+.dt-w{font-size:8px;letter-spacing:1px;opacity:.6;}
+.emp-row td{padding:2px 2px;border-bottom:1px solid rgba(30,45,69,.6);min-width:44px;text-align:center;}
+.emp-row:nth-child(odd) td{background:var(--bg2);}
+.emp-row:nth-child(even) td{background:var(--panel);}
+.emp-row .td-sr{position:sticky;left:0;min-width:38px;z-index:20;font-family:var(--mono);font-size:11px;color:var(--text-dim);}
+.emp-row .td-id{position:sticky;left:38px;min-width:68px;z-index:20;font-family:var(--mono);font-size:12px;color:var(--accent);text-align:left;padding-left:8px;}
+.emp-row .td-nm{position:sticky;left:106px;min-width:170px;z-index:20;font-family:var(--head);font-size:13px;font-weight:700;color:var(--text);text-align:left;padding-left:8px;white-space:nowrap;}
+.emp-row .td-dp{position:sticky;left:276px;min-width:150px;z-index:20;font-size:10px;color:var(--text-dim);text-align:left;padding-left:8px;white-space:nowrap;}
+.emp-row .td-pd{background:var(--green-bg)!important;color:var(--green);font-family:var(--mono);font-weight:700;}
+.emp-row .td-pn{background:var(--purple-bg)!important;color:var(--purple);font-family:var(--mono);font-weight:700;}
+.emp-row .td-a{background:var(--red-bg)!important;color:var(--red);font-family:var(--mono);font-weight:700;}
+.emp-row .td-l{background:var(--yellow-bg)!important;color:var(--yellow);font-family:var(--mono);font-weight:700;}
+.sc{width:30px;height:24px;display:flex;align-items:center;justify-content:center;margin:0 auto;font-family:var(--mono);font-size:9px;font-weight:700;cursor:pointer;transition:transform .1s,box-shadow .1s;border:1px solid transparent;}
+.sc:hover{transform:scale(1.15);z-index:1;box-shadow:0 0 6px currentColor;}
+.sc-e{background:rgba(30,45,69,.5);color:var(--text-muted);border-color:var(--border);}
+.sc-e:hover{border-color:var(--accent);color:var(--accent);}
+.sc-p{background:var(--green-bg);color:var(--green);border-color:rgba(0,255,136,.3);}
+.sc-n{background:var(--purple-bg);color:var(--purple);border-color:rgba(181,123,255,.3);}
+.sc-a{background:var(--red-bg);color:var(--red);border-color:rgba(255,68,102,.3);}
+.sc-l{background:var(--yellow-bg);color:var(--yellow);border-color:rgba(255,215,0,.3);}
+.sc-wo{background:var(--blue-bg);color:var(--blue);border-color:rgba(68,153,255,.3);font-size:7px;}
+.sc-ph{background:var(--teal-bg);color:var(--teal);border-color:rgba(0,229,201,.3);font-size:7px;}
+.sc-hd{background:var(--orange-bg);color:var(--orange);border-color:rgba(255,140,66,.3);font-size:7px;}
+
+/* Status picker */
+.sp{position:fixed;z-index:600;background:var(--panel);border:1px solid var(--accent);box-shadow:0 0 30px rgba(0,229,255,.2);padding:4px;min-width:150px;display:none;}
+.sp-title{font-size:9px;letter-spacing:3px;color:var(--text-dim);padding:5px 9px 3px;text-transform:uppercase;border-bottom:1px solid var(--border);margin-bottom:3px;}
+.sp-item{display:flex;align-items:center;gap:8px;padding:5px 9px;cursor:pointer;transition:background .1s;}
+.sp-item:hover{background:rgba(0,229,255,.08);}
+.sp-dot{width:24px;height:19px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700;}
+.sp-item span{font-family:var(--body);font-size:12px;color:var(--text);}
+.sp-sep{border:none;border-top:1px solid var(--border);margin:3px 0;}
+
+/* Employees page */
+.emp-pg-tbl{width:100%;border-collapse:collapse;}
+.emp-pg-tbl th{background:var(--bg3);padding:9px 13px;text-align:left;font-family:var(--head);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);border-bottom:2px solid var(--border2);}
+.emp-pg-tbl td{padding:10px 13px;border-bottom:1px solid var(--border);}
+.emp-pg-tbl tr:hover td{background:rgba(0,229,255,.02);}
+.emp-id{font-family:var(--mono);color:var(--accent);}
+.emp-nm{font-weight:700;font-family:var(--head);font-size:14px;}
+.tag-active{background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.3);padding:2px 8px;font-size:10px;letter-spacing:1px;font-family:var(--mono);}
+.tag-inactive{background:rgba(255,68,102,.15);color:var(--red);border:1px solid rgba(255,68,102,.3);padding:2px 8px;font-size:10px;letter-spacing:1px;font-family:var(--mono);}
+.act-btn{background:none;border:1px solid var(--border2);color:var(--text-dim);width:27px;height:27px;cursor:pointer;margin:0 2px;transition:all .15s;font-size:12px;}
+.act-btn:hover.edit{border-color:var(--accent);color:var(--accent);}
+.act-btn:hover.del{border-color:var(--red);color:var(--red);}
+
+/* Modals */
+.mo{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.78);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;}
+.mo.show{display:flex;}
+.mb{background:var(--panel);border:1px solid var(--border2);width:540px;max-width:96vw;box-shadow:0 0 60px rgba(0,0,0,.6),0 0 30px rgba(0,229,255,.08);max-height:90vh;display:flex;flex-direction:column;}
+.mb.w-lg{width:720px;}
+.mb.w-sm{width:400px;}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;border-bottom:1px solid var(--border);background:var(--bg3);flex-shrink:0;}
+.mt2{font-family:var(--head);font-size:15px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);}
+.mc{background:none;border:1px solid var(--border2);cursor:pointer;color:var(--text-dim);width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;}
+.mc:hover{border-color:var(--red);color:var(--red);}
+.mbody{padding:18px 20px;overflow-y:auto;flex:1;}
+.mf{display:flex;gap:8px;justify-content:flex-end;padding:12px 20px;border-top:1px solid var(--border);flex-shrink:0;}
+.fg{display:grid;gap:11px;}
+.fg2{grid-template-columns:1fr 1fr;}
+.ff{display:flex;flex-direction:column;gap:5px;}
+.ff.full{grid-column:1/-1;}
+.fm{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);}
+
+/* Settings */
+.set-section{background:var(--panel);border:1px solid var(--border);padding:18px 20px;margin-bottom:14px;}
+.set-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;}
+.toggle{position:relative;width:42px;height:22px;cursor:pointer;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:var(--border2);transition:.3s;}
+.slider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:var(--text-dim);transition:.3s;}
+input:checked + .slider{background:var(--accent);}
+input:checked + .slider:before{transform:translateX(20px);background:var(--bg);}
+
+/* Users list in settings */
+.user-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(0,229,255,.02);border:1px solid var(--border);margin-bottom:6px;}
+.user-item-l{display:flex;align-items:center;gap:10px;}
+.ua{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.un{font-weight:700;font-size:13px;}
+.ur{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-family:var(--mono);}
+
+/* Toast */
+.toast{position:fixed;bottom:18px;right:18px;z-index:9000;background:var(--panel);border:1px solid var(--border2);padding:10px 18px;display:flex;align-items:center;gap:10px;box-shadow:0 0 20px rgba(0,0,0,.5);transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;max-width:340px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast-msg{font-size:12px;letter-spacing:1px;color:var(--text);}
+
+/* Scrollbar */
+.tbl-wrap{scrollbar-width:thin;scrollbar-color:var(--border2) var(--bg2);}
+
+/* ── USER DETAIL MODAL ── */
+.ud-hero{display:flex;align-items:center;gap:18px;padding:20px;background:rgba(0,229,255,.04);border-bottom:1px solid var(--border);margin-bottom:0;}
+.ud-avatar{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.ud-name{font-family:var(--head);font-size:20px;font-weight:700;letter-spacing:1px;}
+.ud-role{font-size:10px;letter-spacing:3px;text-transform:uppercase;font-family:var(--mono);margin-top:3px;}
+.ud-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.ud-field{padding:12px 20px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);}
+.ud-field:nth-child(even){border-right:none;}
+.ud-field-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;}
+.ud-field-val{font-family:var(--mono);font-size:13px;color:var(--text);}
+.ud-field-val.accent{color:var(--accent);}
+.ud-field-val.green{color:var(--green);}
+.ud-field-val.blue{color:var(--blue);}
+.ud-field-val.purple{color:var(--purple);}
+
+/* ── USERS PAGE (super admin) ── */
+.users-filters{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.user-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.user-card{background:var(--panel);border:1px solid var(--border);padding:16px;transition:border-color .2s;}
+.user-card:hover{border-color:var(--border2);}
+.user-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.user-card-info{display:flex;align-items:center;gap:12px;}
+.uc-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.uc-name{font-weight:700;font-size:14px;font-family:var(--head);}
+.uc-uname{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:2px;}
+.uc-meta{font-size:11px;color:var(--text-dim);margin-bottom:4px;font-family:var(--mono);}
+.user-card-actions{display:flex;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div id="login-screen">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">
+        <div class="icon">⊕</div>
+        <h1>TIMETRACK PRO</h1>
+        <p>ATTENDANCE MONITORING SYSTEM</p>
+      </div>
+      <div class="fi"><div class="fl">Username</div><input class="di" id="lu" type="text" placeholder="Enter username" autocomplete="off"></div>
+      <div class="fi"><div class="fl">Password</div><input class="di" id="lp" type="password" placeholder="Enter password"></div>
+      <button class="btn-p" style="width:100%;margin-top:4px;" onclick="App.login()">SIGN IN</button>
+      <div class="lerr" id="lerr">✗ Invalid username or password</div>
+    </div>
+    <div class="login-hint">Powered by TimeTrack Pro © 2026</div>
+  </div>
+</div>
+
+<!-- ═══════════════ APP ═══════════════ -->
+<div id="app">
+  <nav class="topbar">
+    <div style="display:flex;align-items:center;">
+      <div class="brand">⊕ TIMETRACK PRO</div>
+      <div class="nav" id="main-nav"></div>
+    </div>
+    <div class="topbar-r">
+      <span class="role-chip" id="role-chip"></span>
+      <span class="ubadge" id="ubadge"></span>
+      <button class="logoutbtn" onclick="App.logout()">LOGOUT</button>
+    </div>
+  </nav>
+  <div class="company-banner" id="company-banner" style="display:none;"></div>
+  <div id="pages-container" style="flex:1;overflow:hidden;display:flex;flex-direction:column;"></div>
+</div>
+
+<!-- ═══ STATUS PICKER ═══ -->
+<div class="sp" id="sp">
+  <div class="sp-title">SELECT STATUS</div>
+  <div class="sp-item" onclick="App.setSt('P')"><div class="sp-dot sc-p">P</div><span>Present Day</span></div>
+  <div class="sp-item" onclick="App.setSt('N')"><div class="sp-dot sc-n">N</div><span>Present Night</span></div>
+  <div class="sp-item" onclick="App.setSt('A')"><div class="sp-dot sc-a">A</div><span>Absent</span></div>
+  <div class="sp-item" onclick="App.setSt('L')"><div class="sp-dot sc-l">L</div><span>Leave</span></div>
+  <div class="sp-item" onclick="App.setSt('WO')"><div class="sp-dot sc-wo">WO</div><span>Week Off</span></div>
+  <div class="sp-item" onclick="App.setSt('PH')"><div class="sp-dot sc-ph">PH</div><span>Public Holiday</span></div>
+  <div class="sp-item" onclick="App.setSt('HD')"><div class="sp-dot sc-hd">HD</div><span>Half Day</span></div>
+  <hr class="sp-sep">
+  <div class="sp-item" onclick="App.setSt('')"><div class="sp-dot sc-e" style="font-size:14px;">×</div><span>Clear</span></div>
+</div>
+
+<!-- ═══ MODALS ═══ -->
+<!-- Add/Edit Company -->
+<div class="mo" id="m-company">
+  <div class="mb">
+    <div class="mh"><div class="mt2" id="m-co-title">Add Company</div><button class="mc" onclick="App.closeMo('m-company')">✕</button></div>
+    <div class="mbody">
+      <div class="fg fg2">
+        <div class="ff full"><div class="fm">Company Name *</div><input class="di" id="co-name" type="text" placeholder="e.g. ABC Manufacturing Ltd"></div>
+        <div class="ff"><div class="fm">Industry / Field</div>
+          <select class="di" id="co-field">
+            <option value="">Select field...</option>
+            <option>Factory / Manufacturing</option><option>School / Education</option>
+            <option>Hospital / Healthcare</option><option>Retail / Store</option>
+            <option>Construction</option><option>IT / Technology</option>
+            <option>Logistics / Warehouse</option><option>Other</option>
+          </select>
+        </div>
+        <div class="ff"><div class="fm">Plan</div>
+          <select class="di" id="co-plan">
+            <option value="basic">Basic</option><option value="pro">Pro</option><option value="enterprise">Enterprise</option>
+          </select>
+        </div>
+        <div class="ff"><div class="fm">Admin Username *</div><input class="di" id="co-uname" type="text" placeholder="Login username for company"></div>
+        <div class="ff"><div class="fm">Admin Password *</div><input class="di" id="co-pass" type="password" placeholder="Secure password"></div>
+        <div class="ff"><div class="fm">Contact Email</div><input class="di" id="co-email" type="email" placeholder="admin@company.com"></div>
+        <div class="ff"><div class="fm">Contact Phone</div><input class="di" id="co-phone" type="text" placeholder="+971 ..."></div>
+        <div class="ff full"><div class="fm">Status</div>
+          <select class="di" id="co-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+        </div>
+      </div>
+      <input type="hidden" id="co-edit-id">
+    </div>
+    <div class="mf"><button class="btn-r" onclick="App.closeMo('m-company')">CANCEL</button><button class="btn-g" onclick="App.saveCompany()">SAVE COMPANY</button></div>
+  </div>
+</div>
+
+<!-- Add/Edit Employee -->
+<div class="mo" id="m-emp">
+  <div class="mb">
+    <div class="mh"><div class="mt2" id="m-emp-title">Add Employee</div><button class="mc" onclick="App.closeMo('m-emp')">✕</button></div>
+    <div class="mbody">
+      <div class="fg fg2">
+        <div class="ff"><div class="fm">Employee ID *</div><input class="di" id="ae-id" type="text" placeholder="e.g. 1501"></div>
+        <div class="ff"><div class="fm">Full Name *</div><input class="di" id="ae-nm" type="text" placeholder="Full name in CAPS"></div>
+        <div class="ff"><div class="fm">Department *</div><input class="di" id="ae-dp" type="text" placeholder="e.g. Production Engineer"></div>
+        <div class="ff"><div class="fm">Designation</div><input class="di" id="ae-des" type="text" placeholder="e.g. Engineer"></div>
+        <div class="ff full"><div class="fm">Status</div>
+          <select class="di" id="ae-st"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+        </div>
+      </div>
+      <input type="hidden" id="ae-edit-id">
+    </div>
+    <div class="mf"><button class="btn-r" onclick="App.closeMo('m-emp')">CANCEL</button><button class="btn-g" onclick="App.saveEmp()">SAVE EMPLOYEE</button></div>
+  </div>
+</div>
+
+<!-- Add Attendance -->
+<div class="mo" id="m-att">
+  <div class="mb w-sm">
+    <div class="mh"><div class="mt2">Add Attendance</div><button class="mc" onclick="App.closeMo('m-att')">✕</button></div>
+    <div class="mbody">
+      <div class="fg">
+        <div class="ff"><div class="fm">Employee ID or Name *</div><input class="di" id="aa-id" type="text" placeholder="Enter EMP ID or name"></div>
+        <div class="ff"><div class="fm">Date *</div><input class="di" id="aa-dt" type="date"></div>
+        <div class="ff"><div class="fm">Status *</div>
+          <select class="di" id="aa-st">
+            <option value="P">PD – Present Day</option><option value="N">PN – Present Night</option>
+            <option value="A">A – Absent</option><option value="L">L – Leave</option>
+            <option value="WO">WO – Week Off</option><option value="PH">PH – Public Holiday</option><option value="HD">HD – Half Day</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn-r" onclick="App.closeMo('m-att')">CANCEL</button><button class="btn-g" onclick="App.saveAtt()">SAVE</button></div>
+  </div>
+</div>
+
+
+<!-- ═══ USER DETAIL MODAL ═══ -->
+<div class="mo" id="m-user-detail">
+  <div class="mb">
+    <div class="mh"><div class="mt2">User Details</div><button class="mc" onclick="App.closeMo('m-user-detail')">✕</button></div>
+    <div style="padding:0;" id="ud-content"></div>
+    <div class="mf" id="ud-actions"></div>
+  </div>
+</div>
+
+<!-- ═══ CREATE USER MODAL (super admin / company admin) ═══ -->
+<div class="mo" id="m-create-user">
+  <div class="mb w-sm">
+    <div class="mh"><div class="mt2" id="m-cu-title">Create User</div><button class="mc" onclick="App.closeMo('m-create-user')">✕</button></div>
+    <div class="mbody">
+      <div class="fg">
+        <div class="ff"><div class="fm">Username *</div><input class="di" id="ncu-uname" type="text" placeholder="Login username" autocomplete="off"></div>
+        <div class="ff"><div class="fm">Password *</div><input class="di" id="ncu-pass" type="password" placeholder="Password"></div>
+        <div class="ff"><div class="fm">Full Name</div><input class="di" id="ncu-fn" type="text" placeholder="Display name"></div>
+        <div class="ff"><div class="fm">Role</div>
+          <select class="di" id="ncu-role">
+            <option value="editor">Editor (Can Edit Attendance)</option>
+            <option value="viewer">Viewer (View Only)</option>
+          </select>
+        </div>
+        <div class="ff" id="ncu-co-wrap" style="display:none;">
+          <div class="fm">Company *</div>
+          <select class="di" id="ncu-co"></select>
+        </div>
+      </div>
+      <input type="hidden" id="ncu-ctx">
+    </div>
+    <div class="mf"><button class="btn-r" onclick="App.closeMo('m-create-user')">CANCEL</button><button class="btn-g" onclick="App.saveNewUser()">CREATE USER</button></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span id="tico" style="font-size:14px;">✓</span><span class="toast-msg" id="tmsg">Done</span></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════
+//  DATA STORE  (localStorage per-key)
+// ═══════════════════════════════════════════════════════
+const DB = {
+  // companies: [{id, name, field, plan, adminUser, adminPass, email, phone, status, createdAt}]
+  companies() { return JSON.parse(localStorage.getItem('ott_companies') || 'null') || []; },
+  saveCompanies(d) { localStorage.setItem('ott_companies', JSON.stringify(d)); },
+
+  // company users: [{id, companyId, username, password, fullName, role}]
+  coUsers() { return JSON.parse(localStorage.getItem('ott_co_users') || 'null') || []; },
+  saveCoUsers(d) { localStorage.setItem('ott_co_users', JSON.stringify(d)); },
+
+  // employees per company
+  employees(cid) { return JSON.parse(localStorage.getItem(`ott_emps_${cid}`) || '[]'); },
+  saveEmployees(cid, d) { localStorage.setItem(`ott_emps_${cid}`, JSON.stringify(d)); },
+
+  // settings per company
+  settings(cid) { return JSON.parse(localStorage.getItem(`ott_settings_${cid}`) || 'null') || { cname:'', wod:'Sunday', dss:'08:00', dse:'17:00', nss:'20:00', nse:'06:00', late:15, hd:4, auto:true }; },
+  saveSettings(cid, d) { localStorage.setItem(`ott_settings_${cid}`, JSON.stringify(d)); },
+};
+
+// Super admin credentials (hardcoded, never shown in UI)
+const SA = { u: 'superadmin', p: 'SuperAdmin@2026' };
+
+const MNS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MN3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DY3 = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+const SCM = { P:{c:'sc-p',t:'P'}, N:{c:'sc-n',t:'N'}, A:{c:'sc-a',t:'A'}, L:{c:'sc-l',t:'L'}, WO:{c:'sc-wo',t:'WO'}, PH:{c:'sc-ph',t:'PH'}, HD:{c:'sc-hd',t:'HD'} };
+
+// ═══════════════════════════════════════════════════════
+//  MAIN APP OBJECT
+// ═══════════════════════════════════════════════════════
+const App = {
+  session: null,  // {role:'super'|'admin'|'editor'|'viewer', username, companyId?, coUserId?}
+  att: { mo: new Date().getMonth(), yr: new Date().getFullYear(), filt: [], sel: null },
+  charts: { bar: null, pie: null },
+
+  // ── LOGIN ──
+  login() {
+    const u = document.getElementById('lu').value.trim();
+    const p = document.getElementById('lp').value;
+    document.getElementById('lerr').style.display = 'none';
+
+    // Super admin
+    if (u === SA.u && p === SA.p) {
+      this.session = { role: 'super', username: u };
+      this.startApp();
+      return;
+    }
+
+    // Company admin (admin username/password set when creating company)
+    const companies = DB.companies();
+    const co = companies.find(c => c.adminUser === u && c.adminPass === p && c.status === 'active');
+    if (co) {
+      this.session = { role: 'admin', username: u, companyId: co.id, companyName: co.name };
+      this.startApp();
+      return;
+    }
+
+    // Company sub-user
+    const coUsers = DB.coUsers();
+    const cu = coUsers.find(x => x.username === u && x.password === p);
+    if (cu) {
+      const parentCo = companies.find(c => c.id === cu.companyId && c.status === 'active');
+      if (!parentCo) { this.showErr('Company account is inactive'); return; }
+      this.session = { role: cu.role, username: u, companyId: cu.companyId, companyName: parentCo.name, coUserId: cu.id, fullName: cu.fullName };
+      this.startApp();
+      return;
+    }
+
+    this.showErr('Invalid username or password');
+  },
+
+  showErr(msg) { const el = document.getElementById('lerr'); el.textContent = '✗ ' + msg; el.style.display = 'block'; },
+
+  startApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    const app = document.getElementById('app');
+    app.classList.add('show');
+
+    // Role chip
+    const rc = document.getElementById('role-chip');
+    const roleMap = { super: ['SUPER ADMIN', 'chip-super'], admin: ['COMPANY ADMIN', 'chip-admin'], editor: ['EDITOR', 'chip-editor'], viewer: ['VIEWER', 'chip-viewer'] };
+    const [label, cls] = roleMap[this.session.role];
+    rc.textContent = label; rc.className = 'role-chip ' + cls;
+    document.getElementById('ubadge').textContent = (this.session.fullName || this.session.username).toUpperCase();
+
+    // Company banner
+    const banner = document.getElementById('company-banner');
+    if (this.session.companyName) {
+      banner.style.display = 'block';
+      banner.textContent = '⊞ ' + this.session.companyName;
+    } else { banner.style.display = 'none'; }
+
+    this.buildNav();
+    document.addEventListener('click', e => {
+      const sp = document.getElementById('sp');
+      if (sp && !sp.contains(e.target) && !e.target.closest('.sc')) sp.style.display = 'none';
+    });
+    document.getElementById('lu').value = '';
+    document.getElementById('lp').value = '';
+  },
+
+  logout() {
+    this.session = null;
+    this.att = { mo: new Date().getMonth(), yr: new Date().getFullYear(), filt: [], sel: null };
+    ['bar','pie'].forEach(k => { if (this.charts[k]) { this.charts[k].destroy(); this.charts[k] = null; } });
+    document.getElementById('app').classList.remove('show');
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('pages-container').innerHTML = '';
+    document.getElementById('main-nav').innerHTML = '';
+    document.getElementById('lerr').style.display = 'none';
+  },
+
+  // ── BUILD NAV & PAGES ──
+  buildNav() {
+    const nav = document.getElementById('main-nav');
+    nav.innerHTML = '';
+    const pages = document.getElementById('pages-container');
+    pages.innerHTML = '';
+
+    if (this.session.role === 'super') {
+      const tabs = [['overview','Overview'],['companies','Companies'],['allusers','All Users'],['sausers','User Management']];
+      tabs.forEach(([pg, lbl]) => {
+        const b = document.createElement('button');
+        b.className = 'nb'; b.dataset.pg = pg; b.textContent = lbl;
+        b.onclick = () => this.nav(pg);
+        nav.appendChild(b);
+      });
+      pages.appendChild(this.buildSuperOverview());
+      pages.appendChild(this.buildCompaniesPage());
+      pages.appendChild(this.buildAllUsersPage());
+      pages.appendChild(this.buildSAUsersPage());
+      this.nav('overview');
+    } else {
+      const tabs = [['dashboard','Dashboard'],['attendance','Attendance'],['employees','Employees'],['settings','Settings']];
+      tabs.forEach(([pg, lbl]) => {
+        const b = document.createElement('button');
+        b.className = 'nb'; b.dataset.pg = pg; b.textContent = lbl;
+        b.onclick = () => this.nav(pg);
+        nav.appendChild(b);
+      });
+      pages.appendChild(this.buildDashboard());
+      pages.appendChild(this.buildAttendance());
+      pages.appendChild(this.buildEmployeesPage());
+      pages.appendChild(this.buildSettingsPage());
+      this.nav('dashboard');
+    }
+  },
+
+  nav(pg) {
+    document.querySelectorAll('.nb').forEach(b => b.classList.toggle('act', b.dataset.pg === pg));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+    const el = document.getElementById('pg-' + pg);
+    if (el) el.classList.add('show');
+    if (pg === 'dashboard') this.renderDash();
+    else if (pg === 'attendance') this.renderAtt();
+    else if (pg === 'employees') this.renderEmpList();
+    else if (pg === 'settings') this.renderSettings();
+    else if (pg === 'overview') this.renderSuperOverview();
+    else if (pg === 'companies') this.renderCompanies();
+    else if (pg === 'allusers') this.renderAllUsers();
+    else if (pg === 'sausers') this.renderSAUsers();
+  },
+
+  // ══════════════════════════════════════════
+  //  SUPER ADMIN PAGES
+  // ══════════════════════════════════════════
+  buildSuperOverview() {
+    const d = document.createElement('div');
+    d.className = 'page'; d.id = 'pg-overview';
+    d.innerHTML = `<div class="pg-body">
+      <div class="pg-tl" style="margin-bottom:16px;">Super Admin Overview</div>
+      <div class="sa-stats">
+        <div class="sa-card"><div class="sa-card-val" id="sa-co">0</div><div class="sa-card-lbl">Total Companies</div></div>
+        <div class="sa-card" style="border-color:rgba(0,255,136,.2);"><div class="sa-card-val" style="color:var(--green)" id="sa-co-act">0</div><div class="sa-card-lbl">Active Companies</div></div>
+        <div class="sa-card" style="border-color:rgba(181,123,255,.2);"><div class="sa-card-val" style="color:var(--purple)" id="sa-users">0</div><div class="sa-card-lbl">Total Users (all co.)</div></div>
+        <div class="sa-card" style="border-color:rgba(255,215,0,.2);"><div class="sa-card-val" style="color:var(--yellow)" id="sa-emps">0</div><div class="sa-card-lbl">Total Employees (all co.)</div></div>
+      </div>
+      <div style="margin-top:4px;"><div class="sec-title">Recent Companies</div><div id="sa-recent-list"></div></div>
+    </div>`;
+    return d;
+  },
+  renderSuperOverview() {
+    const cos = DB.companies();
+    const cous = DB.coUsers();
+    let totalEmps = 0;
+    cos.forEach(c => { totalEmps += DB.employees(c.id).length; });
+    document.getElementById('sa-co').textContent = cos.length;
+    document.getElementById('sa-co-act').textContent = cos.filter(c => c.status === 'active').length;
+    document.getElementById('sa-users').textContent = cous.length;
+    document.getElementById('sa-emps').textContent = totalEmps;
+
+    const el = document.getElementById('sa-recent-list');
+    if (!el) return;
+    if (!cos.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:12px;padding:20px;text-align:center;">No companies yet. Go to Companies tab to add one.</div>'; return; }
+    const sorted = [...cos].sort((a,b) => b.createdAt - a.createdAt).slice(0,5);
+    el.innerHTML = sorted.map(c => {
+      const emps = DB.employees(c.id).length;
+      const users = cous.filter(u => u.companyId === c.id).length;
+      const planColors = { basic: 'var(--blue)', pro: 'var(--purple)', enterprise: 'var(--yellow)' };
+      return `<div class="company-card" style="margin-bottom:10px;">
+        <div class="company-card-hdr">
+          <div><div class="company-name">${c.name}</div><div class="company-meta" style="margin-top:2px;">${c.field||'–'} · ${c.email||'No email'}</div></div>
+          <div style="text-align:right;"><span class="company-plan" style="color:${planColors[c.plan]||'var(--text-dim)'}">${(c.plan||'basic').toUpperCase()}</span><br><span class="${c.status==='active'?'status-active':'status-inactive'}" style="margin-top:4px;display:inline-block;">${c.status}</span></div>
+        </div>
+        <div class="company-stats">
+          <div class="cstat"><div class="cstat-val">${emps}</div><div class="cstat-lbl">Employees</div></div>
+          <div class="cstat"><div class="cstat-val">${users}</div><div class="cstat-lbl">Users</div></div>
+          <div class="cstat"><div class="cstat-val" style="font-family:var(--mono);font-size:11px;">${c.adminUser}</div><div class="cstat-lbl">Admin Login</div></div>
+        </div>
+      </div>`;
+    }).join('');
+  },
+
+  buildCompaniesPage() {
+    const d = document.createElement('div');
+    d.className = 'page'; d.id = 'pg-companies';
+    d.innerHTML = `<div class="pg-body">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div class="pg-tl">Companies</div>
+        <button class="btn-g" onclick="App.openAddCompany()">+ ADD COMPANY</button>
+      </div>
+      <div style="margin-bottom:12px;" class="sw">
+        <span class="sico">⌕</span>
+        <input class="di" id="co-srch" type="text" placeholder="Search companies..." style="padding-left:28px;max-width:300px;" oninput="App.renderCompanies()">
+      </div>
+      <div id="companies-grid" class="companies-grid"></div>
+    </div>`;
+    return d;
+  },
+  renderCompanies() {
+    const srch = (document.getElementById('co-srch')?.value || '').toLowerCase();
+    let cos = DB.companies();
+    if (srch) cos = cos.filter(c => c.name.toLowerCase().includes(srch) || (c.field||'').toLowerCase().includes(srch));
+    const el = document.getElementById('companies-grid');
+    if (!el) return;
+    if (!cos.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:13px;padding:30px;text-align:center;grid-column:1/-1;">No companies yet. Click + ADD COMPANY to get started.</div>'; return; }
+    const planColors = { basic: 'var(--blue)', pro: 'var(--purple)', enterprise: 'var(--yellow)' };
+    const cous = DB.coUsers();
+    el.innerHTML = cos.map(c => {
+      const emps = DB.employees(c.id).length;
+      const users = cous.filter(u => u.companyId === c.id).length;
+      return `<div class="company-card">
+        <div class="company-card-hdr">
+          <div><div class="company-name">${c.name}</div><div class="company-meta" style="margin-top:3px;">${c.field||'General'}</div></div>
+          <div style="text-align:right;">
+            <div class="company-plan" style="color:${planColors[c.plan]||'var(--text-dim)'}">${(c.plan||'basic').toUpperCase()}</div>
+            <span class="${c.status==='active'?'status-active':'status-inactive'}" style="margin-top:6px;display:inline-block;">${c.status}</span>
+          </div>
+        </div>
+        <div class="company-meta">${c.email||'No email'} ${c.phone?'· '+c.phone:''}</div>
+        <div class="company-meta" style="margin-top:3px;">Admin: <span style="color:var(--accent);font-family:var(--mono);">${c.adminUser}</span></div>
+        <div class="company-stats">
+          <div class="cstat"><div class="cstat-val">${emps}</div><div class="cstat-lbl">Employees</div></div>
+          <div class="cstat"><div class="cstat-val">${users}</div><div class="cstat-lbl">Users</div></div>
+        </div>
+        <div class="company-actions">
+          <button class="btn-p btn-sm" onclick="App.openEditCompany('${c.id}')">✎ EDIT</button>
+          <button class="btn-r btn-sm" onclick="App.deleteCompany('${c.id}')">🗑 DELETE</button>
+          <button class="btn-g btn-sm" onclick="App.toggleCompanyStatus('${c.id}')">${c.status==='active'?'DEACTIVATE':'ACTIVATE'}</button>
+        </div>
+      </div>`;
+    }).join('');
+  },
+
+  buildAllUsersPage() {
+    const d = document.createElement('div');
+    d.className = 'page'; d.id = 'pg-allusers';
+    d.innerHTML = `<div class="pg-body">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div class="pg-tl">All Company Users</div>
+        <div style="display:flex;gap:8px;">
+          <div class="sw"><span class="sico">⌕</span><input class="di" id="au-srch" type="text" placeholder="Search users..." style="padding-left:28px;max-width:220px;" oninput="App.renderAllUsers()"></div>
+          <select class="sf" id="au-co-filter" onchange="App.renderAllUsers()"><option value="">All Companies</option></select>
+          <button class="btn-g" onclick="App.openCreateUser('super')">+ CREATE USER</button>
+        </div>
+      </div>
+      <table class="all-users-tbl" id="all-users-tbl">
+        <thead><tr><th>SR</th><th>Username</th><th>Full Name</th><th>Role</th><th>Company</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="all-users-body"></tbody>
+      </table>
+    </div>`;
+    return d;
+  },
+  renderAllUsers() {
+    const body = document.getElementById('all-users-body');
+    if (!body) return;
+    // Populate company filter
+    const coFilter = document.getElementById('au-co-filter');
+    const cos = DB.companies();
+    if (coFilter) {
+      const cur = coFilter.value;
+      coFilter.innerHTML = '<option value="">All Companies</option>' + cos.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+      coFilter.value = cur;
+    }
+    const srch = (document.getElementById('au-srch')?.value||'').toLowerCase();
+    const coF = document.getElementById('au-co-filter')?.value||'';
+    let cous = DB.coUsers();
+    if (srch) cous = cous.filter(u => u.username.toLowerCase().includes(srch)||(u.fullName||'').toLowerCase().includes(srch));
+    if (coF) cous = cous.filter(u => u.companyId === coF);
+    if (!cous.length) { body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-dim);">No users found</td></tr>'; return; }
+    const roleColors = { editor: 'var(--green)', viewer: 'var(--blue)' };
+    body.innerHTML = cous.map((u, i) => {
+      const co = cos.find(c => c.id === u.companyId);
+      return `<tr>
+        <td style="color:var(--text-dim);font-family:var(--mono);">${i+1}</td>
+        <td style="font-family:var(--mono);color:var(--accent);">${u.username}</td>
+        <td style="font-weight:600;">${u.fullName||'–'}</td>
+        <td><span style="color:${roleColors[u.role]||'var(--text-dim)'};font-family:var(--mono);font-size:11px;letter-spacing:1px;">${u.role.toUpperCase()}</span></td>
+        <td><span class="co-tag">${co?co.name:'Unknown'}</span></td>
+        <td><span class="status-active">Active</span></td>
+        <td style="display:flex;gap:5px;align-items:center;">
+          <button class="btn-p btn-sm" onclick="App.viewUserDetail('${u.id}','super')">👁 VIEW</button>
+          <button class="btn-r btn-sm" onclick="App.deleteCoUser('${u.id}','super')">🗑 DELETE</button>
+        </td>
+      </tr>`;
+    }).join('');
+  },
+
+  // Company CRUD
+  openAddCompany() {
+    document.getElementById('m-co-title').textContent = 'Add Company';
+    document.getElementById('co-edit-id').value = '';
+    ['co-name','co-uname','co-pass','co-email','co-phone'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('co-field').value = '';
+    document.getElementById('co-plan').value = 'basic';
+    document.getElementById('co-status').value = 'active';
+    document.getElementById('m-company').classList.add('show');
+  },
+  openEditCompany(id) {
+    const co = DB.companies().find(c => c.id === id);
+    if (!co) return;
+    document.getElementById('m-co-title').textContent = 'Edit Company';
+    document.getElementById('co-edit-id').value = id;
+    document.getElementById('co-name').value = co.name||'';
+    document.getElementById('co-field').value = co.field||'';
+    document.getElementById('co-plan').value = co.plan||'basic';
+    document.getElementById('co-uname').value = co.adminUser||'';
+    document.getElementById('co-pass').value = co.adminPass||'';
+    document.getElementById('co-email').value = co.email||'';
+    document.getElementById('co-phone').value = co.phone||'';
+    document.getElementById('co-status').value = co.status||'active';
+    document.getElementById('m-company').classList.add('show');
+  },
+  saveCompany() {
+    const editId = document.getElementById('co-edit-id').value;
+    const name = document.getElementById('co-name').value.trim();
+    const field = document.getElementById('co-field').value;
+    const plan = document.getElementById('co-plan').value;
+    const adminUser = document.getElementById('co-uname').value.trim();
+    const adminPass = document.getElementById('co-pass').value;
+    const email = document.getElementById('co-email').value.trim();
+    const phone = document.getElementById('co-phone').value.trim();
+    const status = document.getElementById('co-status').value;
+    if (!name || !adminUser || !adminPass) { this.toast('Company name, username and password are required', 'e'); return; }
+    const cos = DB.companies();
+    if (editId) {
+      const co = cos.find(c => c.id === editId);
+      if (co) Object.assign(co, { name, field, plan, adminUser, adminPass, email, phone, status });
+    } else {
+      // Check username uniqueness across all users
+      if (cos.find(c => c.adminUser === adminUser) || DB.coUsers().find(u => u.username === adminUser) || adminUser === SA.u) {
+        this.toast('Username already exists', 'e'); return;
+      }
+      cos.push({ id: 'co_' + Date.now(), name, field, plan, adminUser, adminPass, email, phone, status, createdAt: Date.now() });
+    }
+    DB.saveCompanies(cos);
+    this.closeMo('m-company');
+    this.renderCompanies();
+    this.renderSuperOverview();
+    this.toast(editId ? 'Company updated' : 'Company created: ' + name, 's');
+  },
+  deleteCompany(id) {
+    if (!confirm('Delete this company and ALL its data (employees, attendance, users)? This cannot be undone.')) return;
+    const cos = DB.companies().filter(c => c.id !== id);
+    DB.saveCompanies(cos);
+    // Remove all related data
+    const cous = DB.coUsers().filter(u => u.companyId !== id);
+    DB.saveCoUsers(cous);
+    localStorage.removeItem(`ott_emps_${id}`);
+    localStorage.removeItem(`ott_settings_${id}`);
+    this.renderCompanies(); this.renderSuperOverview();
+    this.toast('Company deleted', 's');
+  },
+  toggleCompanyStatus(id) {
+    const cos = DB.companies();
+    const co = cos.find(c => c.id === id);
+    if (co) { co.status = co.status === 'active' ? 'inactive' : 'active'; DB.saveCompanies(cos); }
+    this.renderCompanies(); this.renderSuperOverview();
+    this.toast('Company status updated', 's');
+  },
+
+  // ══════════════════════════════════════════
+  //  COMPANY USER PAGES  (admin/editor/viewer)
+  // ══════════════════════════════════════════
+  cid() { return this.session.companyId; },
+  canEdit() { return this.session.role === 'admin' || this.session.role === 'editor'; },
+
+  buildDashboard() {
+    const d = document.createElement('div');
+    d.className = 'page'; d.id = 'pg-dashboard';
+    d.innerHTML = `<div class="pg-body">
+      <div class="pg-tl" style="margin-bottom:14px;">Dashboard</div>
+      <div class="dash-cards" style="margin-bottom:16px;">
+        <div class="dcard dc-tl"><div class="dcard-l"><div class="dlbl">Total Employees</div><div class="dval" id="d-tot">0</div></div><div class="dcard-ico">👥</div></div>
+        <div class="dcard dc-gn"><div class="dcard-l"><div class="dlbl">Present Today</div><div class="dval" id="d-pre">0</div></div><div class="dcard-ico">✅</div></div>
+        <div class="dcard dc-rd"><div class="dcard-l"><div class="dlbl">Absent Today</div><div class="dval" id="d-abs">0</div></div><div class="dcard-ico">❌</div></div>
+        <div class="dcard dc-or"><div class="dcard-l"><div class="dlbl">On Leave Today</div><div class="dval" id="d-lv">0</div></div><div class="dcard-ico">🕐</div></div>
+      </div>
+      <div class="dash-row2">
+        <div class="chart-box"><div class="chart-title">Monthly Attendance Trend</div><canvas id="chart-bar"></canvas></div>
+        <div class="chart-box"><div class="chart-title">Department Distribution</div><canvas id="chart-pie"></canvas></div>
+      </div>
+    </div>`;
+    return d;
+  },
+  renderDash() {
+    const emps = DB.employees(this.cid());
+    const now = new Date();
+    const td = now.getDate(), tm = now.getMonth(), ty = now.getFullYear();
+    const k = `${ty}-${tm}-${td}`;
+    let tp=0, ta=0, tl=0;
+    emps.forEach(e => {
+      const s = (e.att||{})[k]||'';
+      if (s==='P'||s==='N') tp++;
+      else if (s==='A') ta++;
+      else if (s==='L'||s==='WO'||s==='PH'||s==='HD') tl++;
+    });
+    document.getElementById('d-tot').textContent = emps.length;
+    document.getElementById('d-pre').textContent = tp;
+    document.getElementById('d-abs').textContent = ta;
+    document.getElementById('d-lv').textContent = tl;
+    this.renderBarChart(emps, tm, ty);
+    this.renderPieChart(emps);
+  },
+  renderBarChart(emps, mo, yr) {
+    const ctx = document.getElementById('chart-bar');
+    if (!ctx) return;
+    if (this.charts.bar) { this.charts.bar.destroy(); this.charts.bar = null; }
+    const days = new Date(yr, mo+1, 0).getDate();
+    const labels = [], data = [];
+    for (let d = 1; d <= days; d++) {
+      labels.push(d);
+      let c = 0;
+      emps.forEach(e => { const s=(e.att||{})[`${yr}-${mo}-${d}`]||''; if(s==='P'||s==='N')c++; });
+      data.push(c);
+    }
+    this.charts.bar = new Chart(ctx, {
+      type:'bar', data:{labels,datasets:[{label:'Present',data,backgroundColor:'rgba(0,229,255,.5)',borderColor:'rgba(0,229,255,1)',borderWidth:1,borderRadius:2}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5a7a9a',font:{size:9}},grid:{color:'rgba(30,45,69,.5)'}},y:{ticks:{color:'#5a7a9a',font:{size:9},stepSize:1},grid:{color:'rgba(30,45,69,.5)'}}}}
+    });
+  },
+  renderPieChart(emps) {
+    const ctx = document.getElementById('chart-pie');
+    if (!ctx) return;
+    if (this.charts.pie) { this.charts.pie.destroy(); this.charts.pie = null; }
+    const depts = {};
+    emps.forEach(e => { depts[e.dept] = (depts[e.dept]||0)+1; });
+    if (!Object.keys(depts).length) return;
+    const cols = ['#14b8a6','#f59e0b','#ef4444','#a855f7','#3b82f6','#22c55e','#f97316','#ec4899'];
+    this.charts.pie = new Chart(ctx, {
+      type:'pie', data:{labels:Object.keys(depts),datasets:[{data:Object.values(depts),backgroundColor:cols,borderColor:'#07090f',borderWidth:2}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#c9d8ef',font:{size:10},padding:8,boxWidth:10}}}}
+    });
+  },
+
+  buildAttendance() {
+    const d = document.createElement('div');
+    d.className = 'page'; d.id = 'pg-attendance';
+    d.innerHTML = `
+    <div class="att-hdr">
+      <div class="att-tl-row">
+        <div class="page-title">Attendance Register</div>
+        <div class="legend">
+          <span class="badge badge-pd">PD</span><span class="badge badge-pn">PN</span>
+          <span class="badge badge-a">A</span><span class="badge badge-l">L</span>
+          <span class="badge badge-wo">WO</span><span class="badge badge-ph">PH</span>
+          <span class="badge badge-hd">HD</span>
+        </div>
+      </div>
+      <div class="toolbar">
+        <span class="lbl-sm">Month</span>
+        <select class="sf" id="sel-mo" onchange="App.renderAtt()">
+          ${MNS.map((m,i)=>`<option value="${i}">${m}</option>`).join('')}
+        </select>
+        <select class="sf" id="sel-yr" onchange="App.renderAtt()">
+          <option>2024</option><option>2025</option><option selected>2026</option>
+        </select>
+        <select class="sf" id="sel-dp" onchange="App.renderAtt()">
+          <option value="">All Departments</option>
+        </select>
+        <div class="sw"><span class="sico">⌕</span><input class="di" id="att-srch" type="text" placeholder="Search name or EMP ID..." style="padding-left:27px;min-width:180px;" oninput="App.renderAtt()"></div>
+        <div class="divv"></div>
+        <button class="btn-p" onclick="App.exportCSV()">↓ CSV</button>
+        <button class="btn-g" onclick="App.openAddAtt()">+ ATTENDANCE</button>
+      </div>
+      <div class="qf-bar" id="qf-bar">
+        <span class="lbl-sm">⚡ Quick Fill:</span>
+        <input class="di" id="qf-dt" type="date" style="min-width:115px;">
+        <select class="sf" id="qf-st">
+          <option value="P">PD</option><option value="N">PN</option><option value="A">Absent</option>
+          <option value="L">Leave</option><option value="WO">Week Off</option><option value="PH">Public Holiday</option>
+        </select>
+        <button class="btn-y" onclick="App.qfAll()">FILL ALL</button>
+        <div class="divv"></div>
+        <input class="di" id="qf-eid" type="text" placeholder="EMP ID" style="width:72px;">
+        <input class="di" id="qf-fr" type="date" style="min-width:110px;">
+        <input class="di" id="qf-to" type="date" style="min-width:110px;">
+        <button class="btn-y" onclick="App.qfEmp()">FILL ROW</button>
+      </div>
+    </div>
+    <div class="stats-strip">
+      <div class="scard s-tot"><div class="sc-lbl">Total Employees</div><div class="sc-val" id="st-tot">0</div></div>
+      <div class="scard s-pre"><div class="sc-lbl">Total Present</div><div class="sc-val" id="st-pre">0</div></div>
+      <div class="scard s-abs"><div class="sc-lbl">Total Absent</div><div class="sc-val" id="st-abs">0</div></div>
+      <div class="scard s-lv"><div class="sc-lbl">Total Leave</div><div class="sc-val" id="st-lv">0</div></div>
+      <div class="scard s-per"><div class="sc-lbl">Period</div><div class="sc-val" id="st-per">–</div></div>
+    </div>
+    <div class="tbl-wrap" id="att-tbl-wrap">
+      <div class="sum-section" id="sum-section">
+        <div class="sum-lbl-bar" id="sum-lbl">SUMMARY</div>
+        <table><thead><tr class="sum-hdr" id="sum-hdr"></tr></thead><tbody id="sum-body"></tbody></table>
+      </div>
+      <div class="emp-section" id="emp-section">
+        <table><thead><tr class="emp-hdr" id="emp-hdr"></tr></thead><tbody id="emp-body"></tbody></table>
+      </div>
+    </div>`;
+    return d;
+  },
+
+  renderAtt() {
+    const mo = +(document.getElementById('sel-mo')?.value ?? this.att.mo);
+    const yr = +(document.getElementById('sel-yr')?.value ?? this.att.yr);
+    this.att.mo = mo; this.att.yr = yr;
+    const dept = document.getElementById('sel-dp')?.value || '';
+    const srch = (document.getElementById('att-srch')?.value || '').toLowerCase();
+    const emps = DB.employees(this.cid());
+    // Populate dept dropdown
+    const depts = [...new Set(emps.map(e => e.dept).filter(Boolean))];
+    const dp = document.getElementById('sel-dp');
+    if (dp) {
+      const cur = dp.value;
+      dp.innerHTML = '<option value="">All Departments</option>' + depts.map(d => `<option value="${d}">${d}</option>`).join('');
+      dp.value = cur;
+    }
+    // Hide quickfill for viewers
+    const qf = document.getElementById('qf-bar');
+    if (qf) qf.style.display = this.canEdit() ? 'flex' : 'none';
+
+    this.att.filt = emps.filter(e => {
+      if (e.status === 'inactive') return false;
+      if (dept && e.dept !== dept) return false;
+      if (srch && !e.name.toLowerCase().includes(srch) && !e.id.toLowerCase().includes(srch)) return false;
+      return true;
+    });
+    const days = new Date(yr, mo+1, 0).getDate();
+    const el = document.getElementById('sum-lbl');
+    if (el) el.textContent = `SUMMARY — ${MNS[mo].toUpperCase()} ${yr}`;
+    const sp = document.getElementById('st-per');
+    if (sp) sp.textContent = `${MN3[mo]} ${yr}`;
+    this.renderAttHdrs(days);
+    this.renderSum(days);
+    this.renderEmps(days);
+    this.updateStats(days);
+  },
+
+  renderAttHdrs(days) {
+    const sh = document.getElementById('sum-hdr');
+    const eh = document.getElementById('emp-hdr');
+    if (!sh || !eh) return;
+    sh.innerHTML = '<th class="thf">METRIC</th>';
+    eh.innerHTML = `<th class="th-sr">SR</th><th class="th-id">EMP ID</th><th class="th-nm">EMPLOYEE NAME</th><th class="th-dp">DEPARTMENT</th><th class="th-pd">PD</th><th class="th-pn">PN</th><th class="th-a">A</th><th class="th-l">L</th>`;
+    for (let d = 1; d <= days; d++) {
+      const dt = new Date(this.att.yr, this.att.mo, d);
+      const dow = dt.getDay(), we = dow===0||dow===6;
+      const c = we ? 'color:var(--red)' : 'color:var(--text-dim)';
+      sh.innerHTML += `<th style="${c};min-width:44px;font-family:var(--mono);font-size:10px;">${d}</th>`;
+      eh.innerHTML += `<th class="th-date${we?' we':''}" style="min-width:44px;"><div class="dt"><span class="dt-d">${d}-${MN3[this.att.mo]}</span><span class="dt-w">${DY3[dow]}</span></div></th>`;
+    }
+  },
+
+  calcSum(key, day) {
+    if (key === 'tot') return this.att.filt.length;
+    let c = 0;
+    this.att.filt.forEach(e => {
+      const s = (e.att||{})[`${this.att.yr}-${this.att.mo}-${day}`]||'';
+      if (key==='pd'&&s==='P') c++;
+      else if (key==='pn'&&s==='N') c++;
+      else if (key==='abs'&&s==='A') c++;
+      else if (key==='lv'&&(s==='L'||s==='WO'||s==='PH'||s==='HD')) c++;
+    });
+    return c;
+  },
+
+  renderSum(days) {
+    const body = document.getElementById('sum-body');
+    if (!body) return;
+    const rows = [{key:'tot',label:'TOTAL EMP COUNT',cls:'r-tot'},{key:'pd',label:'PRESENT DAY',cls:'r-pd'},{key:'pn',label:'PRESENT NIGHT',cls:'r-pn'},{key:'abs',label:'ABSENT',cls:'r-abs'},{key:'lv',label:'LEAVE / VACATION',cls:'r-lv'}];
+    body.innerHTML = '';
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.className = 'sum-row ' + r.cls;
+      let h = `<td class="tdf">${r.label}</td>`;
+      for (let d = 1; d <= days; d++) { const v = this.calcSum(r.key, d); h += `<td>${v>0?v:''}</td>`; }
+      tr.innerHTML = h; body.appendChild(tr);
+    });
+  },
+
+  renderEmps(days) {
+    const body = document.getElementById('emp-body');
+    if (!body) return;
+    body.innerHTML = '';
+    this.att.filt.forEach((emp, idx) => {
+      let pd=0,pn=0,ab=0,lv=0;
+      for (let d=1;d<=days;d++) {
+        const s=(emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||'';
+        if(s==='P')pd++;else if(s==='N')pn++;else if(s==='A')ab++;else if(s)lv++;
+      }
+      const tr = document.createElement('tr');
+      tr.className = 'emp-row';
+      let h = `<td class="td-sr">${idx+1}</td><td class="td-id">${emp.id}</td><td class="td-nm">${emp.name}</td><td class="td-dp">${emp.dept}</td>`;
+      h += `<td class="td-pd">${pd}</td><td class="td-pn">${pn}</td><td class="td-a">${ab}</td><td class="td-l">${lv}</td>`;
+      for (let d=1;d<=days;d++) {
+        const s=(emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||'';
+        const m=SCM[s]; const cls=m?m.c:'sc-e', txt=m?m.t:'';
+        const click = this.canEdit() ? `onclick="App.openSP(event,'${emp.id}',${d})"` : '';
+        h += `<td><div class="sc ${cls}" ${click}>${txt}</div></td>`;
+      }
+      tr.innerHTML = h; body.appendChild(tr);
+    });
+  },
+
+  updateStats(days) {
+    let tp=0,ta=0,tl=0;
+    for (let d=1;d<=days;d++) { tp+=this.calcSum('pd',d)+this.calcSum('pn',d); ta+=this.calcSum('abs',d); tl+=this.calcSum('lv',d); }
+    ['st-tot','st-pre','st-abs','st-lv'].forEach((id,i) => { const el=document.getElementById(id); if(el) el.textContent=[this.att.filt.length,tp,ta,tl][i]; });
+  },
+
+  openSP(e, empId, day) {
+    e.stopPropagation();
+    if (!this.canEdit()) return;
+    this.att.sel = { empId, day };
+    const sp = document.getElementById('sp');
+    const r = e.target.getBoundingClientRect();
+    let top = r.bottom + 4, left = r.left;
+    if (left+165 > window.innerWidth) left = window.innerWidth-170;
+    if (top+280 > window.innerHeight) top = r.top-285;
+    sp.style.top = top+'px'; sp.style.left = left+'px'; sp.style.display = 'block';
+  },
+  setSt(s) {
+    if (!this.att.sel) return;
+    const { empId, day } = this.att.sel;
+    const emps = DB.employees(this.cid());
+    const emp = emps.find(e => e.id === empId);
+    if (emp) {
+      if (!emp.att) emp.att = {};
+      const k = `${this.att.yr}-${this.att.mo}-${day}`;
+      if (s === '') delete emp.att[k]; else emp.att[k] = s;
+      DB.saveEmployees(this.cid(), emps);
+      this.renderAtt(); this.toast('Updated','s');
+    }
+    document.getElementById('sp').style.display = 'none'; this.att.sel = null;
+  },
+
+  qfAll() {
+    if (!this.canEdit()) return;
+    const ds = document.getElementById('qf-dt').value;
+    const st = document.getElementById('qf-st').value;
+    if (!ds) { this.toast('Select a date','e'); return; }
+    const d = new Date(ds);
+    const k = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const emps = DB.employees(this.cid());
+    emps.forEach(e => { if(!e.att)e.att={}; e.att[k]=st; });
+    DB.saveEmployees(this.cid(), emps);
+    this.renderAtt(); this.toast(`All employees → ${st}`,'s');
+  },
+  qfEmp() {
+    if (!this.canEdit()) return;
+    const eid = document.getElementById('qf-eid').value.trim();
+    const fr = document.getElementById('qf-fr').value;
+    const to = document.getElementById('qf-to').value;
+    const st = document.getElementById('qf-st').value;
+    if (!eid||!fr||!to) { this.toast('Fill EMP ID, From, To','e'); return; }
+    const emps = DB.employees(this.cid());
+    const emp = emps.find(e => e.id===eid||e.name.toLowerCase().includes(eid.toLowerCase()));
+    if (!emp) { this.toast('Employee not found','e'); return; }
+    if (!emp.att) emp.att = {};
+    let cnt=0, cur=new Date(fr), end=new Date(to);
+    for (;cur<=end;cur.setDate(cur.getDate()+1)) { emp.att[`${cur.getFullYear()}-${cur.getMonth()}-${cur.getDate()}`]=st; cnt++; }
+    DB.saveEmployees(this.cid(), emps);
+    this.renderAtt(); this.toast(`${cnt} days filled for ${emp.name}`,'s');
+  },
+
+  openAddAtt() {
+    if (!this.canEdit()) { this.toast('View-only access','e'); return; }
+    document.getElementById('aa-id').value='';
+    document.getElementById('aa-dt').value=new Date().toISOString().split('T')[0];
+    document.getElementById('m-att').classList.add('show');
+  },
+  saveAtt() {
+    const eid = document.getElementById('aa-id').value.trim();
+    const ds = document.getElementById('aa-dt').value;
+    const st = document.getElementById('aa-st').value;
+    if (!eid||!ds) { this.toast('Fill EMP ID and date','e'); return; }
+    const emps = DB.employees(this.cid());
+    const emp = emps.find(e => e.id===eid||e.name.toLowerCase().includes(eid.toLowerCase()));
+    if (!emp) { this.toast('Employee not found','e'); return; }
+    if (!emp.att) emp.att = {};
+    const d = new Date(ds);
+    emp.att[`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`] = st;
+    DB.saveEmployees(this.cid(), emps);
+    this.renderAtt(); this.closeMo('m-att');
+    this.toast(`${emp.name} → ${st}`,'s');
+  },
+
+  exportCSV() {
+    const days = new Date(this.att.yr, this.att.mo+1, 0).getDate();
+    const h = ['SR','EMP ID','NAME','DEPARTMENT','PD','PN','A','L'];
+    for (let d=1;d<=days;d++) h.push(`${d}-${MN3[this.att.mo]}`);
+    const rows = [h.join(',')];
+    this.att.filt.forEach((emp, idx) => {
+      let pd=0,pn=0,ab=0,lv=0;
+      const row = [idx+1, emp.id, `"${emp.name}"`, `"${emp.dept}"`];
+      for (let d=1;d<=days;d++) { const s=(emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||''; if(s==='P')pd++;else if(s==='N')pn++;else if(s==='A')ab++;else if(s)lv++; }
+      row.push(pd,pn,ab,lv);
+      for (let d=1;d<=days;d++) row.push((emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||'');
+      rows.push(row.join(','));
+    });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([rows.join('\n')],{type:'text/csv'}));
+    a.download = `Attendance_${MN3[this.att.mo]}_${this.att.yr}.csv`;
+    a.click(); this.toast('CSV exported','s');
+  },
+
+  // ── EMPLOYEES PAGE ──
+  buildEmployeesPage() {
+    const d = document.createElement('div');
+    d.className = 'page'; d.id = 'pg-employees';
+    d.innerHTML = `<div class="pg-body">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div class="pg-tl">Employees</div>
+        <div style="display:flex;gap:8px;" id="emp-pg-actions"></div>
+      </div>
+      <div class="sw" style="margin-bottom:12px;">
+        <span class="sico">⌕</span>
+        <input class="di" id="emp-srch" type="text" placeholder="Search employees..." style="padding-left:28px;max-width:320px;" oninput="App.renderEmpList()">
+      </div>
+      <table class="emp-pg-tbl">
+        <thead><tr><th>SR</th><th>EMP ID</th><th>NAME</th><th>DEPARTMENT</th><th>DESIGNATION</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+        <tbody id="emp-tbl-body"></tbody>
+      </table>
+    </div>`;
+    return d;
+  },
+  renderEmpList() {
+    const actions = document.getElementById('emp-pg-actions');
+    if (actions && this.session.role === 'admin') {
+      actions.innerHTML = `<button class="btn-g" onclick="App.openAddEmp()">+ ADD EMPLOYEE</button>`;
+    }
+    const srch = (document.getElementById('emp-srch')?.value || '').toLowerCase();
+    let emps = DB.employees(this.cid());
+    if (srch) emps = emps.filter(e => e.name.toLowerCase().includes(srch) || e.id.toLowerCase().includes(srch) || (e.dept||'').toLowerCase().includes(srch));
+    const body = document.getElementById('emp-tbl-body');
+    if (!body) return;
+    body.innerHTML = '';
+    emps.forEach((emp, i) => {
+      const tr = document.createElement('tr');
+      const canMod = this.session.role === 'admin';
+      tr.innerHTML = `
+        <td style="color:var(--text-dim);font-family:var(--mono);">${i+1}</td>
+        <td class="emp-id">${emp.id}</td>
+        <td class="emp-nm">${emp.name}</td>
+        <td style="color:var(--text-dim)">${emp.dept||'–'}</td>
+        <td style="color:var(--text-dim)">${emp.desig||'–'}</td>
+        <td><span class="${emp.status==='active'?'tag-active':'tag-inactive'}">${emp.status||'active'}</span></td>
+        <td>${canMod?`<button class="act-btn edit" onclick="App.openEditEmp('${emp.id}')" title="Edit">✎</button><button class="act-btn del" onclick="App.deleteEmp('${emp.id}')" title="Delete">🗑</button>`:'<span style="color:var(--text-muted);font-size:11px;">–</span>'}</td>`;
+      body.appendChild(tr);
+    });
+  },
+  openAddEmp() {
+    if (this.session.role !== 'admin') { this.toast('Admin only','e'); return; }
+    document.getElementById('m-emp-title').textContent = 'Add Employee';
+    document.getElementById('ae-edit-id').value = '';
+    ['ae-id','ae-nm','ae-dp','ae-des'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('ae-st').value = 'active';
+    document.getElementById('m-emp').classList.add('show');
+  },
+  openEditEmp(id) {
+    const emp = DB.employees(this.cid()).find(e => e.id === id);
+    if (!emp) return;
+    document.getElementById('m-emp-title').textContent = 'Edit Employee';
+    document.getElementById('ae-edit-id').value = id;
+    document.getElementById('ae-id').value = emp.id;
+    document.getElementById('ae-nm').value = emp.name;
+    document.getElementById('ae-dp').value = emp.dept||'';
+    document.getElementById('ae-des').value = emp.desig||'';
+    document.getElementById('ae-st').value = emp.status||'active';
+    document.getElementById('m-emp').classList.add('show');
+  },
+  saveEmp() {
+    const editId = document.getElementById('ae-edit-id').value;
+    const id = document.getElementById('ae-id').value.trim();
+    const nm = document.getElementById('ae-nm').value.trim();
+    const dp = document.getElementById('ae-dp').value.trim();
+    const des = document.getElementById('ae-des').value.trim();
+    const st = document.getElementById('ae-st').value;
+    if (!id||!nm||!dp) { this.toast('ID, Name and Department are required','e'); return; }
+    const emps = DB.employees(this.cid());
+    if (editId) {
+      const emp = emps.find(e => e.id === editId);
+      if (emp) Object.assign(emp, {id,name:nm,dept:dp,desig:des,status:st});
+    } else {
+      if (emps.find(e => e.id === id)) { this.toast('EMP ID already exists','e'); return; }
+      emps.push({id,name:nm,dept:dp,desig:des,status:st,att:{}});
+    }
+    DB.saveEmployees(this.cid(), emps);
+    this.renderEmpList(); this.closeMo('m-emp');
+    this.toast(editId?'Employee updated':'Employee added: '+nm,'s');
+  },
+  deleteEmp(id) {
+    if (!confirm('Delete this employee and all their attendance records?')) return;
+    const emps = DB.employees(this.cid()).filter(e => e.id !== id);
+    DB.saveEmployees(this.cid(), emps);
+    this.renderEmpList(); this.toast('Employee deleted','s');
+  },
+
+  // ── SETTINGS / USERS ──
+  buildSettingsPage() {
+    const d = document.createElement('div');
+    d.className = 'page'; d.id = 'pg-settings';
+    d.innerHTML = `<div class="pg-body">
+      <div class="pg-tl" style="margin-bottom:14px;">Settings</div>
+      <!-- Company Info -->
+      <div class="set-section">
+        <div class="sec-title">🏢 Company Info</div>
+        <div class="set-grid">
+          <div class="ff full"><div class="fm">Company Name</div><input class="di" id="s-cname" type="text" placeholder="Your company name"></div>
+          <div class="ff full"><div class="fm">Company Address</div><input class="di" id="s-caddr" type="text" placeholder="Address"></div>
+        </div>
+      </div>
+      <!-- Shift Settings -->
+      <div class="set-section">
+        <div class="sec-title">🕐 Shift Settings</div>
+        <div class="set-grid">
+          <div class="ff"><div class="fm">Day Shift Start</div><input class="di" id="s-dss" type="time"></div>
+          <div class="ff"><div class="fm">Day Shift End</div><input class="di" id="s-dse" type="time"></div>
+          <div class="ff"><div class="fm">Night Shift Start</div><input class="di" id="s-nss" type="time"></div>
+          <div class="ff"><div class="fm">Night Shift End</div><input class="di" id="s-nse" type="time"></div>
+        </div>
+      </div>
+      <!-- Rules -->
+      <div class="set-section">
+        <div class="sec-title">📅 Attendance Rules</div>
+        <div class="set-grid">
+          <div class="ff"><div class="fm">Weekly Off Day</div><select class="di" id="s-wod"><option>Sunday</option><option>Saturday</option><option>Friday</option></select></div>
+          <div class="ff"><div class="fm">Late Threshold (min)</div><input class="di" id="s-late" type="number" value="15"></div>
+          <div class="ff"><div class="fm">Half Day Hours</div><input class="di" id="s-hd" type="number" value="4"></div>
+          <div class="ff" style="justify-content:flex-end;">
+            <div class="fm">Auto-mark absent</div>
+            <div class="toggle-row" style="margin-top:8px;"><label class="toggle"><input type="checkbox" id="s-auto"><span class="slider"></span></label></div>
+          </div>
+        </div>
+      </div>
+      <!-- User Management (admin only) -->
+      <div class="set-section" id="um-section" style="display:none;">
+        <div class="sec-title">👤 User Management</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <span style="font-size:12px;color:var(--text-dim);">Manage users who can access your company account.</span>
+          <button class="btn-g btn-sm" onclick="App.openCreateUser('company')">+ CREATE USER</button>
+        </div>
+        <div id="co-users-list"></div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-g" onclick="App.saveSettings()">SAVE SETTINGS</button>
+      </div>
+    </div>`;
+    return d;
+  },
+  renderSettings() {
+    const s = DB.settings(this.cid());
+    const fields = {cname:'s-cname',caddr:'s-caddr',dss:'s-dss',dse:'s-dse',nss:'s-nss',nse:'s-nse',wod:'s-wod',late:'s-late',hd:'s-hd'};
+    Object.entries(fields).forEach(([k,id]) => { const el=document.getElementById(id); if(el) el.value=s[k]||''; });
+    const au = document.getElementById('s-auto'); if (au) au.checked = s.auto!==false;
+    const ums = document.getElementById('um-section');
+    if (ums) ums.style.display = this.session.role === 'admin' ? 'block' : 'none';
+    if (this.session.role === 'admin') this.renderCoUsersList();
+  },
+  saveSettings() {
+    const s = {
+      cname: document.getElementById('s-cname').value,
+      caddr: document.getElementById('s-caddr').value,
+      dss: document.getElementById('s-dss').value,
+      dse: document.getElementById('s-dse').value,
+      nss: document.getElementById('s-nss').value,
+      nse: document.getElementById('s-nse').value,
+      wod: document.getElementById('s-wod').value,
+      late: +document.getElementById('s-late').value,
+      hd: +document.getElementById('s-hd').value,
+      auto: document.getElementById('s-auto').checked,
+    };
+    DB.saveSettings(this.cid(), s);
+    this.toast('Settings saved','s');
+  },
+
+  // Company sub-users — legacy saveCoUser removed; use saveNewUser via openCreateUser()
+  deleteCoUser(id, ctx) {
+    if (!confirm('Delete this user? They will lose access immediately.')) return;
+    DB.saveCoUsers(DB.coUsers().filter(u=>u.id!==id));
+    if (ctx==='super') { this.renderAllUsers(); this.renderSAUsers(); }
+    else this.renderCoUsersList();
+    this.toast('User deleted','s');
+  },
+  renderCoUsersList() {
+    const el = document.getElementById('co-users-list');
+    if (!el) return;
+    const cous = DB.coUsers().filter(u => u.companyId === this.cid());
+    if (!cous.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:12px;padding:12px 0;">No users yet. Click + CREATE USER to add one.</div>'; return; }
+    const roleColors = { editor:'var(--green)', viewer:'var(--blue)' };
+    const roleAvatarBg = { editor:'background:var(--green-bg);border:1px solid var(--green)', viewer:'background:var(--blue-bg);border:1px solid var(--blue)' };
+    el.innerHTML = cous.map(u => `
+      <div class="user-item">
+        <div class="user-item-l">
+          <div class="ua" style="${roleAvatarBg[u.role]||''};">👤</div>
+          <div>
+            <div class="un">${u.fullName||u.username}</div>
+            <div class="ur" style="color:${roleColors[u.role]||'var(--text-dim)'};">${u.username} · ${u.role.toUpperCase()}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn-p btn-sm" onclick="App.viewUserDetail('${u.id}','company')">👁 VIEW</button>
+          <button class="btn-r btn-sm" onclick="App.deleteCoUser('${u.id}','company')">🗑 DELETE</button>
+        </div>
+      </div>`).join('');
+  },
+
+  // ── SUPER ADMIN — USER MANAGEMENT PAGE ──
+  buildSAUsersPage() {
+    const d = document.createElement('div');
+    d.className = 'page'; d.id = 'pg-sausers';
+    d.innerHTML = `<div class="pg-body">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div class="pg-tl">User Management</div>
+        <button class="btn-g" onclick="App.openCreateUser('super')">+ CREATE USER</button>
+      </div>
+      <div class="users-filters">
+        <div class="sw"><span class="sico">⌕</span><input class="di" id="sau-srch" type="text" placeholder="Search by username or name..." style="padding-left:28px;min-width:240px;" oninput="App.renderSAUsers()"></div>
+        <select class="sf" id="sau-role-filter" onchange="App.renderSAUsers()">
+          <option value="">All Roles</option>
+          <option value="editor">Editor</option>
+          <option value="viewer">Viewer</option>
+        </select>
+        <select class="sf" id="sau-co-filter" onchange="App.renderSAUsers()">
+          <option value="">All Companies</option>
+        </select>
+        <span id="sau-count" style="font-family:var(--mono);font-size:11px;color:var(--text-dim);"></span>
+      </div>
+      <div class="user-card-grid" id="sau-cards"></div>
+    </div>`;
+    return d;
+  },
+  renderSAUsers() {
+    const cards = document.getElementById('sau-cards');
+    if (!cards) return;
+    const cos = DB.companies();
+    // Populate company filter
+    const coF = document.getElementById('sau-co-filter');
+    if (coF) {
+      const cv = coF.value;
+      coF.innerHTML = '<option value="">All Companies</option>' + cos.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+      coF.value = cv;
+    }
+    const srch = (document.getElementById('sau-srch')?.value||'').toLowerCase();
+    const roleF = document.getElementById('sau-role-filter')?.value||'';
+    const coFv = document.getElementById('sau-co-filter')?.value||'';
+    let cous = DB.coUsers();
+    if (srch) cous = cous.filter(u => u.username.toLowerCase().includes(srch)||(u.fullName||'').toLowerCase().includes(srch));
+    if (roleF) cous = cous.filter(u => u.role===roleF);
+    if (coFv) cous = cous.filter(u => u.companyId===coFv);
+    const cnt = document.getElementById('sau-count');
+    if (cnt) cnt.textContent = `${cous.length} user${cous.length!==1?'s':''}`;
+    if (!cous.length) { cards.innerHTML = '<div style="color:var(--text-dim);font-size:13px;padding:30px;text-align:center;grid-column:1/-1;">No users found.</div>'; return; }
+    const roleColors = { editor:'var(--green)', viewer:'var(--blue)' };
+    const roleAvatarBg = { editor:'background:var(--green-bg);border:2px solid var(--green)', viewer:'background:var(--blue-bg);border:2px solid var(--blue)' };
+    cards.innerHTML = cous.map(u => {
+      const co = cos.find(c=>c.id===u.companyId);
+      const since = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '–';
+      return `<div class="user-card">
+        <div class="user-card-top">
+          <div class="user-card-info">
+            <div class="uc-avatar" style="${roleAvatarBg[u.role]||''};">👤</div>
+            <div>
+              <div class="uc-name">${u.fullName||u.username}</div>
+              <div class="uc-uname">@${u.username}</div>
+            </div>
+          </div>
+          <span style="color:${roleColors[u.role]||'var(--text-dim)'};font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;">${u.role}</span>
+        </div>
+        <div class="uc-meta">🏢 ${co?co.name:'Unknown Company'}</div>
+        <div class="uc-meta">📅 Created: ${since}</div>
+        <div class="user-card-actions">
+          <button class="btn-p btn-sm" style="flex:1;" onclick="App.viewUserDetail('${u.id}','super')">👁 VIEW DETAILS</button>
+          <button class="btn-r btn-sm" onclick="App.deleteCoUser('${u.id}','super')">🗑</button>
+        </div>
+      </div>`;
+    }).join('');
+  },
+
+  // ── OPEN CREATE USER MODAL ──
+  openCreateUser(ctx) {
+    document.getElementById('m-cu-title').textContent = ctx==='super' ? 'Create Company User' : 'Create User';
+    document.getElementById('ncu-ctx').value = ctx;
+    ['ncu-uname','ncu-pass','ncu-fn'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    document.getElementById('ncu-role').value='editor';
+    // Show company selector only for super admin
+    const coWrap = document.getElementById('ncu-co-wrap');
+    if (ctx==='super') {
+      coWrap.style.display='block';
+      const cos = DB.companies().filter(c=>c.status==='active');
+      document.getElementById('ncu-co').innerHTML = cos.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+    } else { coWrap.style.display='none'; }
+    document.getElementById('m-create-user').classList.add('show');
+  },
+  saveNewUser() {
+    const uname = document.getElementById('ncu-uname').value.trim();
+    const pass = document.getElementById('ncu-pass').value;
+    const fn = document.getElementById('ncu-fn').value.trim();
+    const role = document.getElementById('ncu-role').value;
+    const ctx = document.getElementById('ncu-ctx').value;
+    const coId = ctx==='super' ? document.getElementById('ncu-co').value : this.cid();
+    if (!uname||!pass) { this.toast('Username and password required','e'); return; }
+    if (!coId) { this.toast('Select a company','e'); return; }
+    const cos = DB.companies();
+    const cous = DB.coUsers();
+    if (cos.find(c=>c.adminUser===uname)||cous.find(u=>u.username===uname)||uname===SA.u) { this.toast('Username already taken','e'); return; }
+    cous.push({ id:'cu_'+Date.now(), companyId:coId, username:uname, password:pass, fullName:fn, role, createdAt:Date.now() });
+    DB.saveCoUsers(cous);
+    this.closeMo('m-create-user');
+    if (ctx==='super') { this.renderSAUsers(); this.renderAllUsers(); }
+    else this.renderCoUsersList();
+    this.toast('User created: '+uname,'s');
+  },
+
+  // ── VIEW USER DETAIL ──
+  viewUserDetail(uid, ctx) {
+    const u = DB.coUsers().find(x=>x.id===uid);
+    if (!u) return;
+    const co = DB.companies().find(c=>c.id===u.companyId);
+    const roleColors = { editor:'var(--green)', viewer:'var(--blue)' };
+    const roleAvatarBg = { editor:'background:var(--green-bg);border:3px solid var(--green)', viewer:'background:var(--blue-bg);border:3px solid var(--blue)' };
+    const since = u.createdAt ? new Date(u.createdAt).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Unknown';
+    document.getElementById('ud-content').innerHTML = `
+      <div class="ud-hero">
+        <div class="ud-avatar" style="${roleAvatarBg[u.role]||''};">👤</div>
+        <div>
+          <div class="ud-name">${u.fullName||u.username}</div>
+          <div class="ud-role" style="color:${roleColors[u.role]||'var(--text-dim)'};">${u.role.toUpperCase()} · Active</div>
+        </div>
+      </div>
+      <div class="ud-grid">
+        <div class="ud-field"><div class="ud-field-lbl">Username</div><div class="ud-field-val accent">@${u.username}</div></div>
+        <div class="ud-field"><div class="ud-field-lbl">Full Name</div><div class="ud-field-val">${u.fullName||'–'}</div></div>
+        <div class="ud-field"><div class="ud-field-lbl">Role</div><div class="ud-field-val" style="color:${roleColors[u.role]||'var(--text-dim)'};">${u.role==='editor'?'Editor — Can Edit Attendance':'Viewer — View Only'}</div></div>
+        <div class="ud-field"><div class="ud-field-lbl">Company</div><div class="ud-field-val">${co?co.name:'Unknown'}</div></div>
+        <div class="ud-field"><div class="ud-field-lbl">User ID</div><div class="ud-field-val" style="font-size:11px;color:var(--text-dim);">${u.id}</div></div>
+        <div class="ud-field"><div class="ud-field-lbl">Created At</div><div class="ud-field-val" style="font-size:12px;">${since}</div></div>
+      </div>`;
+    document.getElementById('ud-actions').innerHTML = `
+      <button class="btn-r" onclick="App.deleteCoUser('${u.id}','${ctx}');App.closeMo('m-user-detail');">🗑 DELETE USER</button>
+      <button class="btn-p" onclick="App.closeMo('m-user-detail')">CLOSE</button>`;
+    document.getElementById('m-user-detail').classList.add('show');
+  },
+
+  closeMo(id) { document.getElementById(id).classList.remove('show'); },
+
+  toast(msg, type='s') {
+    const t=document.getElementById('toast'), ico=document.getElementById('tico');
+    document.getElementById('tmsg').textContent=msg;
+    ico.textContent=type==='s'?'✓':type==='e'?'✕':'ℹ';
+    ico.style.color=type==='s'?'var(--green)':type==='e'?'var(--red)':'var(--accent)';
+    t.classList.add('show'); clearTimeout(this._tt);
+    this._tt=setTimeout(()=>t.classList.remove('show'),3000);
+  }
+};
+
+// Boot
+App.login; // noop, just ensures parsing
+document.getElementById('lp').addEventListener('keydown', e=>{ if(e.key==='Enter') App.login(); });
+document.getElementById('lu').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('lp').focus(); });
+</script>
+</body>
+</html>
