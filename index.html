@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TimeTrack Pro — Attendance Monitoring System</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
 <style>
 :root{
   --bg:#f0f4f8;--bg2:#e8edf3;--bg3:#d4dce8;--panel:#ffffff;
@@ -316,6 +317,36 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
 .toast.show{transform:translateY(0);opacity:1;}
 .toast-msg{font-size:13px;letter-spacing:.3px;color:#fff;font-weight:500;}
 
+
+/* ══ DATA SYNC PANEL ══ */
+.sync-panel{background:linear-gradient(135deg,#e3f0ff,#e8f5f3);border:1.5px solid #90caf9;border-radius:8px;padding:20px 22px;margin-bottom:14px;}
+.sync-title{font-family:var(--head);font-size:15px;font-weight:700;color:#0d1b2a;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.sync-sub{font-size:12px;color:#546e7a;margin-bottom:16px;line-height:1.6;}
+.sync-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.sync-card{background:#fff;border:1px solid var(--border);border-radius:7px;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.sync-card-title{font-family:var(--head);font-size:13px;font-weight:700;color:#0d1b2a;display:flex;align-items:center;gap:7px;}
+.sync-card-desc{font-size:12px;color:#546e7a;line-height:1.5;}
+.sync-drop{border:2px dashed #90caf9;border-radius:6px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:#f7fbff;}
+.sync-drop:hover,.sync-drop.drag-over{border-color:var(--accent);background:#e3f0ff;}
+.sync-drop-ico{font-size:28px;margin-bottom:6px;}
+.sync-drop-lbl{font-size:12px;color:#546e7a;font-weight:600;}
+.sync-drop input{display:none;}
+.sync-info{font-size:11px;color:#546e7a;background:#f7f9fc;border:1px solid var(--border);border-radius:4px;padding:8px 12px;font-family:var(--mono);}
+.sync-warn{font-size:11px;color:#b07800;background:#fff8e1;border:1px solid #ffe082;border-radius:4px;padding:8px 12px;margin-top:8px;}
+
+/* ══ FIREBASE SYNC STATUS ══ */
+.sync-status{display:flex;align-items:center;gap:6px;padding:3px 10px;border-radius:12px;font-size:11px;font-family:var(--mono);font-weight:600;border:1px solid;}
+.sync-ok{background:#e6f4ee;color:#1b7a4e;border-color:rgba(27,122,78,.3);}
+.sync-err{background:#fdecea;color:#c62828;border-color:rgba(198,40,40,.3);}
+.sync-loading{background:#e3f0ff;color:#1565c0;border-color:rgba(21,101,192,.3);}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+@keyframes syncPulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.sync-loading .sync-dot{animation:syncPulse 1s infinite;}
+
+/* Offline banner */
+#offline-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:9998;background:#c62828;color:#fff;text-align:center;padding:6px;font-size:12px;font-family:var(--mono);font-weight:700;letter-spacing:1px;}
+
+/* ══ SCROLLBAR ══ */
 /* Scrollbar */
 .tbl-wrap{scrollbar-width:thin;scrollbar-color:var(--border) var(--bg2);}
 
@@ -349,6 +380,8 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
 </style>
 </head>
 <body>
+
+<div id="offline-banner">⚠️ YOU ARE OFFLINE — Changes will sync when connection is restored</div>
 
 <!-- ═══════════════ LOGIN ═══════════════ -->
 <div id="login-screen">
@@ -493,7 +526,7 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
       <button class="btn-p" style="width:100%;margin-top:4px;" onclick="App.login()">SIGN IN</button>
       <div class="lerr" id="lerr">✗ Invalid username or password</div>
     </div>
-    <div class="login-hint">Powered by TimeTrack Pro © 2026</div>
+    <div class="login-hint">Powered by TimeTrack Pro © 2026 · Firebase Sync Enabled</div>
   </div>
 </div>
 
@@ -507,7 +540,7 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
     <div class="topbar-r">
       <span class="role-chip" id="role-chip"></span>
       <span class="ubadge" id="ubadge"></span>
-      <button class="logoutbtn" onclick="App.logout()">LOGOUT</button>
+      <div class="sync-status sync-loading" id="sync-indicator" style="cursor:pointer;" onclick="App.syncNow()" title="Click to sync now"><div class="sync-dot"></div><span id="sync-label">Connecting...</span></div><button class="logoutbtn" onclick="App.logout()">LOGOUT</button>
     </div>
   </nav>
   <div class="company-banner" id="company-banner" style="display:none;"></div>
@@ -629,23 +662,201 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
   </div>
 </div>
 
+
+<!-- ═══ DATA SYNC MODAL ═══ -->
+<div class="mo" id="m-datasync">
+  <div class="mb" style="width:620px;">
+    <div class="mh"><div class="mt2">📦 Data Transfer</div><button class="mc" onclick="App.closeMo('m-datasync')">✕</button></div>
+    <div class="mbody">
+      <div class="sync-sub" style="margin-bottom:16px;font-size:13px;color:#37474f;">
+        This app is connected to <strong>Firebase (Google Cloud)</strong>. All data syncs automatically across all devices in real time.<br><br>
+        Use <strong>Export</strong> to download a local backup file anytime. Use <strong>Import</strong> to restore from a backup if needed.
+      </div>
+      <div class="sync-grid">
+        <!-- EXPORT -->
+        <div class="sync-card">
+          <div class="sync-card-title">⬇️ Export Data</div>
+          <div class="sync-card-desc">Downloads a <strong>.json</strong> file containing all companies, users, employees and attendance records.</div>
+          <div class="sync-info" id="export-info">Loading...</div>
+          <button class="btn-g" style="width:100%;" onclick="App.exportData()">⬇ DOWNLOAD BACKUP FILE</button>
+        </div>
+        <!-- IMPORT -->
+        <div class="sync-card">
+          <div class="sync-card-title">⬆️ Import Data</div>
+          <div class="sync-card-desc">Load a previously exported <strong>.json</strong> backup file to restore all data on this device.</div>
+          <div class="sync-drop" id="sync-drop" onclick="document.getElementById('import-file').click();"
+               ondragover="event.preventDefault();this.classList.add('drag-over')"
+               ondragleave="this.classList.remove('drag-over')"
+               ondrop="App.handleImportDrop(event)">
+            <div class="sync-drop-ico">📂</div>
+            <div class="sync-drop-lbl">Click to select file or drag & drop here</div>
+            <input type="file" id="import-file" accept=".json" onchange="App.handleImportFile(event)">
+          </div>
+          <div class="sync-warn">⚠️ Import will <strong>replace</strong> all existing data on this device. Make sure to export first if needed.</div>
+        </div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn-p" onclick="App.closeMo('m-datasync')">CLOSE</button></div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"><span id="tico" style="font-size:14px;">✓</span><span class="toast-msg" id="tmsg">Done</span></div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════
+//  FIREBASE — Dynamic loader (guarantees correct order)
+// ═══════════════════════════════════════════════════════
+let fdb = null;
+
+function setSyncStatus(state, msg) {
+  const ind = document.getElementById('sync-indicator');
+  const lbl = document.getElementById('sync-label');
+  if (!ind || !lbl) return;
+  ind.className = 'sync-status sync-' + state;
+  lbl.textContent = msg;
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function initFirebase() {
+  try {
+    await loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js');
+    const firebaseConfig = {
+      apiKey: "AIzaSyDk4z3o6WuDxwbCxI1orMw0Y_S7tExiI3k",
+      authDomain: "timetrack-pro-c5f02.firebaseapp.com",
+      projectId: "timetrack-pro-c5f02",
+      storageBucket: "timetrack-pro-c5f02.firebasestorage.app",
+      messagingSenderId: "1029031413276",
+      appId: "1:1029031413276:web:a17206b987b85023d601d9"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    fdb = firebase.firestore();
+    setSyncStatus('ok', 'Live ✓');
+    console.log('Firebase ready');
+  } catch(e) {
+    console.warn('Firebase failed to load:', e);
+    setSyncStatus('err', 'Offline (cached)');
+  }
+}
+
+window.addEventListener('online',  () => { document.getElementById('offline-banner').style.display='none';  setSyncStatus('ok','Live ✓'); });
+window.addEventListener('offline', () => { document.getElementById('offline-banner').style.display='block'; setSyncStatus('err','Offline'); });
+
+// Start loading Firebase immediately
+initFirebase();
+</script>
+<script>
+// ═══════════════════════════════════════════════════════
 //  DATA STORE
 // ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+//  DATA STORE — Firebase Firestore (with localStorage cache)
+//  Strategy: write to Firestore + cache locally; read from
+//  Firestore on load (falls back to cache when offline)
+// ═══════════════════════════════════════════════════════
 const DB = {
-  companies() { return JSON.parse(localStorage.getItem('ott_companies') || 'null') || []; },
-  saveCompanies(d) { localStorage.setItem('ott_companies', JSON.stringify(d)); },
-  coUsers() { return JSON.parse(localStorage.getItem('ott_co_users') || 'null') || []; },
-  saveCoUsers(d) { localStorage.setItem('ott_co_users', JSON.stringify(d)); },
-  employees(cid) { return JSON.parse(localStorage.getItem(`ott_emps_${cid}`) || '[]'); },
-  saveEmployees(cid, d) { localStorage.setItem(`ott_emps_${cid}`, JSON.stringify(d)); },
-  settings(cid) { return JSON.parse(localStorage.getItem(`ott_settings_${cid}`) || 'null') || { cname:'', wod:'Sunday', dss:'08:00', dse:'17:00', nss:'20:00', nse:'06:00', late:15, hd:4, auto:true }; },
-  saveSettings(cid, d) { localStorage.setItem(`ott_settings_${cid}`, JSON.stringify(d)); },
+  // ── LOCAL CACHE HELPERS ──
+  _lget(k) { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } },
+  _lset(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} },
+
+  // ── COMPANIES ──
+  companies() { return this._lget('ott_companies') || []; },
+  async saveCompanies(d) {
+    this._lset('ott_companies', d);
+    if (!fdb) return;
+    try { await fdb.collection('meta').doc('companies').set({ data: d, ts: Date.now() }); }
+    catch(e) { console.warn('Firebase write failed (offline?)', e); }
+  },
+
+  // ── CO-USERS ──
+  coUsers() { return this._lget('ott_co_users') || []; },
+  async saveCoUsers(d) {
+    this._lset('ott_co_users', d);
+    if (!fdb) return;
+    try { await fdb.collection('meta').doc('coUsers').set({ data: d, ts: Date.now() }); }
+    catch(e) { console.warn('Firebase write failed (offline?)', e); }
+  },
+
+  // ── EMPLOYEES ──
+  employees(cid) { return this._lget(`ott_emps_${cid}`) || []; },
+  async saveEmployees(cid, d) {
+    this._lset(`ott_emps_${cid}`, d);
+    if (!fdb) return;
+    try { await fdb.collection('employees').doc(cid).set({ data: d, ts: Date.now() }); }
+    catch(e) { console.warn('Firebase write failed (offline?)', e); }
+  },
+
+  // ── SETTINGS ──
+  settings(cid) { return this._lget(`ott_settings_${cid}`) || { cname:'', wod:'Sunday', dss:'08:00', dse:'17:00', nss:'20:00', nse:'06:00', late:15, hd:4, auto:true }; },
+  async saveSettings(cid, d) {
+    this._lset(`ott_settings_${cid}`, d);
+    if (!fdb) return;
+    try { await fdb.collection('settings').doc(cid).set({ data: d, ts: Date.now() }); }
+    catch(e) { console.warn('Firebase write failed (offline?)', e); }
+  },
+
+  // ── LOAD ALL FROM FIRESTORE (called on app start) ──
+  async loadAll() {
+    setSyncStatus('loading', 'Syncing...');
+    // Wait up to 5 seconds for Firebase to be ready
+    let waited = 0;
+    while (!fdb && waited < 5000) {
+      await new Promise(r => setTimeout(r, 100));
+      waited += 100;
+    }
+    if (!fdb) {
+      console.warn('Firebase not ready — using cached data');
+      setSyncStatus('err', 'Offline (cached)');
+      return false;
+    }
+    try {
+      // Load meta (companies + users)
+      const [coSnap, cuSnap] = await Promise.all([
+        fdb.collection('meta').doc('companies').get(),
+        fdb.collection('meta').doc('coUsers').get()
+      ]);
+      if (coSnap.exists && coSnap.data().data) {
+        this._lset('ott_companies', coSnap.data().data);
+      }
+      if (cuSnap.exists && cuSnap.data().data) {
+        this._lset('ott_co_users', cuSnap.data().data);
+      }
+      // Load employees for each company
+      const cos = this.companies();
+      if (cos.length) {
+        const empSnaps = await Promise.all(cos.map(c => fdb.collection('employees').doc(c.id).get()));
+        empSnaps.forEach((snap, i) => {
+          if (snap.exists && snap.data().data) {
+            this._lset(`ott_emps_${cos[i].id}`, snap.data().data);
+          }
+        });
+        // Load settings
+        const setSnaps = await Promise.all(cos.map(c => fdb.collection('settings').doc(c.id).get()));
+        setSnaps.forEach((snap, i) => {
+          if (snap.exists && snap.data().data) {
+            this._lset(`ott_settings_${cos[i].id}`, snap.data().data);
+          }
+        });
+      }
+      setSyncStatus('ok', 'Live ✓');
+      return true;
+    } catch(e) {
+      console.warn('Firebase load failed — using cached data', e);
+      setSyncStatus('err', 'Offline (cached)');
+      return false;
+    }
+  },
 };
 
 const SA = { u: 'superadmin', p: 'SuperAdmin@2026' };
@@ -734,6 +945,12 @@ const App = {
       banner.innerHTML = `⊞ ${this.session.companyName} ${modeLabel}`;
     } else { banner.style.display = 'none'; }
     this.buildNav();
+    // Load fresh data from Firestore on every login
+    DB.loadAll().then(() => {
+      // Refresh current page after sync
+      const cur = document.querySelector('.nb.act')?.dataset?.pg;
+      if (cur) this.nav(cur);
+    });
     document.addEventListener('click', e => {
       const sp = document.getElementById('sp');
       if (sp && !sp.contains(e.target) && !e.target.closest('.sc')) sp.style.display = 'none';
@@ -815,6 +1032,16 @@ const App = {
         <div class="sa-card" style="border-color:rgba(0,255,136,.2);"><div class="sa-card-val" style="color:var(--green)" id="sa-co-act">0</div><div class="sa-card-lbl">Active Companies</div></div>
         <div class="sa-card" style="border-color:rgba(181,123,255,.2);"><div class="sa-card-val" style="color:var(--purple)" id="sa-users">0</div><div class="sa-card-lbl">Total Users (all co.)</div></div>
         <div class="sa-card" style="border-color:rgba(255,215,0,.2);"><div class="sa-card-val" style="color:var(--yellow)" id="sa-emps">0</div><div class="sa-card-lbl">Total Employees (all co.)</div></div>
+      </div>
+      <div style="margin-top:4px;margin-bottom:16px;">
+        <div class="sync-panel">
+          <div class="sync-title">📦 Data Transfer & Backup</div>
+          <div class="sync-sub">Data syncs live across all devices via Firebase. Export a local backup anytime for safekeeping.</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn-g" onclick="App.exportData()">⬇ EXPORT ALL DATA</button>
+            <button class="btn-p" onclick="App.openDataSync()">⬆ IMPORT / SYNC DATA</button>
+          </div>
+        </div>
       </div>
       <div style="margin-top:4px;"><div class="sec-title">Recent Companies</div><div id="sa-recent-list"></div></div>
     </div>`;
@@ -1950,6 +2177,14 @@ const App = {
         </div>
         <div id="co-users-list"></div>
       </div>
+      <div class="sync-panel" id="data-sync-settings">
+        <div class="sync-title">📦 Data Transfer & Backup</div>
+        <div class="sync-sub">Your data syncs automatically via Firebase. Export a local backup anytime, or click the sync indicator in the top bar to force a refresh.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-g" onclick="App.exportData()">⬇ EXPORT ALL DATA</button>
+          <button class="btn-p" onclick="App.openDataSync()">⬆ IMPORT / SYNC DATA</button>
+        </div>
+      </div>
       <div style="display:flex;gap:8px;">
         <button class="btn-g" onclick="App.saveSettings()">SAVE SETTINGS</button>
       </div>
@@ -2143,6 +2378,151 @@ const App = {
       <button class="btn-r" onclick="App.deleteCoUser('${u.id}','${ctx}');App.closeMo('m-user-detail');">🗑 DELETE</button>
       <button class="btn-p" onclick="App.closeMo('m-user-detail')">CLOSE</button>`;
     document.getElementById('m-user-detail').classList.add('show');
+  },
+
+
+  // ══════════════════════════════════════════
+  //  DATA EXPORT / IMPORT
+  // ══════════════════════════════════════════
+
+  syncNow() {
+    setSyncStatus('loading', 'Syncing...');
+    DB.loadAll().then(ok => {
+      if (ok) {
+        this.toast('✓ Synced with Firebase', 's');
+        const cur = document.querySelector('.nb.act')?.dataset?.pg;
+        if (cur) this.nav(cur);
+      } else {
+        this.toast('Offline — using cached data', 'e');
+      }
+    });
+  },
+
+  openDataSync() {
+    const cos = DB.companies();
+    const cous = DB.coUsers();
+    let totalEmps = 0, totalAtt = 0;
+    cos.forEach(c => {
+      const emps = DB.employees(c.id);
+      totalEmps += emps.length;
+      emps.forEach(e => { totalAtt += Object.keys(e.att||{}).length; });
+    });
+    const infoEl = document.getElementById('export-info');
+    if (infoEl) {
+      infoEl.innerHTML = `Companies: ${cos.length} &nbsp;|&nbsp; Users: ${cous.length}<br>Employees: ${totalEmps} &nbsp;|&nbsp; Attendance entries: ${totalAtt}<br><span style="color:#1b7a4e;font-weight:700;">✓ Connected to Firebase</span>`;
+    }
+    document.getElementById('m-datasync').classList.add('show');
+  },
+
+  _openDataSyncOld() {
+    // Populate export info
+    const cos = DB.companies();
+    const cous = DB.coUsers();
+    let totalEmps = 0, totalAtt = 0;
+    cos.forEach(c => {
+      const emps = DB.employees(c.id);
+      totalEmps += emps.length;
+      emps.forEach(e => { totalAtt += Object.keys(e.att||{}).length; });
+    });
+    const infoEl = document.getElementById('export-info');
+    if (infoEl) {
+      infoEl.innerHTML = `Companies: ${cos.length} &nbsp;|&nbsp; Users: ${cous.length}<br>Employees: ${totalEmps} &nbsp;|&nbsp; Attendance entries: ${totalAtt}`;
+    }
+    document.getElementById('m-datasync').classList.add('show');
+  },
+
+  exportData() {
+    // Gather ALL localStorage keys for this app
+    const cos = DB.companies();
+    const cous = DB.coUsers();
+    const empData = {};
+    const settingsData = {};
+    cos.forEach(c => {
+      empData[c.id] = DB.employees(c.id);
+      settingsData[c.id] = DB.settings(c.id);
+    });
+    const payload = {
+      _version: 1,
+      _exported: new Date().toISOString(),
+      _exportedBy: this.session?.username || 'unknown',
+      companies: cos,
+      coUsers: cous,
+      employees: empData,
+      settings: settingsData
+    };
+    const json = JSON.stringify(payload, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const ts = new Date().toISOString().split('T')[0];
+    a.href = url;
+    a.download = `TimeTrack_Backup_${ts}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    this.toast('Backup file downloaded ✓', 's');
+  },
+
+  handleImportDrop(e) {
+    e.preventDefault();
+    document.getElementById('sync-drop').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) this._processImportFile(file);
+  },
+
+  handleImportFile(e) {
+    const file = e.target.files[0];
+    if (file) this._processImportFile(file);
+    // Reset input so same file can be re-selected
+    e.target.value = '';
+  },
+
+  _processImportFile(file) {
+    if (!file.name.endsWith('.json')) {
+      this.toast('Please select a .json backup file', 'e'); return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!data.companies || !data.coUsers || !data.employees) {
+          this.toast('Invalid backup file format', 'e'); return;
+        }
+        const coCount = data.companies.length;
+        const empCount = Object.values(data.employees).reduce((s,a) => s + a.length, 0);
+        const attCount = Object.values(data.employees).reduce((s,a) => s + a.reduce((ss,e) => ss + Object.keys(e.att||{}).length, 0), 0);
+        const msg = `This will import:
+• ${coCount} company/companies
+• ${data.coUsers.length} users
+• ${empCount} employees
+• ${attCount} attendance entries
+
+All existing data on this device will be REPLACED.
+
+Continue?`;
+        if (!confirm(msg)) return;
+        // Write all data
+        DB.saveCompanies(data.companies);
+        DB.saveCoUsers(data.coUsers);
+        Object.entries(data.employees).forEach(([cid, emps]) => {
+          DB.saveEmployees(cid, emps);
+        });
+        if (data.settings) {
+          Object.entries(data.settings).forEach(([cid, s]) => {
+            DB.saveSettings(cid, s);
+          });
+        }
+        this.closeMo('m-datasync');
+        this.toast(`✓ Imported ${coCount} companies, ${empCount} employees`, 's');
+        // Refresh current view
+        setTimeout(() => {
+          const curPage = document.querySelector('.nb.act')?.dataset?.pg;
+          if (curPage) this.nav(curPage);
+        }, 500);
+      } catch (err) {
+        this.toast('Failed to read file: ' + err.message, 'e');
+      }
+    };
+    reader.readAsText(file);
   },
 
   closeMo(id) { document.getElementById(id).classList.remove('show'); },
