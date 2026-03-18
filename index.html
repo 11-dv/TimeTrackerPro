@@ -53,7 +53,6 @@ input.di::placeholder,textarea.di::placeholder{color:var(--text-muted);}
 .login-logo .icon{width:50px;height:50px;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:20px;color:var(--accent);}
 .login-logo h1{font-family:var(--head);font-size:22px;font-weight:700;letter-spacing:6px;color:var(--accent);text-shadow:0 0 20px rgba(0,229,255,.5);}
 .login-logo p{color:var(--text-dim);font-size:10px;letter-spacing:3px;margin-top:4px;}
-.login-role-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border:1px solid;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:var(--mono);margin:0 auto 16px;display:block;width:fit-content;}
 .lerr{color:var(--red);font-size:11px;letter-spacing:1px;margin-top:8px;display:none;}
 .login-hint{font-size:11px;color:var(--text-dim);text-align:center;font-family:var(--mono);letter-spacing:1px;}
 
@@ -76,6 +75,11 @@ input.di::placeholder,textarea.di::placeholder{color:var(--text-muted);}
 .logoutbtn{background:none;border:1px solid var(--border2);cursor:pointer;color:var(--text-dim);padding:4px 10px;font-family:var(--head);font-size:10px;letter-spacing:2px;transition:all .15s;}
 .logoutbtn:hover{border-color:var(--red);color:var(--red);}
 .company-banner{background:rgba(0,229,255,.05);border-bottom:1px solid var(--border);padding:4px 20px;font-size:11px;letter-spacing:2px;color:var(--accent);font-family:var(--mono);flex-shrink:0;}
+
+/* Mode badge in banner */
+.mode-badge{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-family:var(--mono);border:1px solid;margin-left:12px;vertical-align:middle;}
+.mode-school{border-color:var(--teal);color:var(--teal);}
+.mode-company{border-color:var(--purple);color:var(--purple);}
 
 /* Pages */
 .page{display:none;flex:1;overflow:hidden;flex-direction:column;}
@@ -162,7 +166,24 @@ select.sf:focus{border-color:var(--accent);}
 .scard.s-pre .sc-val{color:var(--green);}
 .scard.s-abs .sc-val{color:var(--red);}
 .scard.s-lv .sc-val{color:var(--yellow);}
+.scard.s-pct .sc-val{color:var(--teal);}
 .scard.s-per .sc-val{color:var(--text);font-size:14px;padding-top:4px;}
+
+/* ── ATTENDANCE % COLUMN ── */
+.emp-hdr .th-pct{background:rgba(0,229,201,.08);color:var(--teal)!important;min-width:68px;position:sticky;}
+.emp-row .td-pct{background:rgba(0,229,201,.04)!important;min-width:68px;padding:3px 6px!important;}
+.pct-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.pct-val{font-family:var(--mono);font-size:11px;font-weight:700;line-height:1;}
+.pct-bar{width:100%;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
+.pct-fill{height:100%;border-radius:2px;transition:width .3s;}
+
+/* ── FILTER / SORT BAR ── */
+.flt-bar{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:rgba(0,229,201,.04);border:1px solid rgba(0,229,201,.15);border-top:none;padding:5px 12px;flex-shrink:0;}
+.flt-bar .lbl-sm{color:var(--teal);}
+.sort-btn{background:none;border:1px solid var(--border2);color:var(--text-dim);padding:4px 10px;font-family:var(--mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.sort-btn:hover,.sort-btn.act{border-color:var(--teal);color:var(--teal);background:rgba(0,229,201,.06);}
+.sort-btn.sort-asc::after{content:' ↑';}
+.sort-btn.sort-desc::after{content:' ↓';}
 .tbl-wrap{flex:1;overflow:auto;position:relative;}
 .tbl-wrap::-webkit-scrollbar{width:7px;height:7px;}
 .tbl-wrap::-webkit-scrollbar-track{background:var(--bg2);}
@@ -349,18 +370,10 @@ input:checked + .slider:before{transform:translateX(20px);background:var(--bg);}
   <div id="pages-container" style="flex:1;overflow:hidden;display:flex;flex-direction:column;"></div>
 </div>
 
-<!-- ═══ STATUS PICKER ═══ -->
+<!-- ═══ STATUS PICKER — dynamically populated based on mode ═══ -->
 <div class="sp" id="sp">
   <div class="sp-title">SELECT STATUS</div>
-  <div class="sp-item" onclick="App.setSt('P')"><div class="sp-dot sc-p">P</div><span>Present Day</span></div>
-  <div class="sp-item" onclick="App.setSt('N')"><div class="sp-dot sc-n">N</div><span>Present Night</span></div>
-  <div class="sp-item" onclick="App.setSt('A')"><div class="sp-dot sc-a">A</div><span>Absent</span></div>
-  <div class="sp-item" onclick="App.setSt('L')"><div class="sp-dot sc-l">L</div><span>Leave</span></div>
-  <div class="sp-item" onclick="App.setSt('WO')"><div class="sp-dot sc-wo">WO</div><span>Week Off</span></div>
-  <div class="sp-item" onclick="App.setSt('PH')"><div class="sp-dot sc-ph">PH</div><span>Public Holiday</span></div>
-  <div class="sp-item" onclick="App.setSt('HD')"><div class="sp-dot sc-hd">HD</div><span>Half Day</span></div>
-  <hr class="sp-sep">
-  <div class="sp-item" onclick="App.setSt('')"><div class="sp-dot sc-e" style="font-size:14px;">×</div><span>Clear</span></div>
+  <div id="sp-items"></div>
 </div>
 
 <!-- ═══ MODALS ═══ -->
@@ -370,11 +383,12 @@ input:checked + .slider:before{transform:translateX(20px);background:var(--bg);}
     <div class="mh"><div class="mt2" id="m-co-title">Add Company</div><button class="mc" onclick="App.closeMo('m-company')">✕</button></div>
     <div class="mbody">
       <div class="fg fg2">
-        <div class="ff full"><div class="fm">Company Name *</div><input class="di" id="co-name" type="text" placeholder="e.g. ABC Manufacturing Ltd"></div>
+        <div class="ff full"><div class="fm">Company / Institution Name *</div><input class="di" id="co-name" type="text" placeholder="e.g. ABC Manufacturing Ltd / St. Mary's School"></div>
         <div class="ff"><div class="fm">Industry / Field</div>
           <select class="di" id="co-field">
             <option value="">Select field...</option>
             <option>Factory / Manufacturing</option><option>School / Education</option>
+            <option>College / University</option>
             <option>Hospital / Healthcare</option><option>Retail / Store</option>
             <option>Construction</option><option>IT / Technology</option>
             <option>Logistics / Warehouse</option><option>Other</option>
@@ -395,7 +409,7 @@ input:checked + .slider:before{transform:translateX(20px);background:var(--bg);}
       </div>
       <input type="hidden" id="co-edit-id">
     </div>
-    <div class="mf"><button class="btn-r" onclick="App.closeMo('m-company')">CANCEL</button><button class="btn-g" onclick="App.saveCompany()">SAVE COMPANY</button></div>
+    <div class="mf"><button class="btn-r" onclick="App.closeMo('m-company')">CANCEL</button><button class="btn-g" onclick="App.saveCompany()">SAVE</button></div>
   </div>
 </div>
 
@@ -405,17 +419,17 @@ input:checked + .slider:before{transform:translateX(20px);background:var(--bg);}
     <div class="mh"><div class="mt2" id="m-emp-title">Add Employee</div><button class="mc" onclick="App.closeMo('m-emp')">✕</button></div>
     <div class="mbody">
       <div class="fg fg2">
-        <div class="ff"><div class="fm">Employee ID *</div><input class="di" id="ae-id" type="text" placeholder="e.g. 1501"></div>
-        <div class="ff"><div class="fm">Full Name *</div><input class="di" id="ae-nm" type="text" placeholder="Full name in CAPS"></div>
-        <div class="ff"><div class="fm">Department *</div><input class="di" id="ae-dp" type="text" placeholder="e.g. Production Engineer"></div>
-        <div class="ff"><div class="fm">Designation</div><input class="di" id="ae-des" type="text" placeholder="e.g. Engineer"></div>
+        <div class="ff"><div class="fm" id="lbl-emp-id">Employee ID *</div><input class="di" id="ae-id" type="text" placeholder="e.g. 1501"></div>
+        <div class="ff"><div class="fm" id="lbl-emp-nm">Full Name *</div><input class="di" id="ae-nm" type="text" placeholder="Full name"></div>
+        <div class="ff"><div class="fm" id="lbl-emp-dp">Department / Class *</div><input class="di" id="ae-dp" type="text" placeholder="e.g. Production / Class 10A"></div>
+        <div class="ff"><div class="fm">Designation / Roll No.</div><input class="di" id="ae-des" type="text" placeholder="e.g. Engineer / 42"></div>
         <div class="ff full"><div class="fm">Status</div>
           <select class="di" id="ae-st"><option value="active">Active</option><option value="inactive">Inactive</option></select>
         </div>
       </div>
       <input type="hidden" id="ae-edit-id">
     </div>
-    <div class="mf"><button class="btn-r" onclick="App.closeMo('m-emp')">CANCEL</button><button class="btn-g" onclick="App.saveEmp()">SAVE EMPLOYEE</button></div>
+    <div class="mf"><button class="btn-r" onclick="App.closeMo('m-emp')">CANCEL</button><button class="btn-g" onclick="App.saveEmp()">SAVE</button></div>
   </div>
 </div>
 
@@ -425,21 +439,16 @@ input:checked + .slider:before{transform:translateX(20px);background:var(--bg);}
     <div class="mh"><div class="mt2">Add Attendance</div><button class="mc" onclick="App.closeMo('m-att')">✕</button></div>
     <div class="mbody">
       <div class="fg">
-        <div class="ff"><div class="fm">Employee ID or Name *</div><input class="di" id="aa-id" type="text" placeholder="Enter EMP ID or name"></div>
+        <div class="ff"><div class="fm">Employee / Student ID or Name *</div><input class="di" id="aa-id" type="text" placeholder="Enter ID or name"></div>
         <div class="ff"><div class="fm">Date *</div><input class="di" id="aa-dt" type="date"></div>
         <div class="ff"><div class="fm">Status *</div>
-          <select class="di" id="aa-st">
-            <option value="P">PD – Present Day</option><option value="N">PN – Present Night</option>
-            <option value="A">A – Absent</option><option value="L">L – Leave</option>
-            <option value="WO">WO – Week Off</option><option value="PH">PH – Public Holiday</option><option value="HD">HD – Half Day</option>
-          </select>
+          <select class="di" id="aa-st"></select>
         </div>
       </div>
     </div>
     <div class="mf"><button class="btn-r" onclick="App.closeMo('m-att')">CANCEL</button><button class="btn-g" onclick="App.saveAtt()">SAVE</button></div>
   </div>
 </div>
-
 
 <!-- ═══ USER DETAIL MODAL ═══ -->
 <div class="mo" id="m-user-detail">
@@ -450,7 +459,7 @@ input:checked + .slider:before{transform:translateX(20px);background:var(--bg);}
   </div>
 </div>
 
-<!-- ═══ CREATE USER MODAL (super admin / company admin) ═══ -->
+<!-- ═══ CREATE USER MODAL ═══ -->
 <div class="mo" id="m-create-user">
   <div class="mb w-sm">
     <div class="mh"><div class="mt2" id="m-cu-title">Create User</div><button class="mc" onclick="App.closeMo('m-create-user')">✕</button></div>
@@ -482,75 +491,81 @@ input:checked + .slider:before{transform:translateX(20px);background:var(--bg);}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════
-//  DATA STORE  (localStorage per-key)
+//  DATA STORE
 // ═══════════════════════════════════════════════════════
 const DB = {
-  // companies: [{id, name, field, plan, adminUser, adminPass, email, phone, status, createdAt}]
   companies() { return JSON.parse(localStorage.getItem('ott_companies') || 'null') || []; },
   saveCompanies(d) { localStorage.setItem('ott_companies', JSON.stringify(d)); },
-
-  // company users: [{id, companyId, username, password, fullName, role}]
   coUsers() { return JSON.parse(localStorage.getItem('ott_co_users') || 'null') || []; },
   saveCoUsers(d) { localStorage.setItem('ott_co_users', JSON.stringify(d)); },
-
-  // employees per company
   employees(cid) { return JSON.parse(localStorage.getItem(`ott_emps_${cid}`) || '[]'); },
   saveEmployees(cid, d) { localStorage.setItem(`ott_emps_${cid}`, JSON.stringify(d)); },
-
-  // settings per company
   settings(cid) { return JSON.parse(localStorage.getItem(`ott_settings_${cid}`) || 'null') || { cname:'', wod:'Sunday', dss:'08:00', dse:'17:00', nss:'20:00', nse:'06:00', late:15, hd:4, auto:true }; },
   saveSettings(cid, d) { localStorage.setItem(`ott_settings_${cid}`, JSON.stringify(d)); },
 };
 
-// Super admin credentials (hardcoded, never shown in UI)
 const SA = { u: 'superadmin', p: 'SuperAdmin@2026' };
-
 const MNS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MN3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DY3 = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
-const SCM = { P:{c:'sc-p',t:'P'}, N:{c:'sc-n',t:'N'}, A:{c:'sc-a',t:'A'}, L:{c:'sc-l',t:'L'}, WO:{c:'sc-wo',t:'WO'}, PH:{c:'sc-ph',t:'PH'}, HD:{c:'sc-hd',t:'HD'} };
+
+// ── Full status config (company mode) ──
+const SCM_FULL = {
+  P:{c:'sc-p',t:'P'}, N:{c:'sc-n',t:'N'}, A:{c:'sc-a',t:'A'},
+  L:{c:'sc-l',t:'L'}, WO:{c:'sc-wo',t:'WO'}, PH:{c:'sc-ph',t:'PH'}, HD:{c:'sc-hd',t:'HD'}
+};
+// ── School mode: P = Present, A = Absent, L = Leave, PH = Public Holiday ──
+const SCM_SCHOOL = {
+  P:{c:'sc-p',t:'P'}, A:{c:'sc-a',t:'A'},
+  L:{c:'sc-l',t:'L'}, PH:{c:'sc-ph',t:'PH'}
+};
+
+// ── Fields that trigger school mode ──
+const SCHOOL_FIELDS = ['school / education','college / university','school','education','college','university'];
 
 // ═══════════════════════════════════════════════════════
-//  MAIN APP OBJECT
+//  MAIN APP
 // ═══════════════════════════════════════════════════════
 const App = {
-  session: null,  // {role:'super'|'admin'|'editor'|'viewer', username, companyId?, coUserId?}
-  att: { mo: new Date().getMonth(), yr: new Date().getFullYear(), filt: [], sel: null },
+  session: null,
+  att: { mo: new Date().getMonth(), yr: new Date().getFullYear(), filt: [], sel: null, sort: null, sortDir: 1 },
   charts: { bar: null, pie: null },
+
+  // ── MODE HELPER: returns true if school/college ──
+  isSchoolMode() {
+    if (!this.session || !this.session.companyId) return false;
+    const co = DB.companies().find(c => c.id === this.session.companyId);
+    if (!co) return false;
+    const field = (co.field || '').toLowerCase();
+    return SCHOOL_FIELDS.some(f => field.includes(f.split('/')[0].trim()));
+  },
+
+  // Returns appropriate status map for current context
+  getSCM() { return this.isSchoolMode() ? SCM_SCHOOL : SCM_FULL; },
 
   // ── LOGIN ──
   login() {
     const u = document.getElementById('lu').value.trim();
     const p = document.getElementById('lp').value;
     document.getElementById('lerr').style.display = 'none';
-
-    // Super admin
     if (u === SA.u && p === SA.p) {
       this.session = { role: 'super', username: u };
-      this.startApp();
-      return;
+      this.startApp(); return;
     }
-
-    // Company admin (admin username/password set when creating company)
     const companies = DB.companies();
     const co = companies.find(c => c.adminUser === u && c.adminPass === p && c.status === 'active');
     if (co) {
       this.session = { role: 'admin', username: u, companyId: co.id, companyName: co.name };
-      this.startApp();
-      return;
+      this.startApp(); return;
     }
-
-    // Company sub-user
     const coUsers = DB.coUsers();
     const cu = coUsers.find(x => x.username === u && x.password === p);
     if (cu) {
       const parentCo = companies.find(c => c.id === cu.companyId && c.status === 'active');
       if (!parentCo) { this.showErr('Company account is inactive'); return; }
       this.session = { role: cu.role, username: u, companyId: cu.companyId, companyName: parentCo.name, coUserId: cu.id, fullName: cu.fullName };
-      this.startApp();
-      return;
+      this.startApp(); return;
     }
-
     this.showErr('Invalid username or password');
   },
 
@@ -560,21 +575,20 @@ const App = {
     document.getElementById('login-screen').style.display = 'none';
     const app = document.getElementById('app');
     app.classList.add('show');
-
-    // Role chip
     const rc = document.getElementById('role-chip');
     const roleMap = { super: ['SUPER ADMIN', 'chip-super'], admin: ['COMPANY ADMIN', 'chip-admin'], editor: ['EDITOR', 'chip-editor'], viewer: ['VIEWER', 'chip-viewer'] };
     const [label, cls] = roleMap[this.session.role];
     rc.textContent = label; rc.className = 'role-chip ' + cls;
     document.getElementById('ubadge').textContent = (this.session.fullName || this.session.username).toUpperCase();
-
-    // Company banner
     const banner = document.getElementById('company-banner');
     if (this.session.companyName) {
+      const schoolMode = this.isSchoolMode();
+      const modeLabel = schoolMode
+        ? '<span class="mode-badge mode-school">🎓 SCHOOL MODE</span>'
+        : '<span class="mode-badge mode-company">🏭 COMPANY MODE</span>';
       banner.style.display = 'block';
-      banner.textContent = '⊞ ' + this.session.companyName;
+      banner.innerHTML = `⊞ ${this.session.companyName} ${modeLabel}`;
     } else { banner.style.display = 'none'; }
-
     this.buildNav();
     document.addEventListener('click', e => {
       const sp = document.getElementById('sp');
@@ -586,7 +600,7 @@ const App = {
 
   logout() {
     this.session = null;
-    this.att = { mo: new Date().getMonth(), yr: new Date().getFullYear(), filt: [], sel: null };
+    this.att = { mo: new Date().getMonth(), yr: new Date().getFullYear(), filt: [], sel: null, sort: null, sortDir: 1 };
     ['bar','pie'].forEach(k => { if (this.charts[k]) { this.charts[k].destroy(); this.charts[k] = null; } });
     document.getElementById('app').classList.remove('show');
     document.getElementById('login-screen').style.display = 'flex';
@@ -595,13 +609,11 @@ const App = {
     document.getElementById('lerr').style.display = 'none';
   },
 
-  // ── BUILD NAV & PAGES ──
   buildNav() {
     const nav = document.getElementById('main-nav');
     nav.innerHTML = '';
     const pages = document.getElementById('pages-container');
     pages.innerHTML = '';
-
     if (this.session.role === 'super') {
       const tabs = [['overview','Overview'],['companies','Companies'],['allusers','All Users'],['sausers','User Management']];
       tabs.forEach(([pg, lbl]) => {
@@ -673,19 +685,27 @@ const App = {
     document.getElementById('sa-co-act').textContent = cos.filter(c => c.status === 'active').length;
     document.getElementById('sa-users').textContent = cous.length;
     document.getElementById('sa-emps').textContent = totalEmps;
-
     const el = document.getElementById('sa-recent-list');
     if (!el) return;
     if (!cos.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:12px;padding:20px;text-align:center;">No companies yet. Go to Companies tab to add one.</div>'; return; }
     const sorted = [...cos].sort((a,b) => b.createdAt - a.createdAt).slice(0,5);
+    const planColors = { basic: 'var(--blue)', pro: 'var(--purple)', enterprise: 'var(--yellow)' };
+    const schoolF = SCHOOL_FIELDS;
     el.innerHTML = sorted.map(c => {
       const emps = DB.employees(c.id).length;
       const users = cous.filter(u => u.companyId === c.id).length;
-      const planColors = { basic: 'var(--blue)', pro: 'var(--purple)', enterprise: 'var(--yellow)' };
+      const isSchool = schoolF.some(f => (c.field||'').toLowerCase().includes(f.split('/')[0].trim()));
+      const modeBadge = isSchool
+        ? '<span style="font-size:9px;letter-spacing:1px;color:var(--teal);border:1px solid var(--teal);padding:1px 6px;font-family:var(--mono);">SCHOOL</span>'
+        : '<span style="font-size:9px;letter-spacing:1px;color:var(--purple);border:1px solid var(--purple);padding:1px 6px;font-family:var(--mono);">COMPANY</span>';
       return `<div class="company-card" style="margin-bottom:10px;">
         <div class="company-card-hdr">
           <div><div class="company-name">${c.name}</div><div class="company-meta" style="margin-top:2px;">${c.field||'–'} · ${c.email||'No email'}</div></div>
-          <div style="text-align:right;"><span class="company-plan" style="color:${planColors[c.plan]||'var(--text-dim)'}">${(c.plan||'basic').toUpperCase()}</span><br><span class="${c.status==='active'?'status-active':'status-inactive'}" style="margin-top:4px;display:inline-block;">${c.status}</span></div>
+          <div style="text-align:right;">
+            <div style="margin-bottom:4px;">${modeBadge}</div>
+            <span class="company-plan" style="color:${planColors[c.plan]||'var(--text-dim)'}">${(c.plan||'basic').toUpperCase()}</span><br>
+            <span class="${c.status==='active'?'status-active':'status-inactive'}" style="margin-top:4px;display:inline-block;">${c.status}</span>
+          </div>
         </div>
         <div class="company-stats">
           <div class="cstat"><div class="cstat-val">${emps}</div><div class="cstat-lbl">Employees</div></div>
@@ -718,15 +738,22 @@ const App = {
     if (srch) cos = cos.filter(c => c.name.toLowerCase().includes(srch) || (c.field||'').toLowerCase().includes(srch));
     const el = document.getElementById('companies-grid');
     if (!el) return;
-    if (!cos.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:13px;padding:30px;text-align:center;grid-column:1/-1;">No companies yet. Click + ADD COMPANY to get started.</div>'; return; }
+    if (!cos.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:13px;padding:30px;text-align:center;grid-column:1/-1;">No companies yet.</div>'; return; }
     const planColors = { basic: 'var(--blue)', pro: 'var(--purple)', enterprise: 'var(--yellow)' };
     const cous = DB.coUsers();
     el.innerHTML = cos.map(c => {
       const emps = DB.employees(c.id).length;
       const users = cous.filter(u => u.companyId === c.id).length;
+      const isSchool = SCHOOL_FIELDS.some(f => (c.field||'').toLowerCase().includes(f.split('/')[0].trim()));
+      const modeBadge = isSchool
+        ? '<span style="font-size:9px;letter-spacing:1px;color:var(--teal);border:1px solid var(--teal);padding:1px 6px;font-family:var(--mono);margin-left:4px;">🎓 SCHOOL MODE</span>'
+        : '<span style="font-size:9px;letter-spacing:1px;color:var(--purple);border:1px solid var(--purple);padding:1px 6px;font-family:var(--mono);margin-left:4px;">🏭 COMPANY MODE</span>';
       return `<div class="company-card">
         <div class="company-card-hdr">
-          <div><div class="company-name">${c.name}</div><div class="company-meta" style="margin-top:3px;">${c.field||'General'}</div></div>
+          <div>
+            <div class="company-name">${c.name}</div>
+            <div class="company-meta" style="margin-top:3px;">${c.field||'General'} ${modeBadge}</div>
+          </div>
           <div style="text-align:right;">
             <div class="company-plan" style="color:${planColors[c.plan]||'var(--text-dim)'}">${(c.plan||'basic').toUpperCase()}</div>
             <span class="${c.status==='active'?'status-active':'status-inactive'}" style="margin-top:6px;display:inline-block;">${c.status}</span>
@@ -769,7 +796,6 @@ const App = {
   renderAllUsers() {
     const body = document.getElementById('all-users-body');
     if (!body) return;
-    // Populate company filter
     const coFilter = document.getElementById('au-co-filter');
     const cos = DB.companies();
     if (coFilter) {
@@ -801,9 +827,8 @@ const App = {
     }).join('');
   },
 
-  // Company CRUD
   openAddCompany() {
-    document.getElementById('m-co-title').textContent = 'Add Company';
+    document.getElementById('m-co-title').textContent = 'Add Company / Institution';
     document.getElementById('co-edit-id').value = '';
     ['co-name','co-uname','co-pass','co-email','co-phone'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('co-field').value = '';
@@ -836,13 +861,12 @@ const App = {
     const email = document.getElementById('co-email').value.trim();
     const phone = document.getElementById('co-phone').value.trim();
     const status = document.getElementById('co-status').value;
-    if (!name || !adminUser || !adminPass) { this.toast('Company name, username and password are required', 'e'); return; }
+    if (!name || !adminUser || !adminPass) { this.toast('Name, username and password are required', 'e'); return; }
     const cos = DB.companies();
     if (editId) {
       const co = cos.find(c => c.id === editId);
       if (co) Object.assign(co, { name, field, plan, adminUser, adminPass, email, phone, status });
     } else {
-      // Check username uniqueness across all users
       if (cos.find(c => c.adminUser === adminUser) || DB.coUsers().find(u => u.username === adminUser) || adminUser === SA.u) {
         this.toast('Username already exists', 'e'); return;
       }
@@ -852,15 +876,13 @@ const App = {
     this.closeMo('m-company');
     this.renderCompanies();
     this.renderSuperOverview();
-    this.toast(editId ? 'Company updated' : 'Company created: ' + name, 's');
+    this.toast(editId ? 'Updated' : 'Created: ' + name, 's');
   },
   deleteCompany(id) {
-    if (!confirm('Delete this company and ALL its data (employees, attendance, users)? This cannot be undone.')) return;
+    if (!confirm('Delete this company and ALL its data? This cannot be undone.')) return;
     const cos = DB.companies().filter(c => c.id !== id);
     DB.saveCompanies(cos);
-    // Remove all related data
-    const cous = DB.coUsers().filter(u => u.companyId !== id);
-    DB.saveCoUsers(cous);
+    DB.saveCoUsers(DB.coUsers().filter(u => u.companyId !== id));
     localStorage.removeItem(`ott_emps_${id}`);
     localStorage.removeItem(`ott_settings_${id}`);
     this.renderCompanies(); this.renderSuperOverview();
@@ -871,11 +893,11 @@ const App = {
     const co = cos.find(c => c.id === id);
     if (co) { co.status = co.status === 'active' ? 'inactive' : 'active'; DB.saveCompanies(cos); }
     this.renderCompanies(); this.renderSuperOverview();
-    this.toast('Company status updated', 's');
+    this.toast('Status updated', 's');
   },
 
   // ══════════════════════════════════════════
-  //  COMPANY USER PAGES  (admin/editor/viewer)
+  //  COMPANY PAGES
   // ══════════════════════════════════════════
   cid() { return this.session.companyId; },
   canEdit() { return this.session.role === 'admin' || this.session.role === 'editor'; },
@@ -951,16 +973,26 @@ const App = {
   buildAttendance() {
     const d = document.createElement('div');
     d.className = 'page'; d.id = 'pg-attendance';
+    const schoolMode = this.isSchoolMode();
+    const legendHTML = schoolMode
+      ? `<span class="badge badge-pd">P</span><span class="badge badge-a">A</span><span class="badge badge-l">L</span><span class="badge badge-ph">PH</span>`
+      : `<span class="badge badge-pd">PD</span><span class="badge badge-pn">PN</span><span class="badge badge-a">A</span><span class="badge badge-l">L</span><span class="badge badge-wo">WO</span><span class="badge badge-ph">PH</span><span class="badge badge-hd">HD</span>`;
+
+    // Quick fill status options depend on mode
+    const qfOptions = schoolMode
+      ? `<option value="P">P – Present</option><option value="A">A – Absent</option><option value="L">L – Leave</option><option value="PH">PH – Public Holiday</option>`
+      : `<option value="P">PD – Present Day</option><option value="N">PN – Present Night</option><option value="A">A – Absent</option><option value="L">L – Leave</option><option value="WO">WO – Week Off</option><option value="PH">PH – Public Holiday</option>`;
+
+    // Summary label for employee columns
+    const empSumCols = schoolMode
+      ? `<th class="th-pd">P</th><th class="th-a">A</th><th class="th-l">L</th>`
+      : `<th class="th-pd">PD</th><th class="th-pn">PN</th><th class="th-a">A</th><th class="th-l">L</th>`;
+
     d.innerHTML = `
     <div class="att-hdr">
       <div class="att-tl-row">
         <div class="page-title">Attendance Register</div>
-        <div class="legend">
-          <span class="badge badge-pd">PD</span><span class="badge badge-pn">PN</span>
-          <span class="badge badge-a">A</span><span class="badge badge-l">L</span>
-          <span class="badge badge-wo">WO</span><span class="badge badge-ph">PH</span>
-          <span class="badge badge-hd">HD</span>
-        </div>
+        <div class="legend">${legendHTML}</div>
       </div>
       <div class="toolbar">
         <span class="lbl-sm">Month</span>
@@ -973,7 +1005,7 @@ const App = {
         <select class="sf" id="sel-dp" onchange="App.renderAtt()">
           <option value="">All Departments</option>
         </select>
-        <div class="sw"><span class="sico">⌕</span><input class="di" id="att-srch" type="text" placeholder="Search name or EMP ID..." style="padding-left:27px;min-width:180px;" oninput="App.renderAtt()"></div>
+        <div class="sw"><span class="sico">⌕</span><input class="di" id="att-srch" type="text" placeholder="Search name or ID..." style="padding-left:27px;min-width:180px;" oninput="App.renderAtt()"></div>
         <div class="divv"></div>
         <button class="btn-p" onclick="App.exportCSV()">↓ CSV</button>
         <button class="btn-g" onclick="App.openAddAtt()">+ ATTENDANCE</button>
@@ -981,10 +1013,7 @@ const App = {
       <div class="qf-bar" id="qf-bar">
         <span class="lbl-sm">⚡ Quick Fill:</span>
         <input class="di" id="qf-dt" type="date" style="min-width:115px;">
-        <select class="sf" id="qf-st">
-          <option value="P">PD</option><option value="N">PN</option><option value="A">Absent</option>
-          <option value="L">Leave</option><option value="WO">Week Off</option><option value="PH">Public Holiday</option>
-        </select>
+        <select class="sf" id="qf-st">${qfOptions}</select>
         <button class="btn-y" onclick="App.qfAll()">FILL ALL</button>
         <div class="divv"></div>
         <input class="di" id="qf-eid" type="text" placeholder="EMP ID" style="width:72px;">
@@ -994,11 +1023,30 @@ const App = {
       </div>
     </div>
     <div class="stats-strip">
-      <div class="scard s-tot"><div class="sc-lbl">Total Employees</div><div class="sc-val" id="st-tot">0</div></div>
+      <div class="scard s-tot"><div class="sc-lbl">With Attendance</div><div class="sc-val" id="st-tot">0</div></div>
       <div class="scard s-pre"><div class="sc-lbl">Total Present</div><div class="sc-val" id="st-pre">0</div></div>
       <div class="scard s-abs"><div class="sc-lbl">Total Absent</div><div class="sc-val" id="st-abs">0</div></div>
       <div class="scard s-lv"><div class="sc-lbl">Total Leave</div><div class="sc-val" id="st-lv">0</div></div>
+      <div class="scard s-pct"><div class="sc-lbl">Overall Attendance %</div><div class="sc-val" id="st-pct">–</div></div>
       <div class="scard s-per"><div class="sc-lbl">Period</div><div class="sc-val" id="st-per">–</div></div>
+    </div>
+    <div class="flt-bar" id="flt-bar">
+      <span class="lbl-sm">⇅ Sort:</span>
+      <button class="sort-btn" id="sb-pct" onclick="App.setSort('pct')">% Attendance</button>
+      <button class="sort-btn" id="sb-abs" onclick="App.setSort('abs')">Most Absent</button>
+      <button class="sort-btn" id="sb-pre" onclick="App.setSort('pre')">Most Present</button>
+      <button class="sort-btn" id="sb-nm" onclick="App.setSort('nm')">Name A–Z</button>
+      <div class="divv"></div>
+      <span class="lbl-sm">🔻 Absent ≥</span>
+      <input class="di" id="flt-abs-min" type="number" min="0" placeholder="days" style="width:64px;padding:5px 8px;" oninput="App.renderAtt()">
+      <span class="lbl-sm">≤</span>
+      <input class="di" id="flt-abs-max" type="number" min="0" placeholder="days" style="width:64px;padding:5px 8px;" oninput="App.renderAtt()">
+      <div class="divv"></div>
+      <span class="lbl-sm">📊 Att% ≤</span>
+      <input class="di" id="flt-pct-max" type="number" min="0" max="100" placeholder="e.g. 75" style="width:72px;padding:5px 8px;" oninput="App.renderAtt()">
+      <span style="font-size:10px;color:var(--text-dim);font-family:var(--mono);">%</span>
+      <div class="divv"></div>
+      <button class="sort-btn" onclick="App.clearFilters()">✕ CLEAR</button>
     </div>
     <div class="tbl-wrap" id="att-tbl-wrap">
       <div class="sum-section" id="sum-section">
@@ -1019,7 +1067,6 @@ const App = {
     const dept = document.getElementById('sel-dp')?.value || '';
     const srch = (document.getElementById('att-srch')?.value || '').toLowerCase();
     const emps = DB.employees(this.cid());
-    // Populate dept dropdown
     const depts = [...new Set(emps.map(e => e.dept).filter(Boolean))];
     const dp = document.getElementById('sel-dp');
     if (dp) {
@@ -1027,17 +1074,71 @@ const App = {
       dp.innerHTML = '<option value="">All Departments</option>' + depts.map(d => `<option value="${d}">${d}</option>`).join('');
       dp.value = cur;
     }
-    // Hide quickfill for viewers
     const qf = document.getElementById('qf-bar');
     if (qf) qf.style.display = this.canEdit() ? 'flex' : 'none';
+    const days = new Date(yr, mo+1, 0).getDate();
 
-    this.att.filt = emps.filter(e => {
+    // Base filter
+    let base = emps.filter(e => {
       if (e.status === 'inactive') return false;
       if (dept && e.dept !== dept) return false;
       if (srch && !e.name.toLowerCase().includes(srch) && !e.id.toLowerCase().includes(srch)) return false;
       return true;
     });
-    const days = new Date(yr, mo+1, 0).getDate();
+
+    // Compute stats per employee for filtering/sorting
+    base = base.map(emp => {
+      let pd=0, pn=0, ab=0, lv=0, tot=0;
+      for (let d=1;d<=days;d++) {
+        const s=(emp.att||{})[`${yr}-${mo}-${d}`]||'';
+        if(s) tot++;
+        if(s==='P')pd++;
+        else if(s==='N')pn++;
+        else if(s==='A')ab++;
+        else if(s==='L'||s==='WO'||s==='PH'||s==='HD')lv++;
+      }
+      // Working days = days with any status (P/N/A/L etc) — exclude blank
+      // Attendance % = (P+N) / (P+N+A) * 100  (ignore leave/WO/PH in denominator)
+      const workDays = pd + pn + ab; // actual worked+absent days (leave excluded from %)
+      const pct = workDays > 0 ? Math.round((pd+pn)/workDays*100) : null;
+      return { ...emp, _pd:pd, _pn:pn, _ab:ab, _lv:lv, _tot:tot, _pct:pct };
+    });
+
+    // Absent range filter
+    const absMin = document.getElementById('flt-abs-min')?.value;
+    const absMax = document.getElementById('flt-abs-max')?.value;
+    if (absMin !== '' && absMin !== null && absMin !== undefined) {
+      const mn = +absMin;
+      base = base.filter(e => e._ab >= mn);
+    }
+    if (absMax !== '' && absMax !== null && absMax !== undefined && document.getElementById('flt-abs-max')?.value !== '') {
+      const mx = +absMax;
+      base = base.filter(e => e._ab <= mx);
+    }
+
+    // Attendance % max filter
+    const pctMax = document.getElementById('flt-pct-max')?.value;
+    if (pctMax !== '' && pctMax !== null && pctMax !== undefined && document.getElementById('flt-pct-max')?.value !== '') {
+      const pm = +pctMax;
+      base = base.filter(e => e._pct !== null && e._pct <= pm);
+    }
+
+    // Sort
+    if (this.att.sort) {
+      const dir = this.att.sortDir;
+      base.sort((a,b) => {
+        if (this.att.sort === 'pct') {
+          const ap = a._pct ?? -1, bp = b._pct ?? -1;
+          return (ap - bp) * dir;
+        }
+        if (this.att.sort === 'abs') return (a._ab - b._ab) * dir;
+        if (this.att.sort === 'pre') return ((a._pd+a._pn) - (b._pd+b._pn)) * dir;
+        if (this.att.sort === 'nm') return a.name.localeCompare(b.name) * dir;
+        return 0;
+      });
+    }
+
+    this.att.filt = base;
     const el = document.getElementById('sum-lbl');
     if (el) el.textContent = `SUMMARY — ${MNS[mo].toUpperCase()} ${yr}`;
     const sp = document.getElementById('st-per');
@@ -1046,14 +1147,56 @@ const App = {
     this.renderSum(days);
     this.renderEmps(days);
     this.updateStats(days);
+    this.buildStatusPicker();
+    this.updateSortBtns();
+  },
+
+  // Build status picker dynamically based on mode
+  buildStatusPicker() {
+    const el = document.getElementById('sp-items');
+    if (!el) return;
+    const schoolMode = this.isSchoolMode();
+    if (schoolMode) {
+      el.innerHTML = `
+        <div class="sp-item" onclick="App.setSt('P')"><div class="sp-dot sc-p">P</div><span>Present</span></div>
+        <div class="sp-item" onclick="App.setSt('A')"><div class="sp-dot sc-a">A</div><span>Absent</span></div>
+        <div class="sp-item" onclick="App.setSt('L')"><div class="sp-dot sc-l">L</div><span>Leave</span></div>
+        <div class="sp-item" onclick="App.setSt('PH')"><div class="sp-dot sc-ph">PH</div><span>Public Holiday</span></div>
+        <hr class="sp-sep">
+        <div class="sp-item" onclick="App.setSt('')"><div class="sp-dot sc-e" style="font-size:14px;">×</div><span>Clear</span></div>`;
+    } else {
+      el.innerHTML = `
+        <div class="sp-item" onclick="App.setSt('P')"><div class="sp-dot sc-p">P</div><span>Present Day</span></div>
+        <div class="sp-item" onclick="App.setSt('N')"><div class="sp-dot sc-n">N</div><span>Present Night</span></div>
+        <div class="sp-item" onclick="App.setSt('A')"><div class="sp-dot sc-a">A</div><span>Absent</span></div>
+        <div class="sp-item" onclick="App.setSt('L')"><div class="sp-dot sc-l">L</div><span>Leave</span></div>
+        <div class="sp-item" onclick="App.setSt('WO')"><div class="sp-dot sc-wo">WO</div><span>Week Off</span></div>
+        <div class="sp-item" onclick="App.setSt('PH')"><div class="sp-dot sc-ph">PH</div><span>Public Holiday</span></div>
+        <div class="sp-item" onclick="App.setSt('HD')"><div class="sp-dot sc-hd">HD</div><span>Half Day</span></div>
+        <hr class="sp-sep">
+        <div class="sp-item" onclick="App.setSt('')"><div class="sp-dot sc-e" style="font-size:14px;">×</div><span>Clear</span></div>`;
+    }
+    // Also update the Add Attendance modal status dropdown
+    const aa = document.getElementById('aa-st');
+    if (aa) {
+      aa.innerHTML = schoolMode
+        ? `<option value="P">P – Present</option><option value="A">A – Absent</option><option value="L">L – Leave</option><option value="PH">PH – Public Holiday</option>`
+        : `<option value="P">PD – Present Day</option><option value="N">PN – Present Night</option><option value="A">A – Absent</option><option value="L">L – Leave</option><option value="WO">WO – Week Off</option><option value="PH">PH – Public Holiday</option><option value="HD">HD – Half Day</option>`;
+    }
   },
 
   renderAttHdrs(days) {
     const sh = document.getElementById('sum-hdr');
     const eh = document.getElementById('emp-hdr');
     if (!sh || !eh) return;
+    const schoolMode = this.isSchoolMode();
     sh.innerHTML = '<th class="thf">METRIC</th>';
-    eh.innerHTML = `<th class="th-sr">SR</th><th class="th-id">EMP ID</th><th class="th-nm">EMPLOYEE NAME</th><th class="th-dp">DEPARTMENT</th><th class="th-pd">PD</th><th class="th-pn">PN</th><th class="th-a">A</th><th class="th-l">L</th>`;
+    // Employee header: columns depend on mode
+    if (schoolMode) {
+      eh.innerHTML = `<th class="th-sr">SR</th><th class="th-id">EMP ID</th><th class="th-nm">NAME</th><th class="th-dp">CLASS / DEPT</th><th class="th-pd">P</th><th class="th-a">A</th><th class="th-l">L</th><th class="th-pct" style="position:sticky;left:426px;top:0;z-index:70;background:var(--bg3);">ATT%</th>`;
+    } else {
+      eh.innerHTML = `<th class="th-sr">SR</th><th class="th-id">EMP ID</th><th class="th-nm">EMPLOYEE NAME</th><th class="th-dp">DEPARTMENT</th><th class="th-pd">PD</th><th class="th-pn">PN</th><th class="th-a">A</th><th class="th-l">L</th><th class="th-pct" style="position:sticky;left:466px;top:0;z-index:70;background:var(--bg3);">ATT%</th>`;
+    }
     for (let d = 1; d <= days; d++) {
       const dt = new Date(this.att.yr, this.att.mo, d);
       const dow = dt.getDay(), we = dow===0||dow===6;
@@ -1063,8 +1206,25 @@ const App = {
     }
   },
 
+  // ── COUNT only employees who have at least 1 entry in this month ──
+  empWithDataInMonth(days) {
+    return this.att.filt.filter(e => {
+      for (let d = 1; d <= days; d++) {
+        const s = (e.att||{})[`${this.att.yr}-${this.att.mo}-${d}`];
+        if (s) return true;
+      }
+      return false;
+    }).length;
+  },
+
   calcSum(key, day) {
-    if (key === 'tot') return this.att.filt.length;
+    // 'tot' = employees with data on this specific day
+    if (key === 'tot') {
+      return this.att.filt.filter(e => {
+        const s = (e.att||{})[`${this.att.yr}-${this.att.mo}-${day}`]||'';
+        return s !== '';
+      }).length;
+    }
     let c = 0;
     this.att.filt.forEach(e => {
       const s = (e.att||{})[`${this.att.yr}-${this.att.mo}-${day}`]||'';
@@ -1079,7 +1239,22 @@ const App = {
   renderSum(days) {
     const body = document.getElementById('sum-body');
     if (!body) return;
-    const rows = [{key:'tot',label:'TOTAL EMP COUNT',cls:'r-tot'},{key:'pd',label:'PRESENT DAY',cls:'r-pd'},{key:'pn',label:'PRESENT NIGHT',cls:'r-pn'},{key:'abs',label:'ABSENT',cls:'r-abs'},{key:'lv',label:'LEAVE / VACATION',cls:'r-lv'}];
+    const schoolMode = this.isSchoolMode();
+    // In school mode: no night shift row, no separate WO/HD
+    const rows = schoolMode
+      ? [
+          {key:'tot',label:'ATTENDANCE COUNT',cls:'r-tot'},
+          {key:'pd',label:'PRESENT',cls:'r-pd'},
+          {key:'abs',label:'ABSENT',cls:'r-abs'},
+          {key:'lv',label:'LEAVE / HOLIDAY',cls:'r-lv'}
+        ]
+      : [
+          {key:'tot',label:'ATTENDANCE COUNT',cls:'r-tot'},
+          {key:'pd',label:'PRESENT DAY',cls:'r-pd'},
+          {key:'pn',label:'PRESENT NIGHT',cls:'r-pn'},
+          {key:'abs',label:'ABSENT',cls:'r-abs'},
+          {key:'lv',label:'LEAVE / VACATION',cls:'r-lv'}
+        ];
     body.innerHTML = '';
     rows.forEach(r => {
       const tr = document.createElement('tr');
@@ -1093,17 +1268,33 @@ const App = {
   renderEmps(days) {
     const body = document.getElementById('emp-body');
     if (!body) return;
+    const schoolMode = this.isSchoolMode();
+    const SCM = this.getSCM();
     body.innerHTML = '';
     this.att.filt.forEach((emp, idx) => {
-      let pd=0,pn=0,ab=0,lv=0;
-      for (let d=1;d<=days;d++) {
-        const s=(emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||'';
-        if(s==='P')pd++;else if(s==='N')pn++;else if(s==='A')ab++;else if(s)lv++;
-      }
+      // Use pre-computed if available (from renderAtt enrichment), else compute
+      const pd  = emp._pd  !== undefined ? emp._pd  : (() => { let c=0; for(let d=1;d<=days;d++) if((emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]==='P')c++; return c; })();
+      const pn  = emp._pn  !== undefined ? emp._pn  : (() => { let c=0; for(let d=1;d<=days;d++) if((emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]==='N')c++; return c; })();
+      const ab  = emp._ab  !== undefined ? emp._ab  : (() => { let c=0; for(let d=1;d<=days;d++) if((emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]==='A')c++; return c; })();
+      const lv  = emp._lv  !== undefined ? emp._lv  : (() => { let c=0; for(let d=1;d<=days;d++){const s=(emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||'';if(s==='L'||s==='WO'||s==='PH'||s==='HD')c++;} return c; })();
+      const pct = emp._pct !== undefined ? emp._pct : null;
+
+      // % color: green ≥75, yellow ≥50, red <50
+      const pctColor = pct === null ? 'var(--text-muted)' : pct >= 75 ? 'var(--green)' : pct >= 50 ? 'var(--yellow)' : 'var(--red)';
+      const pctBarColor = pct === null ? '#1e3550' : pct >= 75 ? 'var(--green)' : pct >= 50 ? 'var(--yellow)' : 'var(--red)';
+      const pctText = pct !== null ? `${pct}%` : '–';
+
       const tr = document.createElement('tr');
       tr.className = 'emp-row';
       let h = `<td class="td-sr">${idx+1}</td><td class="td-id">${emp.id}</td><td class="td-nm">${emp.name}</td><td class="td-dp">${emp.dept}</td>`;
-      h += `<td class="td-pd">${pd}</td><td class="td-pn">${pn}</td><td class="td-a">${ab}</td><td class="td-l">${lv}</td>`;
+      if (schoolMode) {
+        h += `<td class="td-pd">${pd||''}</td><td class="td-a">${ab||''}</td><td class="td-l">${lv||''}</td>`;
+      } else {
+        h += `<td class="td-pd">${pd||''}</td><td class="td-pn">${pn||''}</td><td class="td-a">${ab||''}</td><td class="td-l">${lv||''}</td>`;
+      }
+      // % column
+      h += `<td class="td-pct"><div class="pct-wrap"><span class="pct-val" style="color:${pctColor};">${pctText}</span><div class="pct-bar"><div class="pct-fill" style="width:${pct??0}%;background:${pctBarColor};"></div></div></div></td>`;
+
       for (let d=1;d<=days;d++) {
         const s=(emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||'';
         const m=SCM[s]; const cls=m?m.c:'sc-e', txt=m?m.t:'';
@@ -1114,16 +1305,72 @@ const App = {
     });
   },
 
+  // ── Stats: "With Attendance" count = employees who have at least 1 entry in month ──
   updateStats(days) {
-    let tp=0,ta=0,tl=0;
-    for (let d=1;d<=days;d++) { tp+=this.calcSum('pd',d)+this.calcSum('pn',d); ta+=this.calcSum('abs',d); tl+=this.calcSum('lv',d); }
-    ['st-tot','st-pre','st-abs','st-lv'].forEach((id,i) => { const el=document.getElementById(id); if(el) el.textContent=[this.att.filt.length,tp,ta,tl][i]; });
+    let tp=0, ta=0, tl=0;
+    for (let d=1;d<=days;d++) {
+      tp += this.calcSum('pd',d) + this.calcSum('pn',d);
+      ta += this.calcSum('abs',d);
+      tl += this.calcSum('lv',d);
+    }
+    const withData = this.empWithDataInMonth(days);
+    const tot = document.getElementById('st-tot'); if (tot) tot.textContent = withData;
+    const pre = document.getElementById('st-pre'); if (pre) pre.textContent = tp;
+    const abs = document.getElementById('st-abs'); if (abs) abs.textContent = ta;
+    const lv  = document.getElementById('st-lv');  if (lv)  lv.textContent = tl;
+    // Overall attendance % = total present / (total present + total absent) across all employees
+    const denominator = tp + ta;
+    const pctEl = document.getElementById('st-pct');
+    if (pctEl) {
+      if (denominator > 0) {
+        const pct = Math.round(tp / denominator * 100);
+        const col = pct >= 75 ? 'var(--green)' : pct >= 50 ? 'var(--yellow)' : 'var(--red)';
+        pctEl.textContent = pct + '%';
+        pctEl.style.color = col;
+      } else {
+        pctEl.textContent = '–';
+        pctEl.style.color = '';
+      }
+    }
+  },
+
+  setSort(key) {
+    if (this.att.sort === key) {
+      // Toggle direction
+      this.att.sortDir = this.att.sortDir * -1;
+    } else {
+      this.att.sort = key;
+      // Default direction: ascending for pct/name, descending (most first) for abs/pre
+      this.att.sortDir = (key === 'abs' || key === 'pre') ? -1 : 1;
+    }
+    this.renderAtt();
+  },
+
+  updateSortBtns() {
+    ['pct','abs','pre','nm'].forEach(k => {
+      const btn = document.getElementById('sb-'+k);
+      if (!btn) return;
+      btn.className = 'sort-btn';
+      if (this.att.sort === k) {
+        btn.classList.add('act');
+        btn.classList.add(this.att.sortDir === 1 ? 'sort-asc' : 'sort-desc');
+      }
+    });
+  },
+
+  clearFilters() {
+    this.att.sort = null; this.att.sortDir = 1;
+    ['flt-abs-min','flt-abs-max','flt-pct-max'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    this.renderAtt();
   },
 
   openSP(e, empId, day) {
     e.stopPropagation();
     if (!this.canEdit()) return;
     this.att.sel = { empId, day };
+    this.buildStatusPicker();
     const sp = document.getElementById('sp');
     const r = e.target.getBoundingClientRect();
     let top = r.bottom + 4, left = r.left;
@@ -1156,7 +1403,7 @@ const App = {
     const emps = DB.employees(this.cid());
     emps.forEach(e => { if(!e.att)e.att={}; e.att[k]=st; });
     DB.saveEmployees(this.cid(), emps);
-    this.renderAtt(); this.toast(`All employees → ${st}`,'s');
+    this.renderAtt(); this.toast(`All → ${st}`,'s');
   },
   qfEmp() {
     if (!this.canEdit()) return;
@@ -1177,6 +1424,7 @@ const App = {
 
   openAddAtt() {
     if (!this.canEdit()) { this.toast('View-only access','e'); return; }
+    this.buildStatusPicker(); // Ensure modal dropdown is also updated
     document.getElementById('aa-id').value='';
     document.getElementById('aa-dt').value=new Date().toISOString().split('T')[0];
     document.getElementById('m-att').classList.add('show');
@@ -1185,7 +1433,7 @@ const App = {
     const eid = document.getElementById('aa-id').value.trim();
     const ds = document.getElementById('aa-dt').value;
     const st = document.getElementById('aa-st').value;
-    if (!eid||!ds) { this.toast('Fill EMP ID and date','e'); return; }
+    if (!eid||!ds) { this.toast('Fill ID and date','e'); return; }
     const emps = DB.employees(this.cid());
     const emp = emps.find(e => e.id===eid||e.name.toLowerCase().includes(eid.toLowerCase()));
     if (!emp) { this.toast('Employee not found','e'); return; }
@@ -1199,14 +1447,19 @@ const App = {
 
   exportCSV() {
     const days = new Date(this.att.yr, this.att.mo+1, 0).getDate();
-    const h = ['SR','EMP ID','NAME','DEPARTMENT','PD','PN','A','L'];
+    const schoolMode = this.isSchoolMode();
+    const h = ['SR','EMP ID','NAME','DEPARTMENT', schoolMode ? 'P' : 'PD', ...(schoolMode ? [] : ['PN']), 'A','L','ATT%'];
     for (let d=1;d<=days;d++) h.push(`${d}-${MN3[this.att.mo]}`);
     const rows = [h.join(',')];
     this.att.filt.forEach((emp, idx) => {
       let pd=0,pn=0,ab=0,lv=0;
-      const row = [idx+1, emp.id, `"${emp.name}"`, `"${emp.dept}"`];
-      for (let d=1;d<=days;d++) { const s=(emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||''; if(s==='P')pd++;else if(s==='N')pn++;else if(s==='A')ab++;else if(s)lv++; }
-      row.push(pd,pn,ab,lv);
+      for (let d=1;d<=days;d++) {
+        const s=(emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||'';
+        if(s==='P')pd++;else if(s==='N')pn++;else if(s==='A')ab++;else if(s)lv++;
+      }
+      const wk = pd+pn+ab;
+      const pct = wk>0 ? Math.round((pd+pn)/wk*100)+'%' : '';
+      const row = [idx+1, emp.id, `"${emp.name}"`, `"${emp.dept}"`, pd, ...(schoolMode ? [] : [pn]), ab, lv, pct];
       for (let d=1;d<=days;d++) row.push((emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||'');
       rows.push(row.join(','));
     });
@@ -1230,16 +1483,20 @@ const App = {
         <input class="di" id="emp-srch" type="text" placeholder="Search employees..." style="padding-left:28px;max-width:320px;" oninput="App.renderEmpList()">
       </div>
       <table class="emp-pg-tbl">
-        <thead><tr><th>SR</th><th>EMP ID</th><th>NAME</th><th>DEPARTMENT</th><th>DESIGNATION</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+        <thead><tr><th>SR</th><th>ID</th><th>NAME</th><th id="th-dept-lbl">DEPARTMENT</th><th>DESIGNATION</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
         <tbody id="emp-tbl-body"></tbody>
       </table>
     </div>`;
     return d;
   },
   renderEmpList() {
+    const schoolMode = this.isSchoolMode();
+    const deptLbl = document.getElementById('th-dept-lbl');
+    if (deptLbl) deptLbl.textContent = schoolMode ? 'CLASS / DEPT' : 'DEPARTMENT';
     const actions = document.getElementById('emp-pg-actions');
     if (actions && this.session.role === 'admin') {
-      actions.innerHTML = `<button class="btn-g" onclick="App.openAddEmp()">+ ADD EMPLOYEE</button>`;
+      const label = schoolMode ? '+ ADD STUDENT' : '+ ADD EMPLOYEE';
+      actions.innerHTML = `<button class="btn-g" onclick="App.openAddEmp()">${label}</button>`;
     }
     const srch = (document.getElementById('emp-srch')?.value || '').toLowerCase();
     let emps = DB.employees(this.cid());
@@ -1263,7 +1520,11 @@ const App = {
   },
   openAddEmp() {
     if (this.session.role !== 'admin') { this.toast('Admin only','e'); return; }
-    document.getElementById('m-emp-title').textContent = 'Add Employee';
+    const schoolMode = this.isSchoolMode();
+    document.getElementById('m-emp-title').textContent = schoolMode ? 'Add Student' : 'Add Employee';
+    document.getElementById('lbl-emp-id').textContent = schoolMode ? 'Student ID / Roll No. *' : 'Employee ID *';
+    document.getElementById('lbl-emp-nm').textContent = schoolMode ? 'Student Name *' : 'Full Name *';
+    document.getElementById('lbl-emp-dp').textContent = schoolMode ? 'Class / Section *' : 'Department *';
     document.getElementById('ae-edit-id').value = '';
     ['ae-id','ae-nm','ae-dp','ae-des'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('ae-st').value = 'active';
@@ -1272,7 +1533,11 @@ const App = {
   openEditEmp(id) {
     const emp = DB.employees(this.cid()).find(e => e.id === id);
     if (!emp) return;
-    document.getElementById('m-emp-title').textContent = 'Edit Employee';
+    const schoolMode = this.isSchoolMode();
+    document.getElementById('m-emp-title').textContent = schoolMode ? 'Edit Student' : 'Edit Employee';
+    document.getElementById('lbl-emp-id').textContent = schoolMode ? 'Student ID / Roll No. *' : 'Employee ID *';
+    document.getElementById('lbl-emp-nm').textContent = schoolMode ? 'Student Name *' : 'Full Name *';
+    document.getElementById('lbl-emp-dp').textContent = schoolMode ? 'Class / Section *' : 'Department *';
     document.getElementById('ae-edit-id').value = id;
     document.getElementById('ae-id').value = emp.id;
     document.getElementById('ae-nm').value = emp.name;
@@ -1294,62 +1559,58 @@ const App = {
       const emp = emps.find(e => e.id === editId);
       if (emp) Object.assign(emp, {id,name:nm,dept:dp,desig:des,status:st});
     } else {
-      if (emps.find(e => e.id === id)) { this.toast('EMP ID already exists','e'); return; }
+      if (emps.find(e => e.id === id)) { this.toast('ID already exists','e'); return; }
       emps.push({id,name:nm,dept:dp,desig:des,status:st,att:{}});
     }
     DB.saveEmployees(this.cid(), emps);
     this.renderEmpList(); this.closeMo('m-emp');
-    this.toast(editId?'Employee updated':'Employee added: '+nm,'s');
+    this.toast(editId ? 'Updated' : 'Added: '+nm,'s');
   },
   deleteEmp(id) {
-    if (!confirm('Delete this employee and all their attendance records?')) return;
+    if (!confirm('Delete this record and all attendance data?')) return;
     const emps = DB.employees(this.cid()).filter(e => e.id !== id);
     DB.saveEmployees(this.cid(), emps);
-    this.renderEmpList(); this.toast('Employee deleted','s');
+    this.renderEmpList(); this.toast('Deleted','s');
   },
 
-  // ── SETTINGS / USERS ──
+  // ── SETTINGS ──
   buildSettingsPage() {
     const d = document.createElement('div');
     d.className = 'page'; d.id = 'pg-settings';
     d.innerHTML = `<div class="pg-body">
       <div class="pg-tl" style="margin-bottom:14px;">Settings</div>
-      <!-- Company Info -->
       <div class="set-section">
         <div class="sec-title">🏢 Company Info</div>
         <div class="set-grid">
-          <div class="ff full"><div class="fm">Company Name</div><input class="di" id="s-cname" type="text" placeholder="Your company name"></div>
-          <div class="ff full"><div class="fm">Company Address</div><input class="di" id="s-caddr" type="text" placeholder="Address"></div>
+          <div class="ff full"><div class="fm">Company / Institution Name</div><input class="di" id="s-cname" type="text" placeholder="Your company name"></div>
+          <div class="ff full"><div class="fm">Address</div><input class="di" id="s-caddr" type="text" placeholder="Address"></div>
         </div>
       </div>
-      <!-- Shift Settings -->
-      <div class="set-section">
+      <div class="set-section" id="shift-section">
         <div class="sec-title">🕐 Shift Settings</div>
         <div class="set-grid">
           <div class="ff"><div class="fm">Day Shift Start</div><input class="di" id="s-dss" type="time"></div>
           <div class="ff"><div class="fm">Day Shift End</div><input class="di" id="s-dse" type="time"></div>
-          <div class="ff"><div class="fm">Night Shift Start</div><input class="di" id="s-nss" type="time"></div>
-          <div class="ff"><div class="fm">Night Shift End</div><input class="di" id="s-nse" type="time"></div>
+          <div class="ff" id="ns-start-wrap"><div class="fm">Night Shift Start</div><input class="di" id="s-nss" type="time"></div>
+          <div class="ff" id="ns-end-wrap"><div class="fm">Night Shift End</div><input class="di" id="s-nse" type="time"></div>
         </div>
       </div>
-      <!-- Rules -->
       <div class="set-section">
         <div class="sec-title">📅 Attendance Rules</div>
         <div class="set-grid">
           <div class="ff"><div class="fm">Weekly Off Day</div><select class="di" id="s-wod"><option>Sunday</option><option>Saturday</option><option>Friday</option></select></div>
           <div class="ff"><div class="fm">Late Threshold (min)</div><input class="di" id="s-late" type="number" value="15"></div>
-          <div class="ff"><div class="fm">Half Day Hours</div><input class="di" id="s-hd" type="number" value="4"></div>
+          <div class="ff"><div class="fm" id="lbl-hd">Half Day Hours</div><input class="di" id="s-hd" type="number" value="4"></div>
           <div class="ff" style="justify-content:flex-end;">
             <div class="fm">Auto-mark absent</div>
             <div class="toggle-row" style="margin-top:8px;"><label class="toggle"><input type="checkbox" id="s-auto"><span class="slider"></span></label></div>
           </div>
         </div>
       </div>
-      <!-- User Management (admin only) -->
       <div class="set-section" id="um-section" style="display:none;">
         <div class="sec-title">👤 User Management</div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-          <span style="font-size:12px;color:var(--text-dim);">Manage users who can access your company account.</span>
+          <span style="font-size:12px;color:var(--text-dim);">Manage users who can access this account.</span>
           <button class="btn-g btn-sm" onclick="App.openCreateUser('company')">+ CREATE USER</button>
         </div>
         <div id="co-users-list"></div>
@@ -1362,9 +1623,17 @@ const App = {
   },
   renderSettings() {
     const s = DB.settings(this.cid());
+    const schoolMode = this.isSchoolMode();
     const fields = {cname:'s-cname',caddr:'s-caddr',dss:'s-dss',dse:'s-dse',nss:'s-nss',nse:'s-nse',wod:'s-wod',late:'s-late',hd:'s-hd'};
     Object.entries(fields).forEach(([k,id]) => { const el=document.getElementById(id); if(el) el.value=s[k]||''; });
     const au = document.getElementById('s-auto'); if (au) au.checked = s.auto!==false;
+    // Hide night shift fields in school mode
+    ['ns-start-wrap','ns-end-wrap'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.style.display = schoolMode ? 'none' : '';
+    });
+    if (schoolMode) {
+      const hdLbl = document.getElementById('lbl-hd'); if (hdLbl) hdLbl.textContent = 'Min. attendance days';
+    }
     const ums = document.getElementById('um-section');
     if (ums) ums.style.display = this.session.role === 'admin' ? 'block' : 'none';
     if (this.session.role === 'admin') this.renderCoUsersList();
@@ -1386,7 +1655,6 @@ const App = {
     this.toast('Settings saved','s');
   },
 
-  // Company sub-users — legacy saveCoUser removed; use saveNewUser via openCreateUser()
   deleteCoUser(id, ctx) {
     if (!confirm('Delete this user? They will lose access immediately.')) return;
     DB.saveCoUsers(DB.coUsers().filter(u=>u.id!==id));
@@ -1398,7 +1666,7 @@ const App = {
     const el = document.getElementById('co-users-list');
     if (!el) return;
     const cous = DB.coUsers().filter(u => u.companyId === this.cid());
-    if (!cous.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:12px;padding:12px 0;">No users yet. Click + CREATE USER to add one.</div>'; return; }
+    if (!cous.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:12px;padding:12px 0;">No users yet.</div>'; return; }
     const roleColors = { editor:'var(--green)', viewer:'var(--blue)' };
     const roleAvatarBg = { editor:'background:var(--green-bg);border:1px solid var(--green)', viewer:'background:var(--blue-bg);border:1px solid var(--blue)' };
     el.innerHTML = cous.map(u => `
@@ -1417,7 +1685,6 @@ const App = {
       </div>`).join('');
   },
 
-  // ── SUPER ADMIN — USER MANAGEMENT PAGE ──
   buildSAUsersPage() {
     const d = document.createElement('div');
     d.className = 'page'; d.id = 'pg-sausers';
@@ -1427,15 +1694,11 @@ const App = {
         <button class="btn-g" onclick="App.openCreateUser('super')">+ CREATE USER</button>
       </div>
       <div class="users-filters">
-        <div class="sw"><span class="sico">⌕</span><input class="di" id="sau-srch" type="text" placeholder="Search by username or name..." style="padding-left:28px;min-width:240px;" oninput="App.renderSAUsers()"></div>
+        <div class="sw"><span class="sico">⌕</span><input class="di" id="sau-srch" type="text" placeholder="Search..." style="padding-left:28px;min-width:240px;" oninput="App.renderSAUsers()"></div>
         <select class="sf" id="sau-role-filter" onchange="App.renderSAUsers()">
-          <option value="">All Roles</option>
-          <option value="editor">Editor</option>
-          <option value="viewer">Viewer</option>
+          <option value="">All Roles</option><option value="editor">Editor</option><option value="viewer">Viewer</option>
         </select>
-        <select class="sf" id="sau-co-filter" onchange="App.renderSAUsers()">
-          <option value="">All Companies</option>
-        </select>
+        <select class="sf" id="sau-co-filter" onchange="App.renderSAUsers()"><option value="">All Companies</option></select>
         <span id="sau-count" style="font-family:var(--mono);font-size:11px;color:var(--text-dim);"></span>
       </div>
       <div class="user-card-grid" id="sau-cards"></div>
@@ -1446,7 +1709,6 @@ const App = {
     const cards = document.getElementById('sau-cards');
     if (!cards) return;
     const cos = DB.companies();
-    // Populate company filter
     const coF = document.getElementById('sau-co-filter');
     if (coF) {
       const cv = coF.value;
@@ -1472,14 +1734,11 @@ const App = {
         <div class="user-card-top">
           <div class="user-card-info">
             <div class="uc-avatar" style="${roleAvatarBg[u.role]||''};">👤</div>
-            <div>
-              <div class="uc-name">${u.fullName||u.username}</div>
-              <div class="uc-uname">@${u.username}</div>
-            </div>
+            <div><div class="uc-name">${u.fullName||u.username}</div><div class="uc-uname">@${u.username}</div></div>
           </div>
           <span style="color:${roleColors[u.role]||'var(--text-dim)'};font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;">${u.role}</span>
         </div>
-        <div class="uc-meta">🏢 ${co?co.name:'Unknown Company'}</div>
+        <div class="uc-meta">🏢 ${co?co.name:'Unknown'}</div>
         <div class="uc-meta">📅 Created: ${since}</div>
         <div class="user-card-actions">
           <button class="btn-p btn-sm" style="flex:1;" onclick="App.viewUserDetail('${u.id}','super')">👁 VIEW DETAILS</button>
@@ -1489,13 +1748,11 @@ const App = {
     }).join('');
   },
 
-  // ── OPEN CREATE USER MODAL ──
   openCreateUser(ctx) {
     document.getElementById('m-cu-title').textContent = ctx==='super' ? 'Create Company User' : 'Create User';
     document.getElementById('ncu-ctx').value = ctx;
     ['ncu-uname','ncu-pass','ncu-fn'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     document.getElementById('ncu-role').value='editor';
-    // Show company selector only for super admin
     const coWrap = document.getElementById('ncu-co-wrap');
     if (ctx==='super') {
       coWrap.style.display='block';
@@ -1524,7 +1781,6 @@ const App = {
     this.toast('User created: '+uname,'s');
   },
 
-  // ── VIEW USER DETAIL ──
   viewUserDetail(uid, ctx) {
     const u = DB.coUsers().find(x=>x.id===uid);
     if (!u) return;
@@ -1549,7 +1805,7 @@ const App = {
         <div class="ud-field"><div class="ud-field-lbl">Created At</div><div class="ud-field-val" style="font-size:12px;">${since}</div></div>
       </div>`;
     document.getElementById('ud-actions').innerHTML = `
-      <button class="btn-r" onclick="App.deleteCoUser('${u.id}','${ctx}');App.closeMo('m-user-detail');">🗑 DELETE USER</button>
+      <button class="btn-r" onclick="App.deleteCoUser('${u.id}','${ctx}');App.closeMo('m-user-detail');">🗑 DELETE</button>
       <button class="btn-p" onclick="App.closeMo('m-user-detail')">CLOSE</button>`;
     document.getElementById('m-user-detail').classList.add('show');
   },
@@ -1566,8 +1822,6 @@ const App = {
   }
 };
 
-// Boot
-App.login; // noop, just ensures parsing
 document.getElementById('lp').addEventListener('keydown', e=>{ if(e.key==='Enter') App.login(); });
 document.getElementById('lu').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('lp').focus(); });
 </script>
