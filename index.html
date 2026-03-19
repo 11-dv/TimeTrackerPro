@@ -25,11 +25,13 @@
   --shadow-md:0 2px 8px rgba(0,0,0,.1),0 8px 24px rgba(0,0,0,.08);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:14px;min-height:100vh;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:14px;}
 body::before{content:'';position:fixed;inset:0;background:linear-gradient(135deg,rgba(21,101,192,.03) 0%,transparent 60%,rgba(0,121,107,.02) 100%);pointer-events:none;z-index:0;}
 
 /* ══ SHARED INPUTS ══ */
 input.di,select.di,textarea.di{width:100%;background:#fff;border:1px solid var(--border);color:#0d1b2a;padding:9px 12px;font-family:var(--mono);font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s;resize:none;}
+input.di.qf-date{width:130px;}
 input.di:focus,select.di:focus,textarea.di:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(21,101,192,.12);}
 input.di::placeholder,textarea.di::placeholder{color:#b0bec5;}
 .fl{font-size:11px;letter-spacing:.5px;color:#37474f;margin-bottom:6px;text-transform:uppercase;font-weight:700;}
@@ -73,7 +75,7 @@ input.di::placeholder,textarea.di::placeholder{color:#b0bec5;}
 .cursor-blink{animation:blink 1s step-end infinite;}
 
 /* ══════════════ APP SHELL ══════════════ */
-#app{display:none;flex-direction:column;height:100vh;}
+#app{display:none;flex-direction:column;min-height:100vh;}
 #app.show{display:flex;}
 .topbar{background:var(--accent);border-bottom:none;padding:0 20px;height:48px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:200;box-shadow:0 2px 8px rgba(21,101,192,.25);}
 .brand{display:flex;align-items:center;gap:8px;font-family:var(--head);font-size:19px;font-weight:700;letter-spacing:3px;color:#fff;margin-right:20px;}
@@ -98,9 +100,9 @@ input.di::placeholder,textarea.di::placeholder{color:#b0bec5;}
 .mode-company{border-color:rgba(255,255,255,.7);color:#fff;background:rgba(107,63,160,.35);}
 
 /* Pages */
-.page{display:none;flex:1;overflow:hidden;flex-direction:column;}
+.page{display:none;flex:1;flex-direction:column;}
 .page.show{display:flex;}
-.pg-body{flex:1;overflow-y:auto;padding:20px;background:var(--bg);}
+.pg-body{flex:1;padding:20px;background:var(--bg);}
 
 /* ══ SECTION TITLES ══ */
 .pg-tl{font-family:var(--head);font-size:26px;font-weight:700;letter-spacing:1px;margin-bottom:6px;color:#0d1b2a;}
@@ -154,7 +156,7 @@ input.di::placeholder,textarea.di::placeholder{color:#b0bec5;}
 canvas{display:block;width:100%!important;height:210px!important;}
 
 /* ══ ATTENDANCE ══ */
-.att-hdr{background:var(--panel);border-bottom:1px solid var(--border);padding:10px 18px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.att-hdr{background:var(--panel);border-bottom:1px solid var(--border);padding:10px 18px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
 .att-tl-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .page-title{font-family:var(--head);font-size:18px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-left:4px solid var(--accent);padding-left:12px;color:#0d1b2a;}
 .legend{display:flex;gap:5px;flex-wrap:wrap;}
@@ -173,8 +175,8 @@ select.sf:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(21,101,192,
 .sw input{padding-left:27px;min-width:190px;}
 .sico{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:12px;pointer-events:none;}
 .lbl-sm{font-size:11px;letter-spacing:.5px;color:#37474f;text-transform:uppercase;white-space:nowrap;font-weight:700;}
-.qf-bar{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:#fffde7;border:1px solid #ffe082;border-top:none;padding:6px 12px;}
-.stats-strip{display:flex;gap:0;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;}
+.qf-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:#fffde7;border:1px solid #ffe082;border-top:none;padding:6px 12px;}
+.stats-strip{display:flex;gap:0;flex-wrap:wrap;background:var(--bg2);border-bottom:1px solid var(--border);}
 .scard{flex:1;padding:10px 16px;background:var(--panel);border-right:1px solid var(--border);}
 .sc-lbl{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#37474f;margin-bottom:4px;font-weight:600;}
 .sc-val{font-family:var(--mono);font-size:26px;font-weight:700;line-height:1;}
@@ -186,21 +188,21 @@ select.sf:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(21,101,192,
 .scard.s-per .sc-val{color:var(--text);font-size:14px;padding-top:4px;}
 
 /* ── ATTENDANCE % COLUMN ── */
-.emp-hdr .th-pct{background:#b2dfdb;color:var(--teal)!important;min-width:68px;position:sticky;}
-.emp-row .td-pct{background:#e8f5f3!important;min-width:68px;padding:3px 6px!important;}
+.emp-hdr .th-pct{background:#b2dfdb;color:var(--teal)!important;width:80px;min-width:80px;max-width:80px;position:sticky;top:0;z-index:50;}
+.emp-row .td-pct{background:#e8f5f3!important;width:80px;min-width:80px;max-width:80px;padding:3px 6px!important;}
 .pct-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
 .pct-val{font-family:var(--mono);font-size:12px;font-weight:700;line-height:1;}
 .pct-bar{width:100%;height:4px;background:rgba(0,0,0,.1);border-radius:2px;overflow:hidden;}
 .pct-fill{height:100%;border-radius:2px;transition:width .3s;}
 
 /* ── FILTER / SORT BAR ── */
-.flt-bar{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:#e0f2f0;border:1px solid #b2dfdb;border-top:none;padding:5px 12px;flex-shrink:0;}
+.flt-bar{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:#e0f2f0;border:1px solid #b2dfdb;border-top:none;padding:5px 12px;}
 .flt-bar .lbl-sm{color:var(--teal);font-weight:700;}
 .sort-btn{background:#fff;border:1px solid var(--border);color:#37474f;padding:5px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .15s;white-space:nowrap;border-radius:3px;font-weight:600;}
 .sort-btn:hover,.sort-btn.act{border-color:var(--teal);color:#fff;background:var(--teal);}
 .sort-btn.sort-asc::after{content:' ↑';}
 .sort-btn.sort-desc::after{content:' ↓';}
-.tbl-wrap{flex:1;overflow:auto;position:relative;}
+.tbl-wrap{overflow-x:auto;position:relative;}
 .tbl-wrap::-webkit-scrollbar{width:7px;height:7px;}
 .tbl-wrap::-webkit-scrollbar-track{background:#e8edf3;}
 .tbl-wrap::-webkit-scrollbar-thumb{background:#b0bec5;border-radius:4px;}
@@ -377,6 +379,21 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
 .uc-uname{font-family:var(--mono);font-size:12px;color:#1565c0;margin-top:2px;font-weight:600;}
 .uc-meta{font-size:12px;color:#37474f;margin-bottom:4px;font-family:var(--mono);}
 .user-card-actions{display:flex;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);}
+
+/* ── AREA ASSIGNMENT ── */
+.area-tag{display:inline-flex;align-items:center;gap:5px;background:#e3f0ff;border:1px solid #90caf9;color:#1565c0;border-radius:12px;padding:3px 10px;font-size:11px;font-family:var(--mono);font-weight:700;margin:3px;}
+.area-tag .rm{cursor:pointer;color:#90a4b8;font-size:13px;line-height:1;}
+.area-tag .rm:hover{color:var(--red);}
+.area-group-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#37474f;margin-bottom:6px;font-family:var(--head);}
+.area-check-grid{display:flex;flex-wrap:wrap;gap:6px;}
+.area-check-item{background:#fff;border:1px solid var(--border);border-radius:4px;padding:4px 10px;cursor:pointer;font-size:12px;font-family:var(--mono);transition:all .15s;}
+.area-check-item:hover{border-color:var(--accent);background:#e3f0ff;}
+.area-check-item.selected{background:#e3f0ff;border-color:#1565c0;color:#1565c0;font-weight:700;}
+.struct-tag{display:inline-flex;align-items:center;gap:4px;background:#e8f5e9;border:1px solid #a5d6a7;color:#2e7d32;border-radius:4px;padding:3px 9px;font-size:11px;font-family:var(--mono);}
+.struct-tag .rm{cursor:pointer;color:#81c784;font-size:12px;margin-left:3px;}
+.struct-tag .rm:hover{color:var(--red);}
+.area-group-l2{font-size:10px;font-weight:700;letter-spacing:1px;color:#546e7a;text-transform:uppercase;font-family:var(--head);}
+.struct-level2{background:#f7f9fc;border:1px solid var(--border);border-radius:4px;padding:8px 10px;margin-top:6px;}
 </style>
 </head>
 <body>
@@ -527,6 +544,7 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
       <div class="lerr" id="lerr">✗ Invalid username or password</div>
     </div>
     <div class="login-hint">Powered by TimeTrack Pro © 2026 · Firebase Sync Enabled</div>
+    <div class="login-hint" style="margin-top:6px;font-size:10px;color:#b0bec5;letter-spacing:1px;">Designed &amp; Developed by <strong style="color:#546e7a;">Aswin Ferdinal</strong></div>
   </div>
 </div>
 
@@ -540,11 +558,11 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
     <div class="topbar-r">
       <span class="role-chip" id="role-chip"></span>
       <span class="ubadge" id="ubadge"></span>
-      <div class="sync-status sync-loading" id="sync-indicator" style="cursor:pointer;" onclick="App.syncNow()" title="Click to sync now"><div class="sync-dot"></div><span id="sync-label">Connecting...</span></div><button class="logoutbtn" onclick="App.logout()">LOGOUT</button>
+      <div class="sync-status sync-loading" id="sync-indicator" style="cursor:pointer;" onclick="App.syncNow()" title="Click to sync now"><div class="sync-dot"></div><span id="sync-label">Connecting...</span></div><button class="logoutbtn" onclick="App.openChangePass('self')" style="margin-right:6px;">🔑 PASSWORD</button><button class="logoutbtn" onclick="App.logout()">LOGOUT</button>
     </div>
   </nav>
   <div class="company-banner" id="company-banner" style="display:none;"></div>
-  <div id="pages-container" style="flex:1;overflow:hidden;display:flex;flex-direction:column;"></div>
+  <div id="pages-container" style="flex:1;display:flex;flex-direction:column;"></div>
 </div>
 
 <!-- ═══ STATUS PICKER — dynamically populated based on mode ═══ -->
@@ -598,7 +616,32 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
       <div class="fg fg2">
         <div class="ff"><div class="fm" id="lbl-emp-id">Employee ID *</div><input class="di" id="ae-id" type="text" placeholder="e.g. 1501"></div>
         <div class="ff"><div class="fm" id="lbl-emp-nm">Full Name *</div><input class="di" id="ae-nm" type="text" placeholder="Full name"></div>
-        <div class="ff"><div class="fm" id="lbl-emp-dp">Department / Class *</div><input class="di" id="ae-dp" type="text" placeholder="e.g. Production / Class 10A"></div>
+        <!-- Plant / Top-level group selector -->
+        <div class="ff" id="ae-plant-wrap">
+          <div class="fm" id="lbl-emp-plant">Plant / Area *</div>
+          <select class="di" id="ae-plant" onchange="App.onEmpPlantChange()">
+            <option value="">Select...</option>
+          </select>
+        </div>
+        <!-- Sub-group selector (Year / Dept / Shift) -->
+        <div class="ff" id="ae-subgroup-wrap" style="display:none;">
+          <div class="fm" id="lbl-emp-subgroup">Year / Sub-dept</div>
+          <select class="di" id="ae-subgroup" onchange="App.onEmpSubgroupChange()">
+            <option value="">Select...</option>
+          </select>
+        </div>
+        <!-- Section selector -->
+        <div class="ff" id="ae-section-wrap" style="display:none;">
+          <div class="fm" id="lbl-emp-section">Section</div>
+          <select class="di" id="ae-section">
+            <option value="">Select...</option>
+          </select>
+        </div>
+        <!-- Department field: manual entry (always shown, required when no structure) -->
+        <div class="ff" id="ae-dp-wrap">
+          <div class="fm" id="lbl-emp-dp">Department / Class *</div>
+          <input class="di" id="ae-dp" type="text" placeholder="e.g. Production / Class 10A">
+        </div>
         <div class="ff"><div class="fm">Designation / Roll No.</div><input class="di" id="ae-des" type="text" placeholder="e.g. Engineer / 42"></div>
         <div class="ff full"><div class="fm">Status</div>
           <select class="di" id="ae-st"><option value="active">Active</option><option value="inactive">Inactive</option></select>
@@ -636,9 +679,9 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
   </div>
 </div>
 
-<!-- ═══ CREATE USER MODAL ═══ -->
+<!-- ═══ CREATE / EDIT USER MODAL ═══ -->
 <div class="mo" id="m-create-user">
-  <div class="mb w-sm">
+  <div class="mb" style="width:600px;max-width:96vw;">
     <div class="mh"><div class="mt2" id="m-cu-title">Create User</div><button class="mc" onclick="App.closeMo('m-create-user')">✕</button></div>
     <div class="mbody">
       <div class="fg">
@@ -653,15 +696,48 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
         </div>
         <div class="ff" id="ncu-co-wrap" style="display:none;">
           <div class="fm">Company *</div>
-          <select class="di" id="ncu-co"></select>
+          <select class="di" id="ncu-co" onchange="App.buildAreaAssigner()"></select>
+        </div>
+      </div>
+      <div id="ncu-area-wrap" style="margin-top:14px;display:none;">
+        <div id="ncu-area-heading" style="font-size:12px;font-weight:700;letter-spacing:.5px;color:#1565c0;margin-bottom:4px;text-transform:uppercase;font-family:var(--head);">📍 Assign Areas</div>
+        <div id="ncu-area-hint" style="font-size:11px;color:#546e7a;margin-bottom:8px;">Select areas this user can update. Leave all unchecked = full access.</div>
+        <div id="area-assigner-body" style="border:1px solid var(--border);border-radius:6px;background:#f7f9fc;padding:12px;"></div>
+        <div style="margin-top:8px;">
+          <div style="font-size:11px;font-weight:700;color:#37474f;margin-bottom:4px;font-family:var(--head);display:flex;align-items:center;justify-content:space-between;">
+            <span>✅ ASSIGNED:</span>
+            <button onclick="App._assignedAreas=[];App.buildAreaAssigner([]);" style="border:none;background:none;color:var(--red);cursor:pointer;font-size:11px;font-family:var(--mono);">✕ Clear All</button>
+          </div>
+          <div id="assigned-tags" style="min-height:28px;"></div>
         </div>
       </div>
       <input type="hidden" id="ncu-ctx">
+      <input type="hidden" id="ncu-edit-id">
     </div>
-    <div class="mf"><button class="btn-r" onclick="App.closeMo('m-create-user')">CANCEL</button><button class="btn-g" onclick="App.saveNewUser()">CREATE USER</button></div>
+    <div class="mf"><button class="btn-r" onclick="App.closeMo('m-create-user')">CANCEL</button><button class="btn-g" id="ncu-save-btn" onclick="App.saveNewUser()">CREATE USER</button></div>
   </div>
 </div>
 
+
+<!-- ═══ CHANGE PASSWORD MODAL ═══ -->
+<div class="mo" id="m-change-pass">
+  <div class="mb w-sm">
+    <div class="mh"><div class="mt2" id="cp-title">Change Password</div><button class="mc" onclick="App.closeMo('m-change-pass')">✕</button></div>
+    <div class="mbody">
+      <div style="font-size:12px;color:#546e7a;margin-bottom:14px;" id="cp-desc">Enter a new password for this account.</div>
+      <div class="fg">
+        <div class="ff"><div class="fm">New Password *</div><input class="di" id="cp-new" type="password" placeholder="Enter new password" autocomplete="new-password"></div>
+        <div class="ff"><div class="fm">Confirm Password *</div><input class="di" id="cp-confirm" type="password" placeholder="Confirm new password"></div>
+      </div>
+      <input type="hidden" id="cp-target-id">
+      <input type="hidden" id="cp-target-type">
+    </div>
+    <div class="mf">
+      <button class="btn-r" onclick="App.closeMo('m-change-pass')">CANCEL</button>
+      <button class="btn-g" onclick="App.saveChangePass()">SAVE PASSWORD</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══ DATA SYNC MODAL ═══ -->
 <div class="mo" id="m-datasync">
@@ -672,17 +748,25 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
         This app is connected to <strong>Firebase (Google Cloud)</strong>. All data syncs automatically across all devices in real time.<br><br>
         Use <strong>Export</strong> to download a local backup file anytime. Use <strong>Import</strong> to restore from a backup if needed.
       </div>
+      <!-- Push to Firebase banner -->
+      <div style="background:linear-gradient(135deg,#e3f0ff,#e0f2f0);border:1.5px solid #90caf9;border-radius:8px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+        <div>
+          <div style="font-weight:700;font-size:14px;color:#0d1b2a;margin-bottom:4px;">🔄 Push Local Data to Firebase</div>
+          <div style="font-size:12px;color:#546e7a;">If your data exists on this device but other devices can't see it, click this button to force-upload everything to Firebase right now.</div>
+        </div>
+        <button class="btn-g" style="white-space:nowrap;flex-shrink:0;" onclick="App.forcePushToFirebase()">🔄 PUSH TO FIREBASE NOW</button>
+      </div>
       <div class="sync-grid">
         <!-- EXPORT -->
         <div class="sync-card">
-          <div class="sync-card-title">⬇️ Export Data</div>
+          <div class="sync-card-title">⬇️ Export Backup</div>
           <div class="sync-card-desc">Downloads a <strong>.json</strong> file containing all companies, users, employees and attendance records.</div>
           <div class="sync-info" id="export-info">Loading...</div>
           <button class="btn-g" style="width:100%;" onclick="App.exportData()">⬇ DOWNLOAD BACKUP FILE</button>
         </div>
         <!-- IMPORT -->
         <div class="sync-card">
-          <div class="sync-card-title">⬆️ Import Data</div>
+          <div class="sync-card-title">⬆️ Import Backup</div>
           <div class="sync-card-desc">Load a previously exported <strong>.json</strong> backup file to restore all data on this device.</div>
           <div class="sync-drop" id="sync-drop" onclick="document.getElementById('import-file').click();"
                ondragover="event.preventDefault();this.classList.add('drag-over')"
@@ -692,7 +776,7 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
             <div class="sync-drop-lbl">Click to select file or drag & drop here</div>
             <input type="file" id="import-file" accept=".json" onchange="App.handleImportFile(event)">
           </div>
-          <div class="sync-warn">⚠️ Import will <strong>replace</strong> all existing data on this device. Make sure to export first if needed.</div>
+          <div class="sync-warn">⚠️ Import will <strong>replace</strong> all existing data on this device.</div>
         </div>
       </div>
     </div>
@@ -703,7 +787,107 @@ input:checked + .slider:before{transform:translateX(20px);background:#fff;}
 <!-- Toast -->
 <div class="toast" id="toast"><span id="tico" style="font-size:14px;">✓</span><span class="toast-msg" id="tmsg">Done</span></div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// Try loading real Chart.js first; fall back to inline shim if unavailable
+(function() {
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+  s.async = true;
+  s.onerror = function() { console.warn('Chart.js CDN unavailable — using built-in fallback.'); };
+  document.head.appendChild(s);
+})();
+
+// ── Minimal Chart shim (used when CDN unavailable) ──
+// Activates only if window.Chart is not defined by the time renderDash runs
+window._ChartShim = (function(){
+  function drawBar(canvas, labels, data, opts){
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width = canvas.offsetWidth || 400;
+    const H = canvas.height = canvas.offsetHeight || 180;
+    ctx.clearRect(0,0,W,H);
+    if(!data.length) return;
+    const max = Math.max(...data, 1);
+    const pad = {l:28,r:10,t:10,b:28};
+    const cW = W - pad.l - pad.r;
+    const cH = H - pad.t - pad.b;
+    const bW = Math.max(2, cW/data.length - 3);
+    const gap = (cW - bW*data.length)/(data.length+1);
+    // Grid lines
+    ctx.strokeStyle='rgba(0,0,0,.06)'; ctx.lineWidth=1;
+    [0,.25,.5,.75,1].forEach(f=>{
+      const y = pad.t + cH*(1-f);
+      ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
+      if(f>0){ ctx.fillStyle='#546e7a'; ctx.font='9px monospace'; ctx.fillText(Math.round(max*f),2,y+3); }
+    });
+    // Bars
+    data.forEach((v,i)=>{
+      const x = pad.l + gap + i*(bW+gap);
+      const bH = (v/max)*cH;
+      const y = pad.t + cH - bH;
+      ctx.fillStyle='rgba(21,101,192,.5)';
+      ctx.fillRect(x, y, bW, bH);
+      // x label every 5
+      if(i%5===0 || i===data.length-1){
+        ctx.fillStyle='#546e7a'; ctx.font='9px monospace';
+        ctx.fillText(labels[i], x+bW/2-4, H-pad.b+12);
+      }
+    });
+  }
+  function drawPie(canvas, labels, data, colors){
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width = canvas.offsetWidth || 300;
+    const H = canvas.height = canvas.offsetHeight || 180;
+    ctx.clearRect(0,0,W,H);
+    const total = data.reduce((a,b)=>a+b,0);
+    if(!total) return;
+    const cx=W*.38, cy=H/2, r=Math.min(cx,cy)*.85;
+    let angle=-Math.PI/2;
+    data.forEach((v,i)=>{
+      const slice = (v/total)*Math.PI*2;
+      ctx.beginPath(); ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,r,angle,angle+slice);
+      ctx.closePath();
+      ctx.fillStyle=colors[i%colors.length]; ctx.fill();
+      ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke();
+      angle+=slice;
+    });
+    // Legend
+    labels.forEach((lbl,i)=>{
+      const ly = 20+i*18;
+      if(ly>H-10) return;
+      ctx.fillStyle=colors[i%colors.length];
+      ctx.fillRect(W*.72,ly-8,10,10);
+      ctx.fillStyle='#546e7a'; ctx.font='10px sans-serif';
+      ctx.fillText(lbl.slice(0,14),W*.72+14,ly);
+    });
+  }
+  function Chart(canvas, cfg){
+    this._canvas = canvas;
+    this._cfg = cfg;
+    this._draw();
+  }
+  Chart.prototype._draw = function(){
+    const cfg = this._cfg;
+    const ds  = cfg.data.datasets[0];
+    if(cfg.type==='bar'){
+      drawBar(this._canvas, cfg.data.labels, ds.data, cfg.options||{});
+    } else if(cfg.type==='pie'){
+      const cols = ds.backgroundColor||['#14b8a6','#f59e0b','#ef4444','#a855f7','#3b82f6'];
+      drawPie(this._canvas, cfg.data.labels, ds.data, cols);
+    }
+  };
+  Chart.prototype.destroy = function(){ 
+    const ctx = this._canvas.getContext('2d');
+    ctx.clearRect(0,0,this._canvas.width,this._canvas.height);
+  };
+  return Chart;
+})();
+
+// Use shim only if real Chart.js didn't load
+window._ensureChart = function(){
+  if(typeof Chart==='undefined') window.Chart = window._ChartShim;
+};
+</script>
 <script>
 // ═══════════════════════════════════════════════════════
 //  FIREBASE — Dynamic loader (guarantees correct order)
@@ -806,12 +990,33 @@ const DB = {
     catch(e) { console.warn('Firebase write failed (offline?)', e); }
   },
 
+  // ── SUPER ADMIN CREDENTIALS ──
+  async saveSACreds(creds) {
+    this._lset('ott_sa_creds', creds);
+    if (!fdb) return;
+    try { await fdb.collection('meta').doc('saCreds').set({ data: creds, ts: Date.now() }); }
+    catch(e) { console.warn('SA creds save failed:', e); }
+  },
+  async loadSACreds() {
+    if (!fdb) return;
+    try {
+      const snap = await fdb.collection('meta').doc('saCreds').get();
+      if (snap.exists && snap.data().data) {
+        const creds = snap.data().data;
+        this._lset('ott_sa_creds', creds);
+        // Update SA object in memory
+        if (creds.u) SA.u = creds.u;
+        if (creds.p) SA.p = creds.p;
+      }
+    } catch(e) { console.warn('SA creds load failed:', e); }
+  },
+
   // ── LOAD ALL FROM FIRESTORE (called on app start) ──
   async loadAll() {
     setSyncStatus('loading', 'Syncing...');
-    // Wait up to 5 seconds for Firebase to be ready
+    // Wait up to 6 seconds for Firebase to be ready
     let waited = 0;
-    while (!fdb && waited < 5000) {
+    while (!fdb && waited < 6000) {
       await new Promise(r => setTimeout(r, 100));
       waited += 100;
     }
@@ -821,45 +1026,87 @@ const DB = {
       return false;
     }
     try {
-      // Load meta (companies + users)
+      // ── Step 1: Check what Firebase has ──
       const [coSnap, cuSnap] = await Promise.all([
         fdb.collection('meta').doc('companies').get(),
         fdb.collection('meta').doc('coUsers').get()
       ]);
-      if (coSnap.exists && coSnap.data().data) {
+
+      const fbHasData = coSnap.exists && coSnap.data().data && coSnap.data().data.length > 0;
+      const localCos = this._lget('ott_companies') || [];
+      const localHasData = localCos.length > 0;
+
+      // ── Step 2: If Firebase is empty but local has data → PUSH local to Firebase ──
+      if (!fbHasData && localHasData) {
+        setSyncStatus('loading', 'Uploading to Firebase...');
+        console.log('Firebase empty — migrating local data to Firebase...');
+
+        const localUsers = this._lget('ott_co_users') || [];
+        await fdb.collection('meta').doc('companies').set({ data: localCos, ts: Date.now() });
+        await fdb.collection('meta').doc('coUsers').set({ data: localUsers, ts: Date.now() });
+
+        for (const co of localCos) {
+          const emps = this._lget(`ott_emps_${co.id}`) || [];
+          const sets = this._lget(`ott_settings_${co.id}`);
+          await fdb.collection('employees').doc(co.id).set({ data: emps, ts: Date.now() });
+          if (sets) await fdb.collection('settings').doc(co.id).set({ data: sets, ts: Date.now() });
+        }
+        setSyncStatus('ok', 'Live ✓ (uploaded)');
+        console.log('Migration complete — all local data pushed to Firebase');
+        return true;
+      }
+
+      // ── Step 3: Firebase has data → pull it to local cache ──
+      if (fbHasData) {
         this._lset('ott_companies', coSnap.data().data);
       }
       if (cuSnap.exists && cuSnap.data().data) {
         this._lset('ott_co_users', cuSnap.data().data);
       }
-      // Load employees for each company
+
+      // Load employees + settings for each company
       const cos = this.companies();
       if (cos.length) {
-        const empSnaps = await Promise.all(cos.map(c => fdb.collection('employees').doc(c.id).get()));
+        const [empSnaps, setSnaps] = await Promise.all([
+          Promise.all(cos.map(c => fdb.collection('employees').doc(c.id).get())),
+          Promise.all(cos.map(c => fdb.collection('settings').doc(c.id).get()))
+        ]);
         empSnaps.forEach((snap, i) => {
           if (snap.exists && snap.data().data) {
-            this._lset(`ott_emps_${cos[i].id}`, snap.data().data);
+            // Strip empty-string att entries on load (cleanup stale data)
+            const cleaned = snap.data().data.map(emp => {
+              if (emp.att) Object.keys(emp.att).forEach(dk => { if (emp.att[dk] === '' || emp.att[dk] === null || emp.att[dk] === undefined) delete emp.att[dk]; });
+              return emp;
+            });
+            this._lset(`ott_emps_${cos[i].id}`, cleaned);
           }
         });
-        // Load settings
-        const setSnaps = await Promise.all(cos.map(c => fdb.collection('settings').doc(c.id).get()));
         setSnaps.forEach((snap, i) => {
-          if (snap.exists && snap.data().data) {
-            this._lset(`ott_settings_${cos[i].id}`, snap.data().data);
-          }
+          if (snap.exists && snap.data().data) this._lset(`ott_settings_${cos[i].id}`, snap.data().data);
         });
       }
+
+      // Load SA credentials
+      await this.loadSACreds();
+
       setSyncStatus('ok', 'Live ✓');
       return true;
     } catch(e) {
-      console.warn('Firebase load failed — using cached data', e);
+      console.warn('Firebase sync failed — using cached data:', e);
       setSyncStatus('err', 'Offline (cached)');
       return false;
     }
   },
 };
 
-const SA = { u: 'superadmin', p: 'SuperAdmin@2026' };
+// SA credentials — load from localStorage if changed, else use defaults
+const SA = (() => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('ott_sa_creds'));
+    if (saved && saved.u && saved.p) return saved;
+  } catch(e) {}
+  return { u: 'superadmin', p: 'SuperAdmin@2026' };
+})();
 const MNS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MN3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DY3 = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
@@ -876,7 +1123,15 @@ const SCM_SCHOOL = {
 };
 
 // ── Fields that trigger school mode ──
-const SCHOOL_FIELDS = ['school / education','college / university','school','education','college','university'];
+const SCHOOL_FIELDS  = ['school / education','school','education'];
+const COLLEGE_FIELDS = ['college / university','college','university'];
+const FACTORY_FIELDS = ['factory / manufacturing','factory','manufacturing','logistics / warehouse','construction','hospital / healthcare','retail / store','it / technology','other'];
+function getCoType(co) {
+  const f = (co && co.field ? co.field : '').toLowerCase();
+  if (SCHOOL_FIELDS.some(x=>f.includes(x.split('/')[0].trim()))) return 'school';
+  if (COLLEGE_FIELDS.some(x=>f.includes(x.split('/')[0].trim()))) return 'college';
+  return 'factory';
+}
 
 // ═══════════════════════════════════════════════════════
 //  MAIN APP
@@ -891,22 +1146,39 @@ const App = {
     if (!this.session || !this.session.companyId) return false;
     const co = DB.companies().find(c => c.id === this.session.companyId);
     if (!co) return false;
-    const field = (co.field || '').toLowerCase();
-    return SCHOOL_FIELDS.some(f => field.includes(f.split('/')[0].trim()));
+    const t = getCoType(co);
+    return t === 'school' || t === 'college';
+  },
+  getCoTypeForSession() {
+    if (!this.session || !this.session.companyId) return 'factory';
+    const co = DB.companies().find(c => c.id === this.session.companyId);
+    return getCoType(co);
   },
 
   // Returns appropriate status map for current context
   getSCM() { return this.isSchoolMode() ? SCM_SCHOOL : SCM_FULL; },
 
   // ── LOGIN ──
-  login() {
+  async login() {
     const u = document.getElementById('lu').value.trim();
     const p = document.getElementById('lp').value;
     document.getElementById('lerr').style.display = 'none';
+
+    // Super admin can log in immediately without Firebase sync
     if (u === SA.u && p === SA.p) {
       this.session = { role: 'super', username: u };
       this.startApp(); return;
     }
+
+    // For all other logins: sync from Firebase first so credentials are fresh
+    // This fixes the "invalid password on other devices" bug (localStorage empty on new device)
+    const loginBtn = document.querySelector('#login-screen .btn-p');
+    if (loginBtn) { loginBtn.disabled = true; loginBtn.textContent = 'SYNCING...'; }
+    try {
+      await DB.loadAll();
+    } catch(e) { /* fall back to cached data if Firebase fails */ }
+    if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'SIGN IN'; }
+
     const companies = DB.companies();
     const co = companies.find(c => c.adminUser === u && c.adminPass === p && c.status === 'active');
     if (co) {
@@ -945,15 +1217,20 @@ const App = {
       banner.innerHTML = `⊞ ${this.session.companyName} ${modeLabel}`;
     } else { banner.style.display = 'none'; }
     this.buildNav();
-    // Load fresh data from Firestore on every login
+    // Load fresh data from Firestore on every login, then refresh
     DB.loadAll().then(() => {
-      // Refresh current page after sync
       const cur = document.querySelector('.nb.act')?.dataset?.pg;
       if (cur) this.nav(cur);
+      // Always refresh dashboard stats after sync (in case it's the active page)
+      if (document.getElementById('pg-dashboard')?.classList.contains('show')) {
+        this.renderDash();
+      }
     });
     document.addEventListener('click', e => {
       const sp = document.getElementById('sp');
       if (sp && !sp.contains(e.target) && !e.target.closest('.sc')) sp.style.display = 'none';
+      const sug = document.getElementById('qf-suggest');
+      if (sug && !sug.contains(e.target) && e.target.id !== 'qf-eid') sug.style.display = 'none';
     });
     document.getElementById('lu').value = '';
     document.getElementById('lp').value = '';
@@ -961,6 +1238,7 @@ const App = {
 
   logout() {
     this.session = null;
+    this._dashDate = null;
     this.att = { mo: new Date().getMonth(), yr: new Date().getFullYear(), filt: [], sel: null, sort: null, sortDir: 1 };
     ['bar','pie'].forEach(k => { if (this.charts[k]) { this.charts[k].destroy(); this.charts[k] = null; } });
     document.getElementById('app').classList.remove('show');
@@ -1272,6 +1550,7 @@ const App = {
   // ══════════════════════════════════════════
   cid() { return this.session.companyId; },
   canEdit() { return this.session.role === 'admin' || this.session.role === 'editor'; },
+  isAdminOrSuper() { return this.session.role === 'admin' || this.session.role === 'super'; },
 
   buildDashboard() {
     const d = document.createElement('div');
@@ -1284,9 +1563,28 @@ const App = {
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
         <div>
           <div style="font-family:var(--head);font-size:28px;font-weight:700;color:#0d1b2a;letter-spacing:.5px;">Dashboard</div>
-          <div style="font-size:13px;color:#546e7a;margin-top:3px;font-family:var(--mono);">📅 ${dateStr}</div>
+          <div style="font-size:13px;color:#546e7a;margin-top:3px;font-family:var(--mono);" id="dash-date-lbl">📅 ${dateStr}</div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <!-- Plant/Area selector -->
+          <div style="background:#fff;border:1px solid #e0e8f4;border-radius:8px;padding:7px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);">
+            <span style="font-size:15px;">🏭</span>
+            <div>
+              <div style="font-size:10px;color:#546e7a;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:3px;" id="dash-plant-lbl">Plant / Area</div>
+              <select id="dash-plant-sel" onchange="App.renderDash()" style="border:none;outline:none;font-family:var(--mono);font-size:12px;color:#1565c0;font-weight:700;background:transparent;cursor:pointer;min-width:80px;">
+                <option value="">All</option>
+              </select>
+            </div>
+          </div>
+          <!-- Date picker -->
+          <div style="background:#fff;border:1px solid #e0e8f4;border-radius:8px;padding:7px 14px;display:flex;align-items:center;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);">
+            <span style="font-size:15px;">📅</span>
+            <div>
+              <div style="font-size:10px;color:#546e7a;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:3px;">View Date</div>
+              <input type="date" id="dash-date-pick" style="border:none;outline:none;font-family:var(--mono);font-size:12px;color:#1565c0;font-weight:700;background:transparent;cursor:pointer;" onchange="App.onDashDateChange(this.value)">
+            </div>
+            <button onclick="App.onDashDateChange('')" title="Reset to today" style="border:none;background:none;cursor:pointer;color:#90a4b8;font-size:14px;padding:0 2px;">↺</button>
+          </div>
           <div style="background:#fff;border:1px solid #e0e8f4;border-radius:8px;padding:8px 16px;display:flex;align-items:center;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);">
             <span style="font-size:18px;">🧑‍💼</span>
             <div>
@@ -1301,7 +1599,7 @@ const App = {
       <div class="dash-cards" style="margin-bottom:20px;">
         <div class="dcard dc-tl">
           <div class="dcard-l">
-            <div class="dlbl">${isSchool ? 'Total Students' : 'Total Employees'}</div>
+            <div class="dlbl" id="d-tot-lbl">${isSchool ? 'Total Students' : 'Total Employees'}</div>
             <div class="dval" id="d-tot">0</div>
             <div style="font-size:11px;opacity:.8;margin-top:4px;" id="d-tot-sub">Active records</div>
           </div>
@@ -1309,7 +1607,7 @@ const App = {
         </div>
         <div class="dcard dc-gn">
           <div class="dcard-l">
-            <div class="dlbl">Present Today</div>
+            <div class="dlbl" id="d-pre-lbl">Present Today</div>
             <div class="dval" id="d-pre">0</div>
             <div style="font-size:11px;opacity:.8;margin-top:4px;" id="d-pre-sub">—</div>
           </div>
@@ -1317,7 +1615,7 @@ const App = {
         </div>
         <div class="dcard dc-rd">
           <div class="dcard-l">
-            <div class="dlbl">Absent Today</div>
+            <div class="dlbl" id="d-abs-lbl">Absent Today</div>
             <div class="dval" id="d-abs">0</div>
             <div style="font-size:11px;opacity:.8;margin-top:4px;" id="d-abs-sub">—</div>
           </div>
@@ -1325,9 +1623,9 @@ const App = {
         </div>
         <div class="dcard dc-or">
           <div class="dcard-l">
-            <div class="dlbl">On Leave Today</div>
+            <div class="dlbl" id="d-lv-lbl">On Leave Today</div>
             <div class="dval" id="d-lv">0</div>
-            <div style="font-size:11px;opacity:.8;margin-top:4px;">Leave / WO / PH</div>
+            <div style="font-size:11px;opacity:.8;margin-top:4px;">Vacation Leave (L)</div>
           </div>
           <div style="font-size:40px;opacity:.25;">🕐</div>
         </div>
@@ -1399,28 +1697,168 @@ const App = {
     </div>`;
     return d;
   },
+
+  // ── Lightweight dashboard refresh: only update Today's Rate ring + counters ──
+  // Called after every attendance save so ring reflects changes without tab switch
+  refreshDashStats() {
+    const dashEl = document.getElementById('pg-dashboard');
+    if (!dashEl || !dashEl.classList.contains('show')) return;
+    const allE = DB.employees(this.cid());
+    // Restrict to user's allowed plants
+    const userAreas = this.session.coUserId
+      ? (DB.coUsers().find(u => u.id === this.session.coUserId)?.areas || [])
+      : [];
+    const allowedPlants = new Set();
+    if (userAreas.length) userAreas.forEach(a => allowedPlants.add(a.split('::')[0]));
+    const selDashPlant = document.getElementById('dash-plant-sel')?.value || '';
+    const emps = allE.filter(e => {
+      const ep = e.plant || e.dept || '';
+      if (allowedPlants.size > 0 && ![...allowedPlants].some(ap => ep===ap||ep.startsWith(ap+' ›'))) return false;
+      if (selDashPlant && ep!==selDashPlant && !ep.startsWith(selDashPlant+' ›')) return false;
+      return true;
+    });
+    emps.forEach(e => {
+      if (e.att) Object.keys(e.att).forEach(dk => { if (e.att[dk] === '') delete e.att[dk]; });
+    });
+  },
+
   renderDash() {
-    const emps = DB.employees(this.cid());
+    const allEmps = DB.employees(this.cid());
+    const coType  = this.getCoTypeForSession();
+    const struct  = this.getCompanyStructure(this.cid());
+
+    // Get user's assigned areas (empty = admin / no restriction)
+    const userAreas = this.session.coUserId
+      ? (DB.coUsers().find(u => u.id === this.session.coUserId)?.areas || [])
+      : [];
+
+    // Build list of plants this user is allowed to see
+    // If user has assigned areas → only those plants; else → all plants
+    const allowedPlants = new Set();
+    if (userAreas.length) {
+      userAreas.forEach(a => {
+        // area key can be "Plant A" or "Plant A::Section" — take the top-level name
+        allowedPlants.add(a.split('::')[0]);
+      });
+    }
+
+    // Build plant dropdown — only show plants user is allowed to see
+    const dashPlantSel = document.getElementById('dash-plant-sel');
+    const dashPlantLbl = document.getElementById('dash-plant-lbl');
+    if (dashPlantSel) {
+      const lbl = coType==='school' ? 'Class / Standard' : coType==='college' ? 'Department' : 'Plant / Area';
+      if (dashPlantLbl) dashPlantLbl.textContent = lbl;
+      const curVal = dashPlantSel.value;
+
+      // Build plant name list filtered by user's allowed plants
+      let plantNames = [];
+      if (struct.length) {
+        plantNames = struct.map(g => g.name);
+      } else {
+        const seen = new Set();
+        allEmps.forEach(e => { const p=e.plant||e.dept||''; if(p&&!seen.has(p)){seen.add(p);plantNames.push(p);} });
+      }
+      // Filter to only user's allowed plants (if restricted)
+      if (allowedPlants.size > 0) {
+        plantNames = plantNames.filter(p => allowedPlants.has(p));
+      }
+
+      const allLabel = coType==='school' ? 'All Classes' : coType==='college' ? 'All Depts' : 'All Plants';
+      dashPlantSel.innerHTML = `<option value="">${allLabel}</option>` +
+        plantNames.map(p=>`<option value="${p}">${p}</option>`).join('');
+
+      // Auto-select if user only has one plant assigned
+      if (allowedPlants.size === 1 && !curVal) {
+        dashPlantSel.value = [...allowedPlants][0];
+      } else if (curVal) {
+        dashPlantSel.value = curVal;
+      }
+    }
+
+    // Filter employees: by selected plant + user area restriction
+    const selDashPlant = dashPlantSel?.value || '';
+
+    const emps = allEmps.filter(e => {
+      const empPlant = e.plant || '';
+      const empDept  = e.dept  || '';
+
+      // Plant dropdown filter
+      if (selDashPlant) {
+        const matched = empPlant === selDashPlant ||
+                        empDept  === selDashPlant ||
+                        empPlant.startsWith(selDashPlant + ' ›') ||
+                        empDept.startsWith(selDashPlant + ' ›');
+        if (!matched) return false;
+      }
+
+      // User area restriction — only show employees from allowed plants
+      if (allowedPlants.size > 0) {
+        const ep = empPlant || empDept;
+        const inAllowed = [...allowedPlants].some(ap =>
+          ep === ap || ep.startsWith(ap + ' ›')
+        );
+        if (!inAllowed) return false;
+      }
+
+      return true;
+    });
+
+    // Determine which date to show — from picker or today
     const now = new Date();
-    const td = now.getDate(), tm = now.getMonth(), ty = now.getFullYear();
+    let td, tm, ty;
+    const pickerVal = this._dashDate || (document.getElementById('dash-date-pick')?.value || '');
+    if (pickerVal) {
+      const [py, pm, pd2] = pickerVal.split('-').map(Number);
+      ty = py; tm = pm - 1; td = pd2;
+    } else {
+      td = now.getDate(); tm = now.getMonth(); ty = now.getFullYear();
+    }
+    const isToday = (td === now.getDate() && tm === now.getMonth() && ty === now.getFullYear());
     const k = `${ty}-${tm}-${td}`;
+
+    // Always sync picker to currently viewed date
+    const picker = document.getElementById('dash-date-pick');
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    if (picker) picker.value = isToday ? todayStr : `${ty}-${String(tm+1).padStart(2,'0')}-${String(td).padStart(2,'0')}`;
+
+    // Update date label
+    const selDate = new Date(ty, tm, td);
+    const dateStr = selDate.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    const lbl = document.getElementById('dash-date-lbl');
+    if (lbl) lbl.innerHTML = isToday ? `📅 ${dateStr}` : `📅 ${dateStr} <span style="background:#fff3cd;color:#b07800;font-size:10px;padding:2px 8px;border-radius:10px;font-family:var(--mono);font-weight:700;letter-spacing:1px;margin-left:6px;">HISTORICAL VIEW</span>`;
+
+    // Dynamic card labels — "Today" when today, "15 Mar" when historical
+    const dayLabel = isToday ? 'Today' : `${td} ${MN3[tm]}`;
+    const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    const setHtml = (id, v) => { const el = document.getElementById(id); if (el) el.innerHTML = v; };
+    setEl('d-pre-lbl', isToday ? 'Present Today' : `Present on ${dayLabel}`);
+    setEl('d-abs-lbl', isToday ? 'Absent Today' : `Absent on ${dayLabel}`);
+    setEl('d-lv-lbl', isToday ? 'On Leave Today' : `On Leave — ${dayLabel}`);
+
+    // Strip any empty-string att entries (defensive — handles incomplete deletes from Firebase sync)
+    emps.forEach(e => {
+      if (e.att) Object.keys(e.att).forEach(dk => { if (!e.att[dk]) delete e.att[dk]; });
+    });
     let tp=0, ta=0, tl=0;
     emps.forEach(e => {
       const s = (e.att||{})[k]||'';
       if (s==='P'||s==='N') tp++;
       else if (s==='A') ta++;
-      else if (s==='L'||s==='WO'||s==='PH'||s==='HD') tl++;
+      else if (s==='L') tl++;
     });
     const total = emps.length;
     const attRate = (tp + ta) > 0 ? Math.round(tp / (tp + ta) * 100) : 0;
 
     // Stat cards
-    const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
     setEl('d-tot', total);
     setEl('d-pre', tp);
     setEl('d-abs', ta);
     setEl('d-lv', tl);
     setEl('d-tot-sub', total === 0 ? 'No employees added' : `${total} active record${total!==1?'s':''}`);
+    const totLbl = document.getElementById('d-tot-lbl');
+    const coType2 = this.getCoTypeForSession();
+    const baseLabel = coType2==='school'||coType2==='college' ? 'Total Students' : 'Total Employees';
+    if (totLbl) totLbl.textContent = selDashPlant ? `${baseLabel} — ${selDashPlant}` : baseLabel;
     setEl('d-pre-sub', total > 0 && (tp+ta) > 0 ? attRate + '% attendance rate' : '—');
     setEl('d-abs-sub', ta > 0 ? (Math.round(ta/total*100)) + '% of total' : '—');
 
@@ -1438,10 +1876,10 @@ const App = {
     const rPct = document.getElementById('ring-pct');
     if (rPct) rPct.style.color = attRate >= 75 ? '#1b7a4e' : attRate >= 50 ? '#b07800' : '#c62828';
 
-    // Month label
+    // Month label — show the selected month
     setEl('chart-month-lbl', MNS[tm] + ' ' + ty);
 
-    // Recently updated entries (last 6 with attendance today or this month)
+    // Recently updated: show status on selected date (or last known if historical)
     const recentEl = document.getElementById('recent-att');
     if (recentEl) {
       const withAtt = emps.filter(e => Object.keys(e.att||{}).some(k2 => {
@@ -1449,21 +1887,21 @@ const App = {
         return +y===ty && +m===tm;
       })).slice(-6).reverse();
       if (!withAtt.length) {
-        recentEl.innerHTML = '<div style="font-size:12px;color:#b0bec5;text-align:center;padding:10px 0;">No attendance entries yet this month</div>';
+        recentEl.innerHTML = '<div style="font-size:12px;color:#b0bec5;text-align:center;padding:10px 0;">No attendance entries for this month</div>';
       } else {
         const stColors = {P:'#1b7a4e',N:'#6b3fa0',A:'#c62828',L:'#b07800',WO:'#1565c0',PH:'#00796b',HD:'#d84315'};
         const stBg = {P:'#e6f4ee',N:'#ede7f6',A:'#fdecea',L:'#fff8e1',WO:'#e3f0ff',PH:'#e0f2f0',HD:'#fbe9e7'};
-        const todayStatus = e => (e.att||{})[k] || '';
         recentEl.innerHTML = withAtt.map(e => {
-          const st = todayStatus(e) || Object.entries(e.att||{}).sort().pop()?.[1] || '?';
-          const stLabel = {P:'Present',N:'Night',A:'Absent',L:'Leave',WO:'Week Off',PH:'Holiday',HD:'Half Day'}[st] || st;
+          const st = (e.att||{})[k] || '';
+          const stLabel = {P:'Present',N:'Night',A:'Absent',L:'Leave',WO:'Week Off',PH:'Holiday',HD:'Half Day'}[st] || (st ? st : '—');
+          const hasSt = !!st;
           return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:#f7f9fc;border-radius:5px;border:1px solid #e8edf3;">
-            <div style="width:8px;height:8px;border-radius:50%;background:${stColors[st]||'#b0bec5'};flex-shrink:0;"></div>
+            <div style="width:8px;height:8px;border-radius:50%;background:${stColors[st]||'#d0d8e4'};flex-shrink:0;"></div>
             <div style="flex:1;min-width:0;">
               <div style="font-size:12px;font-weight:700;color:#0d1b2a;font-family:var(--head);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${e.name}</div>
               <div style="font-size:10px;color:#546e7a;font-family:var(--mono);">${e.id} · ${e.dept}</div>
             </div>
-            <span style="background:${stBg[st]||'#f0f4f8'};color:${stColors[st]||'#546e7a'};padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;font-family:var(--mono);white-space:nowrap;">${stLabel}</span>
+            <span style="background:${hasSt ? stBg[st]||'#f0f4f8' : '#f0f4f8'};color:${hasSt ? stColors[st]||'#546e7a' : '#b0bec5'};padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;font-family:var(--mono);white-space:nowrap;">${stLabel}</span>
           </div>`;
         }).join('');
       }
@@ -1478,7 +1916,7 @@ const App = {
       'The <strong>ATT%</strong> column shows individual attendance rate — green ≥75%, red below 50%.',
     ];
     const tipEl = document.getElementById('dash-tip');
-    if (tipEl) tipEl.innerHTML = tips[new Date().getDate() % tips.length];
+    if (tipEl) tipEl.innerHTML = tips[td % tips.length];
 
     this.renderBarChart(emps, tm, ty);
     this.renderPieChart(emps);
@@ -1534,35 +1972,48 @@ const App = {
 
     d.innerHTML = `
     <div class="att-hdr">
-      <div class="att-tl-row">
+      <div class="att-tl-row" style="min-width:max-content;">
         <div class="page-title">Attendance Register</div>
         <div class="legend">${legendHTML}</div>
       </div>
-      <div class="toolbar">
+      <div class="toolbar" style="min-width:max-content;">
         <span class="lbl-sm">Month</span>
         <select class="sf" id="sel-mo" onchange="App.renderAtt()">
           ${MNS.map((m,i)=>`<option value="${i}"${i===new Date().getMonth()?' selected':''}>${m}</option>`).join('')}
         </select>
         <select class="sf" id="sel-yr" onchange="App.renderAtt()">
         </select>
-        <select class="sf" id="sel-dp" onchange="App.renderAtt()">
+        <select class="sf" id="sel-plant" onchange="App.onAttPlantChange()" title="Filter by Plant/Class/Dept">
+          <option value="">All</option>
+        </select>
+        <select class="sf" id="sel-subgroup" onchange="App.renderAtt()" title="Filter by Sub-group/Year" style="display:none;">
+          <option value="">All</option>
+        </select>
+        <select class="sf" id="sel-section" onchange="App.renderAtt()" title="Filter by Section" style="display:none;">
+          <option value="">All Sections</option>
+        </select>
+        <select class="sf" id="sel-dp" onchange="App.renderAtt()" style="display:none;">
           <option value="">All Departments</option>
         </select>
-        <div class="sw"><span class="sico">⌕</span><input class="di" id="att-srch" type="text" placeholder="Search name or ID..." style="padding-left:27px;min-width:180px;" oninput="App.renderAtt()"></div>
+        <div class="sw"><span class="sico">⌕</span><input class="di" id="att-srch" type="text" placeholder="Search by name, ID or dept..." style="padding-left:27px;min-width:220px;" oninput="App.renderAtt()"></div>
         <div class="divv"></div>
         <button class="btn-p" onclick="App.exportCSV()">↓ CSV</button>
         <button class="btn-g" onclick="App.openAddAtt()">+ ATTENDANCE</button>
       </div>
       <div class="qf-bar" id="qf-bar">
-        <span class="lbl-sm">⚡ Quick Fill:</span>
-        <input class="di" id="qf-dt" type="date" style="min-width:115px;">
-        <select class="sf" id="qf-st">${qfOptions}</select>
-        <button class="btn-y" onclick="App.qfAll()">FILL ALL</button>
-        <div class="divv"></div>
-        <input class="di" id="qf-eid" type="text" placeholder="EMP ID" style="width:72px;">
-        <input class="di" id="qf-fr" type="date" style="min-width:110px;">
-        <input class="di" id="qf-to" type="date" style="min-width:110px;">
-        <button class="btn-y" onclick="App.qfEmp()">FILL ROW</button>
+        <span class="lbl-sm" style="white-space:nowrap;">⚡ Quick Fill:</span>
+        <div style="position:relative;flex-shrink:0;">
+          <input class="di" id="qf-eid" type="text" placeholder="EMP ID or Name (blank = ALL)" style="width:190px;" oninput="App.qfEmpSuggest()" autocomplete="off">
+          <div id="qf-suggest" style="display:none;position:absolute;top:100%;left:0;z-index:500;background:#fff;border:1px solid var(--border);border-top:none;min-width:220px;max-height:180px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,.12);"></div>
+        </div>
+        <input class="di qf-date" id="qf-dt" type="date" title="Single date" style="width:130px;flex-shrink:0;">
+        <span class="lbl-sm" style="white-space:nowrap;font-size:10px;">or range:</span>
+        <input class="di qf-date" id="qf-fr" type="date" title="From date" style="width:130px;flex-shrink:0;">
+        <span class="lbl-sm" style="white-space:nowrap;font-size:10px;">→</span>
+        <input class="di qf-date" id="qf-to" type="date" title="To date" style="width:130px;flex-shrink:0;">
+        <select class="sf" id="qf-st" style="flex-shrink:0;">${qfOptions}</select>
+        <button class="btn-y" onclick="App.qfSmart()" style="flex-shrink:0;white-space:nowrap;">⚡ FILL</button>
+        <span id="qf-hint" style="font-size:10px;color:#b07800;font-family:var(--mono);font-style:italic;white-space:nowrap;"></span>
       </div>
     </div>
     <div class="stats-strip">
@@ -1594,10 +2045,10 @@ const App = {
     <div class="tbl-wrap" id="att-tbl-wrap">
       <div class="sum-section" id="sum-section">
         <div class="sum-lbl-bar" id="sum-lbl">SUMMARY</div>
-        <table><thead><tr class="sum-hdr" id="sum-hdr"></tr></thead><tbody id="sum-body"></tbody></table>
+        <table style="min-width:max-content;width:100%;"><thead><tr class="sum-hdr" id="sum-hdr"></tr></thead><tbody id="sum-body"></tbody></table>
       </div>
       <div class="emp-section" id="emp-section">
-        <table><thead><tr class="emp-hdr" id="emp-hdr"></tr></thead><tbody id="emp-body"></tbody></table>
+        <table style="min-width:max-content;width:100%;"><thead><tr class="emp-hdr" id="emp-hdr"></tr></thead><tbody id="emp-body"></tbody></table>
       </div>
     </div>`;
     return d;
@@ -1621,11 +2072,108 @@ const App = {
     if (curVal && +curVal >= from && +curVal <= to) yrSel.value = curVal;
   },
 
+  // ── Populate plant/area selectors in attendance toolbar ──
+  populateAttPlants() {
+    const struct   = this.getCompanyStructure(this.cid());
+    const coType   = this.getCoTypeForSession();
+    const plantSel = document.getElementById('sel-plant');
+    if (!plantSel) return;
+
+    const lbl = coType==='school' ? 'All Classes' : coType==='college' ? 'All Departments' : 'All Plants/Areas';
+    const curPlant = plantSel.value;
+
+    // Get user's allowed plants
+    const userAreas = this.session.coUserId
+      ? (DB.coUsers().find(u => u.id === this.session.coUserId)?.areas || [])
+      : [];
+    const allowedPlants = new Set();
+    if (userAreas.length) userAreas.forEach(a => allowedPlants.add(a.split('::')[0]));
+
+    // Build plant list from structure or employee data
+    const emps = DB.employees(this.cid());
+    let plantNames = [];
+    if (struct.length) {
+      plantNames = struct.map(g => g.name);
+    } else {
+      const seen = new Set();
+      emps.forEach(e => {
+        const p = e.plant || e.dept || '';
+        if (p && !seen.has(p)) { seen.add(p); plantNames.push(p); }
+      });
+    }
+    // Filter to user's allowed plants only
+    if (allowedPlants.size > 0) {
+      plantNames = plantNames.filter(p => allowedPlants.has(p));
+    }
+
+    if (!plantNames.length) {
+      plantSel.style.display = 'none';
+      ['sel-subgroup','sel-section'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
+      return;
+    }
+
+    plantSel.style.display = '';
+    plantSel.innerHTML = `<option value="">${lbl}</option>` +
+      plantNames.map(g=>`<option value="${g}">${g}</option>`).join('');
+
+    // Auto-select if user has exactly one allowed plant
+    if (allowedPlants.size === 1 && !curPlant) {
+      plantSel.value = [...allowedPlants][0];
+    } else if (curPlant) {
+      plantSel.value = curPlant;
+    }
+  },
+
+  onAttPlantChange(resetSubs) {
+    const struct   = this.getCompanyStructure(this.cid());
+    const plantVal = document.getElementById('sel-plant')?.value || '';
+    const grp      = struct.find(g=>g.name===plantVal);
+    const sgSel    = document.getElementById('sel-subgroup');
+    const secSel   = document.getElementById('sel-section');
+
+    if (!grp) {
+      ['sel-subgroup','sel-section'].forEach(id => { const e=document.getElementById(id); if(e) e.style.display='none'; });
+      return; // renderAtt will be triggered by onchange event
+    }
+    if (resetSubs !== false) {
+      if (sgSel) sgSel.value = '';
+      if (secSel) secSel.value = '';
+    }
+    // Sub-groups (years/depts)
+    if ((grp.subGroups||[]).length) {
+      if (sgSel) {
+        const coType = this.getCoTypeForSession();
+        const lbl = coType==='college' ? 'All Years' : 'All Sub-depts';
+        sgSel.innerHTML = `<option value="">${lbl}</option>` +
+          grp.subGroups.map(sg=>`<option value="${sg.name}">${sg.name}</option>`).join('');
+        sgSel.style.display = '';
+      }
+      if (secSel) secSel.style.display = 'none';
+    } else if ((grp.items||[]).length) {
+      if (sgSel) sgSel.style.display = 'none';
+      if (secSel) {
+        secSel.innerHTML = '<option value="">All Sections</option>' +
+          grp.items.map(s=>`<option value="${s}">${s}</option>`).join('');
+        secSel.style.display = '';
+      }
+    } else {
+      ['sel-subgroup','sel-section'].forEach(id => { const e=document.getElementById(id); if(e) e.style.display='none'; });
+    }
+    // renderAtt is called by the onchange event on sel-plant, not here
+  },
+
   renderAtt() {
     this.populateYears();
+    this.populateAttPlants();
     const mo = +(document.getElementById('sel-mo')?.value ?? this.att.mo);
     const yr = +(document.getElementById('sel-yr')?.value ?? this.att.yr);
     this.att.mo = mo; this.att.yr = yr;
+
+    // Plant/subgroup/section filters (new structure-based)
+    const selPlant    = document.getElementById('sel-plant')?.value    || '';
+    const selSubgroup = document.getElementById('sel-subgroup')?.value || '';
+    const selSection  = document.getElementById('sel-section')?.value  || '';
+
     const dept = document.getElementById('sel-dp')?.value || '';
     const srch = (document.getElementById('att-srch')?.value || '').toLowerCase();
     const emps = DB.employees(this.cid());
@@ -1638,13 +2186,50 @@ const App = {
     }
     const qf = document.getElementById('qf-bar');
     if (qf) qf.style.display = this.canEdit() ? 'flex' : 'none';
+    const qfEidInput = document.getElementById('qf-eid');
+    if (qfEidInput) qfEidInput.placeholder = (this.isSchoolMode() ? 'Student ID or Name' : 'EMP ID or Name') + ' (blank = ALL)';
+    const srchInput = document.getElementById('att-srch');
+    if (srchInput) srchInput.placeholder = this.isSchoolMode() ? 'Search by name, Student ID or class...' : 'Search by name, EMP ID or dept...';
     const days = new Date(yr, mo+1, 0).getDate();
+
+    // User area restriction (for sub-users with assigned areas)
+    const userAreas = this.session.coUserId
+      ? (DB.coUsers().find(u => u.id === this.session.coUserId)?.areas || [])
+      : [];
+    const struct = this.getCompanyStructure(this.cid());
+    const allowedDepts = new Set();
+    if (userAreas.length && struct.length) {
+      userAreas.forEach(a => {
+        if (a.includes('::')) { allowedDepts.add(a.split('::')[1]); allowedDepts.add(a); }
+        else { const grp=struct.find(g=>g.name===a); if(grp){allowedDepts.add(grp.name);(grp.items||[]).forEach(i=>allowedDepts.add(i));} }
+      });
+    }
 
     // Base filter
     let base = emps.filter(e => {
       if (e.status === 'inactive') return false;
+      // Plant filter: match emp.plant OR legacy emp.dept against selected plant
+      if (selPlant) {
+        // Match against emp.plant (new) OR emp.dept (legacy) OR dept string starting with plant
+        const empPlant = e.plant || '';
+        const empDept  = e.dept  || '';
+        const matched  = empPlant === selPlant ||
+                         empDept  === selPlant ||
+                         empDept.startsWith(selPlant + ' ›') ||
+                         empPlant.startsWith(selPlant + ' ›');
+        if (!matched) return false;
+      }
+      if (selSubgroup && e.subgroup !== selSubgroup) return false;
+      if (selSection  && e.section  !== selSection)  return false;
+      // Legacy dept dropdown filter
       if (dept && e.dept !== dept) return false;
-      if (srch && !e.name.toLowerCase().includes(srch) && !e.id.toLowerCase().includes(srch)) return false;
+      if (srch && !e.name.toLowerCase().includes(srch) && !e.id.toLowerCase().includes(srch) && !(e.dept||'').toLowerCase().includes(srch)) return false;
+      // User area restriction
+      if (allowedDepts.size > 0) {
+        const empDept  = e.dept  || '';
+        const empPlant = e.plant || '';
+        if (!allowedDepts.has(empDept) && !allowedDepts.has(empPlant)) return false;
+      }
       return true;
     });
 
@@ -1657,11 +2242,9 @@ const App = {
         if(s==='P')pd++;
         else if(s==='N')pn++;
         else if(s==='A')ab++;
-        else if(s==='L'||s==='WO'||s==='PH'||s==='HD')lv++;
+        else if(s==='L')lv++;
       }
-      // Working days = days with any status (P/N/A/L etc) — exclude blank
-      // Attendance % = (P+N) / (P+N+A) * 100  (ignore leave/WO/PH in denominator)
-      const workDays = pd + pn + ab; // actual worked+absent days (leave excluded from %)
+      const workDays = pd + pn + ab;
       const pct = workDays > 0 ? Math.round((pd+pn)/workDays*100) : null;
       return { ...emp, _pd:pd, _pn:pn, _ab:ab, _lv:lv, _tot:tot, _pct:pct };
     });
@@ -1671,28 +2254,25 @@ const App = {
     const absMax = document.getElementById('flt-abs-max')?.value;
     if (absMin !== '' && absMin !== null && absMin !== undefined) {
       const mn = +absMin;
-      base = base.filter(e => e._ab >= mn);
+      if (!isNaN(mn)) base = base.filter(e => e._ab >= mn);
     }
     if (absMax !== '' && absMax !== null && absMax !== undefined && document.getElementById('flt-abs-max')?.value !== '') {
       const mx = +absMax;
-      base = base.filter(e => e._ab <= mx);
+      if (!isNaN(mx)) base = base.filter(e => e._ab <= mx);
     }
 
     // Attendance % max filter
     const pctMax = document.getElementById('flt-pct-max')?.value;
     if (pctMax !== '' && pctMax !== null && pctMax !== undefined && document.getElementById('flt-pct-max')?.value !== '') {
       const pm = +pctMax;
-      base = base.filter(e => e._pct !== null && e._pct <= pm);
+      if (!isNaN(pm)) base = base.filter(e => e._pct !== null && e._pct <= pm);
     }
 
     // Sort
     if (this.att.sort) {
       const dir = this.att.sortDir;
       base.sort((a,b) => {
-        if (this.att.sort === 'pct') {
-          const ap = a._pct ?? -1, bp = b._pct ?? -1;
-          return (ap - bp) * dir;
-        }
+        if (this.att.sort === 'pct') { const ap = a._pct ?? -1, bp = b._pct ?? -1; return (ap - bp) * dir; }
         if (this.att.sort === 'abs') return (a._ab - b._ab) * dir;
         if (this.att.sort === 'pre') return ((a._pd+a._pn) - (b._pd+b._pn)) * dir;
         if (this.att.sort === 'nm') return a.name.localeCompare(b.name) * dir;
@@ -1713,39 +2293,6 @@ const App = {
     this.updateSortBtns();
   },
 
-  // Build status picker dynamically based on mode
-  buildStatusPicker() {
-    const el = document.getElementById('sp-items');
-    if (!el) return;
-    const schoolMode = this.isSchoolMode();
-    if (schoolMode) {
-      el.innerHTML = `
-        <div class="sp-item" onclick="App.setSt('P')"><div class="sp-dot sc-p">P</div><span>Present</span></div>
-        <div class="sp-item" onclick="App.setSt('A')"><div class="sp-dot sc-a">A</div><span>Absent</span></div>
-        <div class="sp-item" onclick="App.setSt('L')"><div class="sp-dot sc-l">L</div><span>Leave</span></div>
-        <div class="sp-item" onclick="App.setSt('PH')"><div class="sp-dot sc-ph">PH</div><span>Public Holiday</span></div>
-        <hr class="sp-sep">
-        <div class="sp-item" onclick="App.setSt('')"><div class="sp-dot sc-e" style="font-size:14px;">×</div><span>Clear</span></div>`;
-    } else {
-      el.innerHTML = `
-        <div class="sp-item" onclick="App.setSt('P')"><div class="sp-dot sc-p">P</div><span>Present Day</span></div>
-        <div class="sp-item" onclick="App.setSt('N')"><div class="sp-dot sc-n">N</div><span>Present Night</span></div>
-        <div class="sp-item" onclick="App.setSt('A')"><div class="sp-dot sc-a">A</div><span>Absent</span></div>
-        <div class="sp-item" onclick="App.setSt('L')"><div class="sp-dot sc-l">L</div><span>Leave</span></div>
-        <div class="sp-item" onclick="App.setSt('WO')"><div class="sp-dot sc-wo">WO</div><span>Week Off</span></div>
-        <div class="sp-item" onclick="App.setSt('PH')"><div class="sp-dot sc-ph">PH</div><span>Public Holiday</span></div>
-        <div class="sp-item" onclick="App.setSt('HD')"><div class="sp-dot sc-hd">HD</div><span>Half Day</span></div>
-        <hr class="sp-sep">
-        <div class="sp-item" onclick="App.setSt('')"><div class="sp-dot sc-e" style="font-size:14px;">×</div><span>Clear</span></div>`;
-    }
-    // Also update the Add Attendance modal status dropdown
-    const aa = document.getElementById('aa-st');
-    if (aa) {
-      aa.innerHTML = schoolMode
-        ? `<option value="P">P – Present</option><option value="A">A – Absent</option><option value="L">L – Leave</option><option value="PH">PH – Public Holiday</option>`
-        : `<option value="P">PD – Present Day</option><option value="N">PN – Present Night</option><option value="A">A – Absent</option><option value="L">L – Leave</option><option value="WO">WO – Week Off</option><option value="PH">PH – Public Holiday</option><option value="HD">HD – Half Day</option>`;
-    }
-  },
 
   renderAttHdrs(days) {
     const sh = document.getElementById('sum-hdr');
@@ -1755,9 +2302,9 @@ const App = {
     sh.innerHTML = '<th class="thf">METRIC</th>';
     // Employee header: columns depend on mode
     if (schoolMode) {
-      eh.innerHTML = `<th class="th-sr">SR</th><th class="th-id">EMP ID</th><th class="th-nm">NAME</th><th class="th-dp">CLASS / DEPT</th><th class="th-pd">P</th><th class="th-a">A</th><th class="th-l">L</th><th class="th-pct" style="position:sticky;left:426px;top:0;z-index:70;background:var(--bg3);">ATT%</th>`;
+      eh.innerHTML = `<th class="th-sr">SR</th><th class="th-id">STU ID</th><th class="th-nm">STUDENT NAME</th><th class="th-dp">CLASS / DEPT</th><th class="th-pd">P</th><th class="th-a">A</th><th class="th-l">L</th><th class="th-pct">ATT%</th>`;
     } else {
-      eh.innerHTML = `<th class="th-sr">SR</th><th class="th-id">EMP ID</th><th class="th-nm">EMPLOYEE NAME</th><th class="th-dp">DEPARTMENT</th><th class="th-pd">PD</th><th class="th-pn">PN</th><th class="th-a">A</th><th class="th-l">L</th><th class="th-pct" style="position:sticky;left:466px;top:0;z-index:70;background:var(--bg3);">ATT%</th>`;
+      eh.innerHTML = `<th class="th-sr">SR</th><th class="th-id">EMP ID</th><th class="th-nm">EMPLOYEE NAME</th><th class="th-dp">DEPARTMENT</th><th class="th-pd">PD</th><th class="th-pn">PN</th><th class="th-a">A</th><th class="th-l">L</th><th class="th-pct">ATT%</th>`;
     }
     for (let d = 1; d <= days; d++) {
       const dt = new Date(this.att.yr, this.att.mo, d);
@@ -1793,7 +2340,7 @@ const App = {
       if (key==='pd'&&s==='P') c++;
       else if (key==='pn'&&s==='N') c++;
       else if (key==='abs'&&s==='A') c++;
-      else if (key==='lv'&&(s==='L'||s==='WO'||s==='PH'||s==='HD')) c++;
+      else if (key==='lv'&&s==='L') c++;
     });
     return c;
   },
@@ -1833,12 +2380,20 @@ const App = {
     const schoolMode = this.isSchoolMode();
     const SCM = this.getSCM();
     body.innerHTML = '';
+    const srch = (document.getElementById('att-srch')?.value || '').toLowerCase();
+    // Helper: wrap matched text in highlight span
+    const hl = (text, q) => {
+      if (!q || !text) return text;
+      const i = text.toLowerCase().indexOf(q);
+      if (i === -1) return text;
+      return text.slice(0,i) + `<mark style="background:#fff176;color:#0d1b2a;border-radius:2px;padding:0 1px;">${text.slice(i,i+q.length)}</mark>` + text.slice(i+q.length);
+    };
     this.att.filt.forEach((emp, idx) => {
       // Use pre-computed if available (from renderAtt enrichment), else compute
       const pd  = emp._pd  !== undefined ? emp._pd  : (() => { let c=0; for(let d=1;d<=days;d++) if((emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]==='P')c++; return c; })();
       const pn  = emp._pn  !== undefined ? emp._pn  : (() => { let c=0; for(let d=1;d<=days;d++) if((emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]==='N')c++; return c; })();
       const ab  = emp._ab  !== undefined ? emp._ab  : (() => { let c=0; for(let d=1;d<=days;d++) if((emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]==='A')c++; return c; })();
-      const lv  = emp._lv  !== undefined ? emp._lv  : (() => { let c=0; for(let d=1;d<=days;d++){const s=(emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||'';if(s==='L'||s==='WO'||s==='PH'||s==='HD')c++;} return c; })();
+      const lv  = emp._lv  !== undefined ? emp._lv  : (() => { let c=0; for(let d=1;d<=days;d++){const s=(emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||'';if(s==='L')c++;} return c; })();
       const pct = emp._pct !== undefined ? emp._pct : null;
 
       // % color: green ≥75, yellow ≥50, red <50
@@ -1848,15 +2403,14 @@ const App = {
 
       const tr = document.createElement('tr');
       tr.className = 'emp-row';
-      let h = `<td class="td-sr">${idx+1}</td><td class="td-id">${emp.id}</td><td class="td-nm">${emp.name}</td><td class="td-dp">${emp.dept}</td>`;
+      let h = `<td class="td-sr">${idx+1}</td><td class="td-id">${hl(emp.id, srch)}</td><td class="td-nm">${hl(emp.name, srch)}</td><td class="td-dp">${hl(emp.dept, srch)}</td>`;
       if (schoolMode) {
         h += `<td class="td-pd">${pd||''}</td><td class="td-a">${ab||''}</td><td class="td-l">${lv||''}</td>`;
       } else {
         h += `<td class="td-pd">${pd||''}</td><td class="td-pn">${pn||''}</td><td class="td-a">${ab||''}</td><td class="td-l">${lv||''}</td>`;
       }
-      // % column
+      // % column right after L — scrolls with dates
       h += `<td class="td-pct"><div class="pct-wrap"><span class="pct-val" style="color:${pctColor};">${pctText}</span><div class="pct-bar"><div class="pct-fill" style="width:${pct??0}%;background:${pctBarColor};"></div></div></div></td>`;
-
       for (let d=1;d<=days;d++) {
         const s=(emp.att||{})[`${this.att.yr}-${this.att.mo}-${d}`]||'';
         const m=SCM[s]; const cls=m?m.c:'sc-e', txt=m?m.t:'';
@@ -1948,41 +2502,114 @@ const App = {
     if (emp) {
       if (!emp.att) emp.att = {};
       const k = `${this.att.yr}-${this.att.mo}-${day}`;
-      if (s === '') delete emp.att[k]; else emp.att[k] = s;
+      if (s === '') {
+        delete emp.att[k];
+        // Also scrub any empty-string values that may have crept in
+        Object.keys(emp.att).forEach(dk => { if (emp.att[dk] === '') delete emp.att[dk]; });
+      } else {
+        emp.att[k] = s;
+      }
       DB.saveEmployees(this.cid(), emps);
-      this.renderAtt(); this.toast('Updated','s');
+      this.renderAtt(); this.refreshDashStats(); this.toast('Updated','s');
     }
     document.getElementById('sp').style.display = 'none'; this.att.sel = null;
   },
 
-  qfAll() {
-    if (!this.canEdit()) return;
-    const ds = document.getElementById('qf-dt').value;
-    const st = document.getElementById('qf-st').value;
-    if (!ds) { this.toast('Select a date','e'); return; }
-    const d = new Date(ds);
-    const k = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-    const emps = DB.employees(this.cid());
-    emps.forEach(e => { if(!e.att)e.att={}; e.att[k]=st; });
-    DB.saveEmployees(this.cid(), emps);
-    this.renderAtt(); this.toast(`All → ${st}`,'s');
+  // Autocomplete suggestions for Quick Fill EMP ID field
+  qfEmpSuggest() {
+    const input = document.getElementById('qf-eid');
+    const box = document.getElementById('qf-suggest');
+    const hint = document.getElementById('qf-hint');
+    const q = input.value.trim().toLowerCase();
+    if (!q) {
+      box.style.display = 'none';
+      if (hint) hint.textContent = 'No employee selected — FILL will apply to ALL';
+      return;
+    }
+    const emps = DB.employees(this.cid()).filter(e => e.status !== 'inactive');
+    const matches = emps.filter(e =>
+      e.id.toLowerCase().includes(q) || e.name.toLowerCase().includes(q)
+    ).slice(0, 8);
+    if (!matches.length) {
+      box.style.display = 'none';
+      if (hint) hint.textContent = 'No match found';
+      return;
+    }
+    box.innerHTML = matches.map(e =>
+      `<div onclick="App.qfSelectEmp('${e.id}','${e.name.replace(/'/g,"\'")}')"
+        style="padding:7px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid #f0f4f8;display:flex;gap:8px;align-items:center;"
+        onmouseover="this.style.background='#e3f0ff'" onmouseout="this.style.background=''">
+        <span style="font-family:var(--mono);color:#1565c0;font-weight:700;min-width:52px;">${e.id}</span>
+        <span style="color:#0d1b2a;">${e.name}</span>
+        <span style="color:#90a4b8;font-size:10px;margin-left:auto;">${e.dept||''}</span>
+      </div>`
+    ).join('');
+    box.style.display = 'block';
+    if (hint) hint.textContent = '';
   },
-  qfEmp() {
-    if (!this.canEdit()) return;
-    const eid = document.getElementById('qf-eid').value.trim();
-    const fr = document.getElementById('qf-fr').value;
-    const to = document.getElementById('qf-to').value;
-    const st = document.getElementById('qf-st').value;
-    if (!eid||!fr||!to) { this.toast('Fill EMP ID, From, To','e'); return; }
-    const emps = DB.employees(this.cid());
-    const emp = emps.find(e => e.id===eid||e.name.toLowerCase().includes(eid.toLowerCase()));
-    if (!emp) { this.toast('Employee not found','e'); return; }
-    if (!emp.att) emp.att = {};
-    let cnt=0, cur=new Date(fr), end=new Date(to);
-    for (;cur<=end;cur.setDate(cur.getDate()+1)) { emp.att[`${cur.getFullYear()}-${cur.getMonth()}-${cur.getDate()}`]=st; cnt++; }
-    DB.saveEmployees(this.cid(), emps);
-    this.renderAtt(); this.toast(`${cnt} days filled for ${emp.name}`,'s');
+  qfSelectEmp(id, name) {
+    const input = document.getElementById('qf-eid');
+    const box = document.getElementById('qf-suggest');
+    const hint = document.getElementById('qf-hint');
+    input.value = id;
+    box.style.display = 'none';
+    if (hint) hint.textContent = `✓ ${name}`;
   },
+
+  // Unified smart fill — fills single employee or all based on EMP ID field
+  qfSmart() {
+    if (!this.canEdit()) return;
+    const eid   = document.getElementById('qf-eid').value.trim();
+    const ds    = document.getElementById('qf-dt').value;
+    const fr    = document.getElementById('qf-fr').value;
+    const to    = document.getElementById('qf-to').value;
+    const st    = document.getElementById('qf-st').value;
+
+    // Determine date range: fr+to override single date ds
+    const dateFrom = fr || ds;
+    const dateTo   = to || ds;
+    if (!dateFrom) { this.toast('Select a date','e'); return; }
+
+    const allEmps = DB.employees(this.cid());
+
+    // Parse date range safely
+    const [fy,fm,fd] = dateFrom.split('-').map(Number);
+    const [ty2,tm2,td2] = dateTo.split('-').map(Number);
+    let cur = new Date(fy, fm-1, fd);
+    const end = new Date(ty2, tm2-1, td2);
+
+    if (eid) {
+      // Single employee fill
+      const emp = allEmps.find(e => e.id === eid || e.name.toLowerCase().includes(eid.toLowerCase()));
+      if (!emp) { this.toast('Employee not found','e'); return; }
+      if (!emp.att) emp.att = {};
+      let cnt = 0;
+      for (let c=new Date(cur);c<=end;c.setDate(c.getDate()+1)) {
+        emp.att[`${c.getFullYear()}-${c.getMonth()}-${c.getDate()}`] = st; cnt++;
+      }
+      DB.saveEmployees(this.cid(), allEmps);
+      this.renderAtt(); this.refreshDashStats();
+      this.toast(`${emp.name} → ${st} (${cnt} day${cnt!==1?'s':''})`, 's');
+    } else {
+      // Fill ALL employees
+      let cnt = 0;
+      for (let c=new Date(cur);c<=end;c.setDate(c.getDate()+1)) {
+        const k = `${c.getFullYear()}-${c.getMonth()}-${c.getDate()}`;
+        allEmps.forEach(e => { if(!e.att)e.att={}; e.att[k]=st; });
+        cnt++;
+      }
+      DB.saveEmployees(this.cid(), allEmps);
+      this.renderAtt(); this.refreshDashStats();
+      this.toast(`All employees → ${st} (${cnt} day${cnt!==1?'s':''})`, 's');
+    }
+    // Clear EMP hint
+    const hint = document.getElementById('qf-hint');
+    if (hint) hint.textContent = '';
+  },
+
+  qfAll() { this.qfSmart(); }, // legacy alias
+  qfEmp()  { this.qfSmart(); }, // legacy alias
+
 
   openAddAtt() {
     if (!this.canEdit()) { this.toast('View-only access','e'); return; }
@@ -2000,17 +2627,20 @@ const App = {
     const emp = emps.find(e => e.id===eid||e.name.toLowerCase().includes(eid.toLowerCase()));
     if (!emp) { this.toast('Employee not found','e'); return; }
     if (!emp.att) emp.att = {};
-    const d = new Date(ds);
-    emp.att[`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`] = st;
+    // Parse YYYY-MM-DD directly (avoids UTC midnight -> local date off-by-one in UTC+ timezones)
+    const [dy, dm, dd] = ds.split('-').map(Number);
+    emp.att[`${dy}-${dm-1}-${dd}`] = st;
     DB.saveEmployees(this.cid(), emps);
-    this.renderAtt(); this.closeMo('m-att');
+    this.renderAtt(); this.refreshDashStats(); this.closeMo('m-att');
     this.toast(`${emp.name} → ${st}`,'s');
   },
 
   exportCSV() {
     const days = new Date(this.att.yr, this.att.mo+1, 0).getDate();
     const schoolMode = this.isSchoolMode();
-    const h = ['SR','EMP ID','NAME','DEPARTMENT', schoolMode ? 'P' : 'PD', ...(schoolMode ? [] : ['PN']), 'A','L','ATT%'];
+    const idLabel = schoolMode ? 'STU ID' : 'EMP ID';
+    const nmLabel = schoolMode ? 'STUDENT NAME' : 'NAME';
+    const h = ['SR', idLabel, nmLabel,'DEPARTMENT', schoolMode ? 'P' : 'PD', ...(schoolMode ? [] : ['PN']), 'A','L','ATT%'];
     for (let d=1;d<=days;d++) h.push(`${d}-${MN3[this.att.mo]}`);
     const rows = [h.join(',')];
     this.att.filt.forEach((emp, idx) => {
@@ -2045,7 +2675,7 @@ const App = {
         <input class="di" id="emp-srch" type="text" placeholder="Search employees..." style="padding-left:28px;max-width:320px;" oninput="App.renderEmpList()">
       </div>
       <table class="emp-pg-tbl">
-        <thead><tr><th>SR</th><th>ID</th><th>NAME</th><th id="th-dept-lbl">DEPARTMENT</th><th>DESIGNATION</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+        <thead><tr><th>SR</th><th>ID</th><th>NAME</th><th id="th-plant-lbl">PLANT / CLASS</th><th id="th-dept-lbl">DEPT / SECTION</th><th>DESIGNATION</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
         <tbody id="emp-tbl-body"></tbody>
       </table>
     </div>`;
@@ -2053,12 +2683,19 @@ const App = {
   },
   renderEmpList() {
     const schoolMode = this.isSchoolMode();
+    const coType = this.getCoTypeForSession();
     const deptLbl = document.getElementById('th-dept-lbl');
-    if (deptLbl) deptLbl.textContent = schoolMode ? 'CLASS / DEPT' : 'DEPARTMENT';
+    if (deptLbl) deptLbl.textContent = coType==='school' ? 'SECTION' : coType==='college' ? 'YEAR / SECTION' : 'DEPARTMENT';
+    const plantLbl = document.getElementById('th-plant-lbl');
+    if (plantLbl) plantLbl.textContent = coType==='school' ? 'CLASS' : coType==='college' ? 'DEPARTMENT' : 'PLANT / AREA';
     const actions = document.getElementById('emp-pg-actions');
-    if (actions && this.session.role === 'admin') {
-      const label = schoolMode ? '+ ADD STUDENT' : '+ ADD EMPLOYEE';
-      actions.innerHTML = `<button class="btn-g" onclick="App.openAddEmp()">${label}</button>`;
+    if (actions) {
+      if (this.session.role === 'admin') {
+        const label = schoolMode ? '+ ADD STUDENT' : '+ ADD EMPLOYEE';
+        actions.innerHTML = `<button class="btn-g" onclick="App.openAddEmp()">${label}</button>`;
+      } else {
+        actions.innerHTML = '';
+      }
     }
     const srch = (document.getElementById('emp-srch')?.value || '').toLowerCase();
     let emps = DB.employees(this.cid());
@@ -2073,56 +2710,209 @@ const App = {
         <td style="color:var(--text-dim);font-family:var(--mono);">${i+1}</td>
         <td class="emp-id">${emp.id}</td>
         <td class="emp-nm">${emp.name}</td>
-        <td style="color:var(--text-dim)">${emp.dept||'–'}</td>
+        <td style="color:var(--text-dim);font-size:12px;">${emp.plant ? (emp.plant+(emp.subgroup?' › '+emp.subgroup:'')) : (emp.dept||'–')}</td>
+        <td style="color:var(--text-dim);font-size:12px;">${emp.section ? emp.section : (emp.plant ? (emp.dept||'–') : '–')}</td>
         <td style="color:var(--text-dim)">${emp.desig||'–'}</td>
         <td><span class="${emp.status==='active'?'tag-active':'tag-inactive'}">${emp.status||'active'}</span></td>
         <td>${canMod?`<button class="act-btn edit" onclick="App.openEditEmp('${emp.id}')" title="Edit">✎</button><button class="act-btn del" onclick="App.deleteEmp('${emp.id}')" title="Delete">🗑</button>`:'<span style="color:var(--text-muted);font-size:11px;">–</span>'}</td>`;
       body.appendChild(tr);
     });
   },
+  // ── Build employee modal structure dropdowns ──
+  populateEmpStructure(emp) {
+    const coType  = this.getCoTypeForSession();
+    const struct  = this.getCompanyStructure(this.cid());
+    const isSchool= this.isSchoolMode();
+
+    // Label updates
+    const setTxt = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+    setTxt('lbl-emp-plant',   coType==='school' ? 'Standard / Class *' : coType==='college' ? 'Department *' : 'Plant / Area *');
+    setTxt('lbl-emp-subgroup',coType==='college' ? 'Year *' : 'Sub-dept / Shift');
+    setTxt('lbl-emp-section', 'Section');
+
+    const plantSel = document.getElementById('ae-plant');
+    const plantWrap= document.getElementById('ae-plant-wrap');
+    const dpWrap   = document.getElementById('ae-dp-wrap');
+
+    if (!struct.length) {
+      // No structure defined — show manual dept text input only
+      if (plantWrap) plantWrap.style.display = 'none';
+      if (dpWrap)    dpWrap.style.display = '';
+      ['ae-subgroup-wrap','ae-section-wrap'].forEach(id => { const e=document.getElementById(id); if(e) e.style.display='none'; });
+      // Pre-fill manual dept from emp.dept or emp.plant
+      if (emp) { const dpEl=document.getElementById('ae-dp'); if(dpEl) dpEl.value=emp.dept||emp.plant||''; }
+      return;
+    }
+
+    // Structure exists — show plant dropdown hierarchy
+    if (plantWrap) plantWrap.style.display = '';
+    // Also always show manual dept field so legacy/custom values can be edited
+    if (dpWrap) dpWrap.style.display = '';
+    const dpLbl = document.getElementById('lbl-emp-dp');
+    if (dpLbl) dpLbl.textContent = 'Dept / Notes (optional)';
+
+    // Populate plant dropdown
+    plantSel.innerHTML = '<option value="">— Select Plant/Class —</option>' +
+      struct.map(g => `<option value="${g.name}">${g.name}</option>`).join('');
+
+    // If editing, restore saved values
+    if (emp) {
+      // Restore plant from emp.plant; if missing, try to match dept against structure
+      let plantVal = emp.plant || '';
+      if (!plantVal && emp.dept) {
+        const matched = struct.find(g => emp.dept.startsWith(g.name));
+        if (matched) plantVal = matched.name;
+      }
+      plantSel.value = plantVal;
+      // Fill manual dept field: show dept MINUS the plant prefix so user can edit just the dept part
+      const dpEl = document.getElementById('ae-dp');
+      if (dpEl) {
+        // If dept starts with plant name, show remaining part; otherwise show full dept
+        let deptPart = emp.dept || '';
+        if (plantVal && deptPart.startsWith(plantVal + ' › ')) {
+          deptPart = deptPart.slice(plantVal.length + 3);
+        } else if (deptPart === plantVal) {
+          deptPart = ''; // dept IS the plant — clear it so user can enter sub-dept
+        }
+        dpEl.value = deptPart;
+      }
+      this.onEmpPlantChange(emp.subgroup||'', emp.section||'');
+    } else {
+      this.onEmpPlantChange('','');
+    }
+  },
+
+  onEmpPlantChange(preSubgroup, preSection) {
+    const struct   = this.getCompanyStructure(this.cid());
+    const plantVal = document.getElementById('ae-plant')?.value || '';
+    const grp      = struct.find(g => g.name === plantVal);
+    const sgWrap   = document.getElementById('ae-subgroup-wrap');
+    const secWrap  = document.getElementById('ae-section-wrap');
+    const sgSel    = document.getElementById('ae-subgroup');
+    const secSel   = document.getElementById('ae-section');
+    if (!grp || !(grp.subGroups||[]).length) {
+      if (sgWrap) sgWrap.style.display = 'none';
+      // Show section directly from items
+      if ((grp?.items||[]).length) {
+        if (secWrap) secWrap.style.display = '';
+        secSel.innerHTML = '<option value="">All Sections</option>' +
+          (grp.items||[]).map(s=>`<option value="${s}">${s}</option>`).join('');
+        if (preSection) secSel.value = preSection;
+      } else {
+        if (secWrap) secWrap.style.display = 'none';
+      }
+      return;
+    }
+    // Has subgroups
+    if (sgWrap) sgWrap.style.display = '';
+    sgSel.innerHTML = '<option value="">Select...</option>' +
+      (grp.subGroups||[]).map(sg=>`<option value="${sg.name}">${sg.name}</option>`).join('');
+    if (preSubgroup) { sgSel.value = preSubgroup; this.onEmpSubgroupChange(preSection||''); }
+    else { if (secWrap) secWrap.style.display = 'none'; }
+  },
+
+  onEmpSubgroupChange(preSection) {
+    const struct   = this.getCompanyStructure(this.cid());
+    const plantVal = document.getElementById('ae-plant')?.value || '';
+    const sgVal    = document.getElementById('ae-subgroup')?.value || '';
+    const grp      = struct.find(g=>g.name===plantVal);
+    const sg       = (grp?.subGroups||[]).find(s=>s.name===sgVal);
+    const secWrap  = document.getElementById('ae-section-wrap');
+    const secSel   = document.getElementById('ae-section');
+    if (!sg || !(sg.items||[]).length) { if(secWrap) secWrap.style.display='none'; return; }
+    if (secWrap) secWrap.style.display = '';
+    secSel.innerHTML = '<option value="">All Sections</option>' +
+      (sg.items||[]).map(s=>`<option value="${s}">${s}</option>`).join('');
+    if (preSection) secSel.value = preSection;
+  },
+
+  // Build the dept string from plant+subgroup+section for display/filter
+  _buildDept(plant, subgroup, section, fallback) {
+    if (!plant) return fallback || '';
+    const parts = [plant];
+    if (subgroup) parts.push(subgroup);
+    if (section)  parts.push(section);
+    return parts.join(' › ');
+  },
+
   openAddEmp() {
     if (this.session.role !== 'admin') { this.toast('Admin only','e'); return; }
     const schoolMode = this.isSchoolMode();
+    const coType = this.getCoTypeForSession();
     document.getElementById('m-emp-title').textContent = schoolMode ? 'Add Student' : 'Add Employee';
-    document.getElementById('lbl-emp-id').textContent = schoolMode ? 'Student ID / Roll No. *' : 'Employee ID *';
-    document.getElementById('lbl-emp-nm').textContent = schoolMode ? 'Student Name *' : 'Full Name *';
-    document.getElementById('lbl-emp-dp').textContent = schoolMode ? 'Class / Section *' : 'Department *';
+    const setTxt = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+    setTxt('lbl-emp-id',  schoolMode ? 'Student ID / Roll No. *' : 'Employee ID *');
+    setTxt('lbl-emp-nm',  schoolMode ? 'Student Name *' : 'Full Name *');
+    setTxt('lbl-emp-dp',  schoolMode ? 'Class / Section *' : 'Department *');
     document.getElementById('ae-edit-id').value = '';
-    ['ae-id','ae-nm','ae-dp','ae-des'].forEach(id => document.getElementById(id).value = '');
+    ['ae-id','ae-nm','ae-des'].forEach(id => { const e=document.getElementById(id); if(e) e.value=''; });
+    const dp = document.getElementById('ae-dp'); if(dp) dp.value='';
     document.getElementById('ae-st').value = 'active';
+    this.populateEmpStructure(null);
     document.getElementById('m-emp').classList.add('show');
   },
+
   openEditEmp(id) {
     const emp = DB.employees(this.cid()).find(e => e.id === id);
     if (!emp) return;
     const schoolMode = this.isSchoolMode();
     document.getElementById('m-emp-title').textContent = schoolMode ? 'Edit Student' : 'Edit Employee';
-    document.getElementById('lbl-emp-id').textContent = schoolMode ? 'Student ID / Roll No. *' : 'Employee ID *';
-    document.getElementById('lbl-emp-nm').textContent = schoolMode ? 'Student Name *' : 'Full Name *';
-    document.getElementById('lbl-emp-dp').textContent = schoolMode ? 'Class / Section *' : 'Department *';
+    const setTxt = (id2,v) => { const e=document.getElementById(id2); if(e) e.textContent=v; };
+    setTxt('lbl-emp-id',  schoolMode ? 'Student ID / Roll No. *' : 'Employee ID *');
+    setTxt('lbl-emp-nm',  schoolMode ? 'Student Name *' : 'Full Name *');
+    setTxt('lbl-emp-dp',  schoolMode ? 'Class / Section *' : 'Department *');
     document.getElementById('ae-edit-id').value = id;
-    document.getElementById('ae-id').value = emp.id;
-    document.getElementById('ae-nm').value = emp.name;
-    document.getElementById('ae-dp').value = emp.dept||'';
+    document.getElementById('ae-id').value  = emp.id;
+    document.getElementById('ae-nm').value  = emp.name;
+    const dp = document.getElementById('ae-dp'); if(dp) dp.value = emp.dept||'';
     document.getElementById('ae-des').value = emp.desig||'';
-    document.getElementById('ae-st').value = emp.status||'active';
+    document.getElementById('ae-st').value  = emp.status||'active';
+    this.populateEmpStructure(emp);
     document.getElementById('m-emp').classList.add('show');
   },
+
   saveEmp() {
     const editId = document.getElementById('ae-edit-id').value;
-    const id = document.getElementById('ae-id').value.trim();
-    const nm = document.getElementById('ae-nm').value.trim();
-    const dp = document.getElementById('ae-dp').value.trim();
-    const des = document.getElementById('ae-des').value.trim();
-    const st = document.getElementById('ae-st').value;
-    if (!id||!nm||!dp) { this.toast('ID, Name and Department are required','e'); return; }
+    const id     = document.getElementById('ae-id').value.trim();
+    const nm     = document.getElementById('ae-nm').value.trim();
+    const des    = document.getElementById('ae-des').value.trim();
+    const st     = document.getElementById('ae-st').value;
+
+    // Get plant/subgroup/section or fallback manual dept
+    const struct    = this.getCompanyStructure(this.cid());
+    const plantSel  = document.getElementById('ae-plant');
+    const sgSel     = document.getElementById('ae-subgroup');
+    const secSel    = document.getElementById('ae-section');
+    const dpInput   = document.getElementById('ae-dp');
+
+    let plant='', subgroup='', section='', dp='';
+    const manualDept = dpInput ? dpInput.value.trim() : '';
+
+    if (struct.length && plantSel && plantSel.value) {
+      plant    = plantSel.value;
+      subgroup = document.getElementById('ae-subgroup-wrap')?.style.display!=='none' ? (sgSel?.value||'') : '';
+      section  = document.getElementById('ae-section-wrap')?.style.display!=='none'  ? (secSel?.value||'') : '';
+      // Dept = manual field if user typed something; otherwise build from plant hierarchy
+      const builtDept = this._buildDept(plant, subgroup, section, '');
+      dp = manualDept || builtDept;
+    } else {
+      // No structure or no plant selected — use manual dept field only
+      dp = manualDept;
+      if (!dp) dp = plantSel?.value || ''; // fallback to plant if dept empty
+      plant = plantSel?.value || dp; // store plant separately
+    }
+
+    if (!id||!nm) { this.toast('ID and Name are required','e'); return; }
+    if (!dp)      { this.toast('Department / Plant is required','e'); return; }
+
     const emps = DB.employees(this.cid());
+    const record = {id, name:nm, dept:dp, plant, subgroup, section, desig:des, status:st};
     if (editId) {
       const emp = emps.find(e => e.id === editId);
-      if (emp) Object.assign(emp, {id,name:nm,dept:dp,desig:des,status:st});
+      if (emp) Object.assign(emp, record);
     } else {
       if (emps.find(e => e.id === id)) { this.toast('ID already exists','e'); return; }
-      emps.push({id,name:nm,dept:dp,desig:des,status:st,att:{}});
+      emps.push({...record, att:{}});
     }
     DB.saveEmployees(this.cid(), emps);
     this.renderEmpList(); this.closeMo('m-emp');
@@ -2170,7 +2960,24 @@ const App = {
         </div>
       </div>
       <div class="set-section" id="um-section" style="display:none;">
-        <div class="sec-title">👤 User Management</div>
+        <div class="sec-title" id="struct-title">🏭 Structure Setup</div>
+        <div style="font-size:12px;color:#546e7a;margin-bottom:8px;" id="struct-desc"></div>
+        <div id="struct-templates" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;"></div>
+        <div id="struct-builder"></div>
+        <div style="background:#e3f0ff;border:1px solid #90caf9;border-radius:6px;padding:10px 14px;margin-top:10px;" id="struct-add-row">
+          <div style="font-size:11px;font-weight:700;color:#1565c0;margin-bottom:8px;font-family:var(--head);" id="struct-add-title">➕ ADD GROUP</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+            <div><div style="font-size:10px;color:#546e7a;margin-bottom:3px;" id="lbl-struct-group">Group Name *</div>
+              <input class="di" id="struct-group" type="text" style="width:180px;"></div>
+            <div><div style="font-size:10px;color:#546e7a;margin-bottom:3px;" id="lbl-struct-items">Sections (comma separated)</div>
+              <input class="di" id="struct-items" type="text" style="width:200px;"></div>
+            <div><div style="font-size:10px;color:#546e7a;margin-bottom:3px;" id="lbl-struct-parent">Parent Group (optional)</div>
+              <input class="di" id="struct-parent" type="text" style="width:180px;" list="struct-parent-list">
+              <datalist id="struct-parent-list"></datalist></div>
+            <button class="btn-p btn-sm" style="height:36px;" onclick="App.addStructGroup()">+ ADD</button>
+          </div>
+        </div>
+        <div class="sec-title" style="margin-top:18px;">👤 User Management</div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
           <span style="font-size:12px;color:var(--text-dim);">Manage users who can access this account.</span>
           <button class="btn-g btn-sm" onclick="App.openCreateUser('company')">+ CREATE USER</button>
@@ -2206,7 +3013,20 @@ const App = {
     }
     const ums = document.getElementById('um-section');
     if (ums) ums.style.display = this.session.role === 'admin' ? 'block' : 'none';
-    if (this.session.role === 'admin') this.renderCoUsersList();
+    if (this.session.role === 'admin') {
+      this.renderCoUsersList();
+      this.renderStructBuilder();
+      const addRow = document.getElementById('struct-add-row');
+      if (addRow) addRow.style.display = 'block';
+      const tmpl = document.getElementById('struct-templates');
+      if (tmpl) tmpl.style.display = 'flex';
+    } else {
+      this.renderStructBuilder();
+      const addRow = document.getElementById('struct-add-row');
+      if (addRow) addRow.style.display = 'none';
+      const tmpl = document.getElementById('struct-templates');
+      if (tmpl) tmpl.style.display = 'none';
+    }
   },
   saveSettings() {
     const s = {
@@ -2226,12 +3046,374 @@ const App = {
   },
 
   deleteCoUser(id, ctx) {
+    if (!this.isAdminOrSuper()) { this.toast('Admin access only','e'); return; }
     if (!confirm('Delete this user? They will lose access immediately.')) return;
     DB.saveCoUsers(DB.coUsers().filter(u=>u.id!==id));
     if (ctx==='super') { this.renderAllUsers(); this.renderSAUsers(); }
     else this.renderCoUsersList();
     this.toast('User deleted','s');
   },
+  // ── Get area structure for a company ──
+  getCompanyStructure(coId) {
+    const s = DB.settings(coId);
+    return s.areaStructure || [];
+  },
+  saveCompanyStructure(coId, struct) {
+    const s = DB.settings(coId);
+    s.areaStructure = struct;
+    DB.saveSettings(coId, s);
+  },
+
+  // ── Render structure builder in Settings ──
+  // ── Templates ──
+  applyTemplate(type) {
+    if (!this.isAdminOrSuper()) { this.toast('Admin access only','e'); return; }
+    if (!confirm('This will add template groups to your structure. Continue?')) return;
+    const struct = this.getCompanyStructure(this.cid());
+    if (type === 'school') {
+      const grades = ['Pre-KG','LKG','UKG','Class 1','Class 2','Class 3','Class 4','Class 5','Class 6','Class 7','Class 8','Class 9','Class 10','Class 11','Class 12'];
+      grades.forEach(g => { if (!struct.find(s=>s.name===g)) struct.push({name:g, items:['A','B','C'], subGroups:[]}); });
+    } else if (type === 'college') {
+      const depts = ['Civil Engineering','Mechanical Engineering','Electrical Engineering','Computer Science','Electronics'];
+      depts.forEach(dept => {
+        if (!struct.find(s=>s.name===dept)) {
+          struct.push({name:dept, items:[], subGroups:[
+            {name:'Year 1', items:['Section A','Section B','Section C']},
+            {name:'Year 2', items:['Section A','Section B','Section C']},
+            {name:'Year 3', items:['Section A','Section B']},
+            {name:'Year 4', items:['Section A','Section B']},
+          ]});
+        }
+      });
+    } else if (type === 'factory') {
+      ['Plant A','Plant B','Plant C'].forEach(plant => {
+        if (!struct.find(s=>s.name===plant)) {
+          struct.push({name:plant, items:[], subGroups:[
+            {name:'Production', items:['Line 1','Line 2','Line 3']},
+            {name:'Quality', items:['QC Team A','QC Team B']},
+            {name:'Maintenance', items:['Electrical','Mechanical']},
+          ]});
+        }
+      });
+    }
+    this.saveCompanyStructure(this.cid(), struct);
+    this.renderStructBuilder();
+    this.toast('Template applied','s');
+  },
+
+  renderStructBuilder() {
+    const el = document.getElementById('struct-builder');
+    if (!el) return;
+    const coType = this.getCoTypeForSession();
+    const struct = this.getCompanyStructure(this.cid());
+
+    // ── Update title, desc, templates based on co type ──
+    const titleEl  = document.getElementById('struct-title');
+    const descEl   = document.getElementById('struct-desc');
+    const tmplEl   = document.getElementById('struct-templates');
+    const addTitle = document.getElementById('struct-add-title');
+    const lblGroup = document.getElementById('lbl-struct-group');
+    const lblItems = document.getElementById('lbl-struct-items');
+    const lblParent= document.getElementById('lbl-struct-parent');
+    const grpInput = document.getElementById('struct-group');
+    const itmInput = document.getElementById('struct-items');
+    const parInput = document.getElementById('struct-parent');
+
+    if (coType === 'school') {
+      if (titleEl)  titleEl.textContent  = '🎓 School Class & Section Structure';
+      if (descEl)   descEl.textContent   = 'Define standards (Pre-KG to Class 12) and their sections. Each class can have sections A, B, C etc.';
+      if (tmplEl)   tmplEl.innerHTML     = '<span style="font-size:11px;color:#546e7a;font-family:var(--mono);font-weight:700;line-height:26px;">Quick template:</span><button class="btn-y btn-sm" onclick="App.applyTemplate(\"school\")">🎓 Load Pre-KG → Class 12</button>';
+      if (addTitle) addTitle.textContent = '➕ ADD CLASS / STANDARD';
+      if (lblGroup) lblGroup.textContent = 'Class / Standard *';
+      if (lblItems) lblItems.textContent = 'Sections (e.g. A,B,C)';
+      if (lblParent)lblParent.style.display = 'none';
+      if (grpInput) grpInput.placeholder = 'e.g. Class 1 / Pre-KG / Class 10';
+      if (itmInput) itmInput.placeholder  = 'e.g. A,B,C';
+      if (parInput) parInput.closest('div')?.parentElement && (parInput.closest('div').parentElement.style.display='none');
+    } else if (coType === 'college') {
+      if (titleEl)  titleEl.textContent  = '🏛 College Department & Section Structure';
+      if (descEl)   descEl.textContent   = 'Define departments (e.g. Mechanical Engineering), then years under each dept, then sections under each year.';
+      if (tmplEl)   tmplEl.innerHTML     = '<span style="font-size:11px;color:#546e7a;font-family:var(--mono);font-weight:700;line-height:26px;">Quick template:</span><button class="btn-y btn-sm" onclick="App.applyTemplate(\"college\")">🏛 Load Engineering Depts</button>';
+      if (addTitle) addTitle.textContent = '➕ ADD DEPARTMENT / YEAR / SECTION';
+      if (lblGroup) lblGroup.textContent = 'Dept / Year Name *';
+      if (lblItems) lblItems.textContent = 'Sections (e.g. A,B,C or Section A,Section B)';
+      if (lblParent)lblParent.textContent= 'Parent Dept (for Year) or Dept/Year (for sections)';
+      if (grpInput) grpInput.placeholder = 'e.g. Mech Engineering / Year 1';
+      if (itmInput) itmInput.placeholder  = 'e.g. Section A,Section B,Section C';
+      if (parInput) parInput.placeholder = 'e.g. Mech Engineering (leave blank for top level)';
+    } else {
+      // Factory / Company
+      if (titleEl)  titleEl.textContent  = '🏭 Plant / Area Structure';
+      if (descEl)   descEl.textContent   = 'Define plants and their departments/areas. Each plant can have sub-departments and work areas.';
+      if (tmplEl)   tmplEl.innerHTML     = '<span style="font-size:11px;color:#546e7a;font-family:var(--mono);font-weight:700;line-height:26px;">Quick template:</span><button class="btn-y btn-sm" onclick="App.applyTemplate(\"factory\")">🏭 Load Plant A/B/C</button>';
+      if (addTitle) addTitle.textContent = '➕ ADD PLANT / DEPARTMENT / AREA';
+      if (lblGroup) lblGroup.textContent = 'Plant / Dept Name *';
+      if (lblItems) lblItems.textContent = 'Areas (e.g. Line1,Line2 or Zone-A,Zone-B)';
+      if (lblParent)lblParent.textContent= 'Parent Plant (for dept) or Plant/Dept (for areas)';
+      if (grpInput) grpInput.placeholder = 'e.g. Plant A / Production / Maintenance';
+      if (itmInput) itmInput.placeholder  = 'e.g. Line1,Line2,Line3';
+      if (parInput) parInput.placeholder = 'e.g. Plant A (leave blank for top level)';
+    }
+
+    // Populate parent datalist
+    const dl = document.getElementById('struct-parent-list');
+    if (dl) {
+      dl.innerHTML = struct.flatMap(g=>[
+        `<option value="${g.name}">`,
+        ...(g.subGroups||[]).map(sg=>`<option value="${g.name} / ${sg.name}">`)
+      ]).join('');
+    }
+    if (!struct.length) {
+      el.innerHTML = '<div style="font-size:12px;color:#b0bec5;padding:10px 0;">No structure defined yet. Use the template above or add groups manually.</div>';
+      return;
+    }
+    const renderItems = (items, gi, sgi) => {
+      const path = sgi!==undefined ? `${gi}_${sgi}` : `${gi}`;
+      const removeFn = sgi!==undefined ? `App.removeStructItem(${gi},${sgi},IDX)` : `App.removeStructItem(${gi},undefined,IDX)`;
+      return `<div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:4px;">
+        ${(items||[]).map((item,ii)=>`<span class="struct-tag">${item}${this.isAdminOrSuper()?`<span class="rm" onclick="App.removeStructItem(${gi},${sgi!==undefined?sgi:'undefined'},${ii})">✕</span>`:''}</span>`).join('')}
+        ${this.isAdminOrSuper() ? `<input type="text" placeholder="+ section" style="border:1px dashed #b0bec5;background:transparent;padding:3px 7px;font-size:11px;font-family:var(--mono);outline:none;border-radius:4px;width:90px;"
+          onkeydown="if(event.key==='Enter'){App.addStructItemInline(${gi},${sgi!==undefined?sgi:'undefined'},this.value);this.value='';}">` : ''}
+      </div>`;
+    };
+    el.innerHTML = struct.map((g, gi) => `
+      <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-weight:700;font-family:var(--head);font-size:14px;color:#0d1b2a;">🏢 ${g.name}</span>
+            <span style="font-size:10px;color:#90a4b8;font-family:var(--mono);">${(g.subGroups||[]).length} sub-groups · ${(g.items||[]).length} direct sections</span>
+          </div>
+          ${this.isAdminOrSuper() ? `<button onclick="App.removeStructGroup(${gi})" style="border:none;background:none;cursor:pointer;color:var(--red);font-size:12px;padding:2px 6px;">✕ Remove</button>` : ''}
+        </div>
+        ${(g.items||[]).length || !(g.subGroups||[]).length ? `
+          <div class="area-group-l2">Direct Sections / Areas</div>
+          ${renderItems(g.items, gi, undefined)}` : ''}
+        ${(g.subGroups||[]).map((sg, sgi) => `
+          <div class="struct-level2" style="margin-top:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="area-group-l2">📂 ${sg.name}</span>
+              ${this.isAdminOrSuper() ? `<button onclick="App.removeStructSubGroup(${gi},${sgi})" style="border:none;background:none;cursor:pointer;color:var(--red);font-size:11px;padding:1px 5px;">✕</button>` : ''}
+            </div>
+            ${renderItems(sg.items, gi, sgi)}
+          </div>`).join('')}
+        <div style="margin-top:8px;">
+          ${this.isAdminOrSuper() ? `<input type="text" placeholder="+ add sub-group (e.g. Year 1 / Shift A)" style="border:1px dashed #90caf9;background:#f0f7ff;padding:3px 8px;font-size:11px;font-family:var(--mono);outline:none;border-radius:4px;width:220px;"
+            onkeydown="if(event.key==='Enter'){App.addStructSubGroup(${gi},this.value);this.value='';}">` : ''}
+        </div>
+      </div>`).join('');
+  },
+
+  addStructGroup() {
+    if (!this.isAdminOrSuper()) { this.toast('Admin access only','e'); return; }
+    const gName   = (document.getElementById('struct-group')?.value||'').trim();
+    const items   = (document.getElementById('struct-items')?.value||'').split(',').map(s=>s.trim()).filter(Boolean);
+    const parent  = (document.getElementById('struct-parent')?.value||'').trim();
+    if (!gName) { this.toast('Enter a group name','e'); return; }
+    const struct = this.getCompanyStructure(this.cid());
+    if (parent) {
+      // Adding as sub-group under a parent
+      const parts = parent.split('/').map(s=>s.trim());
+      const topGroup = struct.find(g=>g.name.toLowerCase()===parts[0].toLowerCase());
+      if (!topGroup) { this.toast('Parent group not found. Create it first.','e'); return; }
+      if (!topGroup.subGroups) topGroup.subGroups = [];
+      if (parts.length > 1) {
+        // Adding sections under existing sub-group
+        const sg = topGroup.subGroups.find(s=>s.name.toLowerCase()===parts[1].toLowerCase());
+        if (sg) { items.forEach(i=>{ if(!sg.items.includes(i)) sg.items.push(i); }); }
+        else topGroup.subGroups.push({name:gName, items});
+      } else {
+        const existing = topGroup.subGroups.find(s=>s.name.toLowerCase()===gName.toLowerCase());
+        if (existing) { items.forEach(i=>{ if(!existing.items.includes(i)) existing.items.push(i); }); }
+        else topGroup.subGroups.push({name:gName, items});
+      }
+    } else {
+      const existing = struct.find(g=>g.name.toLowerCase()===gName.toLowerCase());
+      if (existing) { items.forEach(i=>{ if(!existing.items.includes(i)) existing.items.push(i); }); }
+      else struct.push({name:gName, items, subGroups:[]});
+    }
+    this.saveCompanyStructure(this.cid(), struct);
+    ['struct-group','struct-items','struct-parent'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+    this.renderStructBuilder();
+    this.toast('Saved','s');
+  },
+
+  addStructSubGroup(gi, val) {
+    if (!this.isAdminOrSuper()) return;
+    const name = (val||'').trim();
+    if (!name) return;
+    const struct = this.getCompanyStructure(this.cid());
+    if (!struct[gi]) return;
+    if (!struct[gi].subGroups) struct[gi].subGroups = [];
+    if (!struct[gi].subGroups.find(s=>s.name===name)) struct[gi].subGroups.push({name, items:[]});
+    this.saveCompanyStructure(this.cid(), struct);
+    this.renderStructBuilder();
+  },
+  removeStructSubGroup(gi, sgi) {
+    if (!this.isAdminOrSuper()) return;
+    if (!confirm('Remove this sub-group and all its sections?')) return;
+    const struct = this.getCompanyStructure(this.cid());
+    (struct[gi].subGroups||[]).splice(sgi,1);
+    this.saveCompanyStructure(this.cid(), struct);
+    this.renderStructBuilder();
+  },
+  removeStructGroup(gi) {
+    if (!this.isAdminOrSuper()) return;
+    if (!confirm('Remove this entire group and all sub-groups?')) return;
+    const struct = this.getCompanyStructure(this.cid());
+    struct.splice(gi,1);
+    this.saveCompanyStructure(this.cid(), struct);
+    this.renderStructBuilder();
+  },
+  removeStructItem(gi, sgi, ii) {
+    if (!this.isAdminOrSuper()) return;
+    const struct = this.getCompanyStructure(this.cid());
+    if (sgi !== undefined && sgi !== null && sgi !== 'undefined') {
+      (struct[gi].subGroups[sgi].items||[]).splice(ii,1);
+    } else {
+      (struct[gi].items||[]).splice(ii,1);
+    }
+    this.saveCompanyStructure(this.cid(), struct);
+    this.renderStructBuilder();
+  },
+  addStructItem(gi, sgi, val) { this.addStructItemInline(gi, sgi, val); },
+  addStructItemInline(gi, sgi, val) {
+    if (!this.isAdminOrSuper()) return;
+    const item = (val||'').trim();
+    if (!item) return;
+    const struct = this.getCompanyStructure(this.cid());
+    if (sgi !== undefined && sgi !== null && sgi !== 'undefined') {
+      if (!struct[gi].subGroups[sgi].items) struct[gi].subGroups[sgi].items = [];
+      if (!struct[gi].subGroups[sgi].items.includes(item)) struct[gi].subGroups[sgi].items.push(item);
+    } else {
+      if (!struct[gi].items) struct[gi].items = [];
+      if (!struct[gi].items.includes(item)) struct[gi].items.push(item);
+    }
+    this.saveCompanyStructure(this.cid(), struct);
+    this.renderStructBuilder();
+  },
+
+  // ── Area assigner in user modal ──
+  _coTypeForAssigner(coId) {
+    const co = DB.companies().find(c=>c.id===coId);
+    return getCoType(co);
+  },
+  buildAreaAssigner(preSelected) {
+    const wrap = document.getElementById('ncu-area-wrap');
+    const body = document.getElementById('area-assigner-body');
+    if (!wrap||!body) return;
+    const ctx  = document.getElementById('ncu-ctx').value;
+    const coId = ctx==='super' ? (document.getElementById('ncu-co')?.value||'') : this.cid();
+    if (!coId) { wrap.style.display='none'; return; }
+    const coType = this._coTypeForAssigner(coId);
+    const struct = this.getCompanyStructure(coId);
+    this._assignedAreas = preSelected ? [...preSelected] : [];
+    wrap.style.display='block';
+
+    // Update section heading based on company type
+    const areaHeading = document.getElementById('ncu-area-heading');
+    if (areaHeading) {
+      const headMap = { school:'🎓 Assign Classes & Sections', college:'🏛 Assign Departments & Sections', factory:'🏭 Assign Plants / Areas' };
+      areaHeading.textContent = headMap[coType] || '📍 Assign Areas';
+    }
+    const areaHint = document.getElementById('ncu-area-hint');
+    if (areaHint) {
+      const hintMap = {
+        school:  'Select which classes this user can update attendance for.',
+        college: 'Select which departments/years/sections this user can update.',
+        factory: 'Select which plants or areas this user can update attendance for.'
+      };
+      areaHint.textContent = (hintMap[coType]||'Select areas.') + ' Leave all unchecked = full access.';
+    }
+
+    const isSel = k => this._assignedAreas.includes(k);
+    const chip  = (key, label) => {
+      const sel = isSel(key);
+      const sk  = key.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      return `<span class="area-check-item${sel?' selected':''}" onclick="App.toggleArea('${sk}',this)" style="font-size:11px;padding:3px 10px;">${label}</span>`;
+    };
+
+    const topIcon = { school:'📚', college:'🎓', factory:'🏭' }[coType] || '🏢';
+    const subIcon = coType==='factory' ? '⚙' : '📂';
+    const allLbl  = { school:'✓ All sections', college:'✓ Entire dept', factory:'✓ Entire plant/dept' }[coType] || '✓ All';
+
+    const manualLbl = { factory:'➕ Add plant or area manually', college:'➕ Add dept / section manually', school:'➕ Add class manually' }[coType] || '➕ Add manually';
+    const manualPH  = { factory:'e.g. Plant D or Welding Shop', college:'e.g. CSE Year 3 Section B', school:'e.g. Class 6 Section D' }[coType] || 'Enter area name';
+
+    const manualHtml = `<div style="background:#fff8e1;border:1px dashed #ffe082;border-radius:6px;padding:10px 12px;margin-top:8px;">
+      <div style="font-size:11px;font-weight:700;color:#b07800;margin-bottom:5px;">${manualLbl}</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="manual-area-input" placeholder="${manualPH}"
+          style="border:1px solid #ffe082;background:#fff;padding:6px 10px;font-size:12px;font-family:var(--mono);outline:none;border-radius:4px;flex:1;"
+          onkeydown="if(event.key==='Enter'){App.addManualArea(this.value);this.value='';}">
+        <button onclick="App.addManualArea(document.getElementById('manual-area-input').value);document.getElementById('manual-area-input').value='';" class="btn-y btn-sm">+ ADD</button>
+      </div>
+    </div>`;
+
+    if (!struct.length) {
+      body.innerHTML = `<div style="font-size:12px;color:#b0bec5;padding:8px 0 4px;">No structure defined in Settings yet. You can still assign areas manually below.</div>${manualHtml}`;
+      this.renderAssignedTags(); return;
+    }
+    body.innerHTML = struct.map(g => {
+      const hasSubs  = (g.subGroups||[]).length > 0;
+      const hasItems = (g.items||[]).length > 0;
+      return `<div class="area-group" style="margin-bottom:8px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:10px 12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+          <span class="area-group-title" style="margin:0;">${topIcon} ${g.name}</span>
+          ${chip(g.name, allLbl+' — '+g.name)}
+        </div>
+        ${hasItems ? `<div class="area-check-grid" style="margin-bottom:4px;">${(g.items||[]).map(item=>chip(g.name+'::'+item, item)).join('')}</div>` : ''}
+        ${hasSubs ? (g.subGroups||[]).map(sg=>`
+          <div class="struct-level2" style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:4px;">
+              <span class="area-group-l2" style="margin:0;">${subIcon} ${sg.name}</span>
+              ${chip(g.name+'::'+sg.name, '✓ All '+sg.name)}
+            </div>
+            <div class="area-check-grid">${(sg.items||[]).map(sec=>chip(g.name+'::'+sg.name+'::'+sec, sec)).join('')}</div>
+          </div>`).join(''):''}
+      </div>`;
+    }).join('') + manualHtml;
+    this.renderAssignedTags();
+  },
+
+  addManualArea(val) {
+    if (!this.isAdminOrSuper()) { this.toast('Admin access only','e'); return; }
+    const v = (val||'').trim();
+    if (!v) return;
+    if (!this._assignedAreas) this._assignedAreas = [];
+    if (!this._assignedAreas.includes(v)) {
+      this._assignedAreas.push(v);
+      this.renderAssignedTags();
+      this.toast('Added: '+v, 's');
+    }
+  },
+
+  toggleArea(key, el) {
+    if (!this._assignedAreas) this._assignedAreas = [];
+    const idx = this._assignedAreas.indexOf(key);
+    if (idx===-1) {
+      this._assignedAreas.push(key);
+      if (el) el.classList.add('selected');
+    } else {
+      this._assignedAreas.splice(idx,1);
+      if (el) el.classList.remove('selected');
+    }
+    this.renderAssignedTags();
+  },
+
+  renderAssignedTags() {
+    const el = document.getElementById('assigned-tags');
+    if (!el) return;
+    const areas = this._assignedAreas||[];
+    if (!areas.length) { el.innerHTML='<span style="font-size:11px;color:#b0bec5;font-family:var(--mono);">None — user has access to all areas</span>'; return; }
+    el.innerHTML = areas.map(a=>`<span class="area-tag">${a.replace(/::/g,' → ')}<span class="rm" onclick="App.removeAssignedArea('${a.replace(/'/g,"\'")}')">✕</span></span>`).join('');
+  },
+
+  removeAssignedArea(key) {
+    if (!this._assignedAreas) return;
+    this._assignedAreas = this._assignedAreas.filter(a=>a!==key);
+    this.buildAreaAssigner(this._assignedAreas);
+  },
+
   renderCoUsersList() {
     const el = document.getElementById('co-users-list');
     if (!el) return;
@@ -2239,20 +3421,30 @@ const App = {
     if (!cous.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:12px;padding:12px 0;">No users yet.</div>'; return; }
     const roleColors = { editor:'var(--green)', viewer:'var(--blue)' };
     const roleAvatarBg = { editor:'background:var(--green-bg);border:1px solid var(--green)', viewer:'background:var(--blue-bg);border:1px solid var(--blue)' };
-    el.innerHTML = cous.map(u => `
-      <div class="user-item">
-        <div class="user-item-l">
-          <div class="ua" style="${roleAvatarBg[u.role]||''};">👤</div>
-          <div>
-            <div class="un">${u.fullName||u.username}</div>
-            <div class="ur" style="color:${roleColors[u.role]||'var(--text-dim)'};">${u.username} · ${u.role.toUpperCase()}</div>
+    el.innerHTML = cous.map(u => {
+      const areaHtml = (u.areas&&u.areas.length)
+        ? u.areas.map(a=>`<span class="area-tag" style="font-size:10px;padding:2px 7px;">${a.replace(/::/g,' → ')}</span>`).join('')
+        : '<span style="font-size:10px;color:#b0bec5;font-family:var(--mono);">All areas</span>';
+      return `<div class="user-item" style="flex-direction:column;align-items:flex-start;gap:6px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+          <div class="user-item-l">
+            <div class="ua" style="${roleAvatarBg[u.role]||''};">👤</div>
+            <div>
+              <div class="un">${u.fullName||u.username}</div>
+              <div class="ur" style="color:${roleColors[u.role]||'var(--text-dim)'};">${u.username} · ${u.role.toUpperCase()}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn-y btn-sm" onclick="App.openEditUser('${u.id}','company')">✏ EDIT</button>
+            <button class="btn-p btn-sm" onclick="App.openChangePass('user','${u.id}','company')">🔑</button>
+            <button class="btn-r btn-sm" onclick="App.deleteCoUser('${u.id}','company')">🗑</button>
           </div>
         </div>
-        <div style="display:flex;gap:6px;">
-          <button class="btn-p btn-sm" onclick="App.viewUserDetail('${u.id}','company')">👁 VIEW</button>
-          <button class="btn-r btn-sm" onclick="App.deleteCoUser('${u.id}','company')">🗑 DELETE</button>
+        <div style="padding-left:44px;">
+          <span style="font-size:10px;color:#546e7a;font-family:var(--mono);font-weight:700;margin-right:5px;">AREAS:</span>${areaHtml}
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   },
 
   buildSAUsersPage() {
@@ -2319,36 +3511,165 @@ const App = {
   },
 
   openCreateUser(ctx) {
+    if (!this.isAdminOrSuper()) { this.toast('Admin access only','e'); return; }
     document.getElementById('m-cu-title').textContent = ctx==='super' ? 'Create Company User' : 'Create User';
     document.getElementById('ncu-ctx').value = ctx;
+    document.getElementById('ncu-edit-id').value = '';
+    document.getElementById('ncu-save-btn').textContent = 'CREATE USER';
     ['ncu-uname','ncu-pass','ncu-fn'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     document.getElementById('ncu-role').value='editor';
+    const passField = document.getElementById('ncu-pass');
+    if (passField) { passField.placeholder='Password'; passField.required=true; }
     const coWrap = document.getElementById('ncu-co-wrap');
     if (ctx==='super') {
       coWrap.style.display='block';
       const cos = DB.companies().filter(c=>c.status==='active');
       document.getElementById('ncu-co').innerHTML = cos.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
     } else { coWrap.style.display='none'; }
+    this._assignedAreas = [];
+    this.buildAreaAssigner([]);
     document.getElementById('m-create-user').classList.add('show');
   },
+
+  openEditUser(uid, ctx) {
+    if (!this.isAdminOrSuper()) { this.toast('Admin access only','e'); return; }
+    const u = DB.coUsers().find(x=>x.id===uid);
+    if (!u) return;
+    document.getElementById('m-cu-title').textContent = 'Edit User';
+    document.getElementById('ncu-ctx').value = ctx;
+    document.getElementById('ncu-edit-id').value = uid;
+    document.getElementById('ncu-save-btn').textContent = 'SAVE CHANGES';
+    document.getElementById('ncu-uname').value = u.username;
+    const passField = document.getElementById('ncu-pass');
+    passField.value=''; passField.placeholder='Leave blank to keep current';
+    document.getElementById('ncu-fn').value = u.fullName||'';
+    document.getElementById('ncu-role').value = u.role||'editor';
+    const coWrap = document.getElementById('ncu-co-wrap');
+    if (ctx==='super') {
+      coWrap.style.display='block';
+      const cos = DB.companies().filter(c=>c.status==='active');
+      document.getElementById('ncu-co').innerHTML = cos.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+      document.getElementById('ncu-co').value = u.companyId;
+    } else { coWrap.style.display='none'; }
+    this._assignedAreas = u.areas ? [...u.areas] : [];
+    this.buildAreaAssigner(this._assignedAreas);
+    document.getElementById('m-create-user').classList.add('show');
+  },
+
   saveNewUser() {
+    if (!this.isAdminOrSuper()) { this.toast('Admin access only','e'); return; }
     const uname = document.getElementById('ncu-uname').value.trim();
-    const pass = document.getElementById('ncu-pass').value;
-    const fn = document.getElementById('ncu-fn').value.trim();
-    const role = document.getElementById('ncu-role').value;
-    const ctx = document.getElementById('ncu-ctx').value;
-    const coId = ctx==='super' ? document.getElementById('ncu-co').value : this.cid();
-    if (!uname||!pass) { this.toast('Username and password required','e'); return; }
-    if (!coId) { this.toast('Select a company','e'); return; }
-    const cos = DB.companies();
+    const pass  = document.getElementById('ncu-pass').value;
+    const fn    = document.getElementById('ncu-fn').value.trim();
+    const role  = document.getElementById('ncu-role').value;
+    const ctx   = document.getElementById('ncu-ctx').value;
+    const editId= document.getElementById('ncu-edit-id').value;
+    const coId  = ctx==='super' ? document.getElementById('ncu-co').value : this.cid();
+    const areas = this._assignedAreas || [];
+    if (!uname) { this.toast('Username required','e'); return; }
+    if (!coId)  { this.toast('Select a company','e'); return; }
+    const cos  = DB.companies();
     const cous = DB.coUsers();
-    if (cos.find(c=>c.adminUser===uname)||cous.find(u=>u.username===uname)||uname===SA.u) { this.toast('Username already taken','e'); return; }
-    cous.push({ id:'cu_'+Date.now(), companyId:coId, username:uname, password:pass, fullName:fn, role, createdAt:Date.now() });
-    DB.saveCoUsers(cous);
-    this.closeMo('m-create-user');
-    if (ctx==='super') { this.renderSAUsers(); this.renderAllUsers(); }
-    else this.renderCoUsersList();
-    this.toast('User created: '+uname,'s');
+    if (editId) {
+      // Edit existing
+      const u = cous.find(x=>x.id===editId);
+      if (!u) return;
+      const nameTaken = cous.find(x=>x.username===uname&&x.id!==editId) || cos.find(c=>c.adminUser===uname) || uname===SA.u;
+      if (nameTaken) { this.toast('Username already taken','e'); return; }
+      u.username = uname;
+      if (pass) u.password = pass;
+      u.fullName = fn; u.role = role; u.areas = areas;
+      DB.saveCoUsers(cous);
+      this.closeMo('m-create-user');
+      if (ctx==='super') { this.renderSAUsers(); this.renderAllUsers(); }
+      else this.renderCoUsersList();
+      this.toast('User updated: '+uname,'s');
+    } else {
+      // Create new
+      if (!pass) { this.toast('Password required','e'); return; }
+      if (cos.find(c=>c.adminUser===uname)||cous.find(u=>u.username===uname)||uname===SA.u) { this.toast('Username already taken','e'); return; }
+      cous.push({ id:'cu_'+Date.now(), companyId:coId, username:uname, password:pass, fullName:fn, role, areas, createdAt:Date.now() });
+      DB.saveCoUsers(cous);
+      this.closeMo('m-create-user');
+      if (ctx==='super') { this.renderSAUsers(); this.renderAllUsers(); }
+      else this.renderCoUsersList();
+      this.toast('User created: '+uname,'s');
+    }
+  },
+
+  // ── CHANGE PASSWORD ──
+  openChangePass(target, uid, ctx) {
+    // target: 'self' = current user, 'user' = specific user (admin changing another user's pass)
+    const cp_id    = document.getElementById('cp-target-id');
+    const cp_type  = document.getElementById('cp-target-type');
+    const cp_title = document.getElementById('cp-title');
+    const cp_desc  = document.getElementById('cp-desc');
+    if (cp_id)  cp_id.value   = uid || '';
+    if (cp_type)cp_type.value = target || 'self';
+    ['cp-new','cp-confirm'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+
+    if (target === 'self') {
+      const name = (this.session.fullName || this.session.username).toUpperCase();
+      if (cp_title) cp_title.textContent = 'Change My Password';
+      if (cp_desc)  cp_desc.textContent  = `Changing password for: ${name}`;
+    } else {
+      const u = DB.coUsers().find(x=>x.id===uid);
+      if (cp_title) cp_title.textContent = 'Change User Password';
+      if (cp_desc)  cp_desc.textContent  = `Changing password for: ${u ? (u.fullName||u.username) : uid}`;
+    }
+    // Store ctx for redirect after save
+    if (cp_type) cp_type.value = (target||'self') + (ctx ? ':'+ctx : '');
+    document.getElementById('m-change-pass').classList.add('show');
+  },
+
+  saveChangePass() {
+    const newPass  = document.getElementById('cp-new')?.value || '';
+    const confirm  = document.getElementById('cp-confirm')?.value || '';
+    const targetId = document.getElementById('cp-target-id')?.value || '';
+    const typeVal  = document.getElementById('cp-target-type')?.value || 'self';
+    const [target, ctx] = typeVal.split(':');
+
+    if (!newPass)          { this.toast('Enter a new password','e'); return; }
+    if (newPass !== confirm){ this.toast('Passwords do not match','e'); return; }
+    if (newPass.length < 6){ this.toast('Password must be at least 6 characters','e'); return; }
+
+    if (target === 'self') {
+      const role = this.session.role;
+      if (role === 'super') {
+        // Update SA credentials in Firebase + localStorage
+        SA.p = newPass;
+        const newCreds = { u: SA.u, p: newPass };
+        DB.saveSACreds(newCreds);
+        this.closeMo('m-change-pass');
+        this.toast('Super admin password changed ✓ (saved to Firebase)','s');
+      } else if (role === 'admin') {
+        // Update company admin password
+        const cos = DB.companies();
+        const co  = cos.find(c => c.id === this.cid());
+        if (co) { co.adminPass = newPass; DB.saveCompanies(cos); }
+        this.closeMo('m-change-pass');
+        this.toast('Password changed ✓','s');
+      } else {
+        // Editor / Viewer — update coUser record
+        const cous = DB.coUsers();
+        const u = cous.find(x => x.id === this.session.coUserId);
+        if (u) { u.password = newPass; DB.saveCoUsers(cous); }
+        this.closeMo('m-change-pass');
+        this.toast('Password changed ✓','s');
+      }
+    } else {
+      // Admin changing another user's password
+      const cous = DB.coUsers();
+      const u = cous.find(x => x.id === targetId);
+      if (u) {
+        u.password = newPass;
+        DB.saveCoUsers(cous);
+        this.closeMo('m-change-pass');
+        this.toast(`Password updated for ${u.fullName||u.username}`, 's');
+      } else {
+        this.toast('User not found','e');
+      }
+    }
   },
 
   viewUserDetail(uid, ctx) {
@@ -2375,6 +3696,8 @@ const App = {
         <div class="ud-field"><div class="ud-field-lbl">Created At</div><div class="ud-field-val" style="font-size:12px;">${since}</div></div>
       </div>`;
     document.getElementById('ud-actions').innerHTML = `
+      <button class="btn-y" onclick="App.closeMo('m-user-detail');App.openEditUser('${u.id}','${ctx}');">✏ EDIT</button>
+      <button class="btn-p btn-sm" onclick="App.closeMo('m-user-detail');App.openChangePass('user','${u.id}','${ctx}');">🔑 CHANGE PASS</button>
       <button class="btn-r" onclick="App.deleteCoUser('${u.id}','${ctx}');App.closeMo('m-user-detail');">🗑 DELETE</button>
       <button class="btn-p" onclick="App.closeMo('m-user-detail')">CLOSE</button>`;
     document.getElementById('m-user-detail').classList.add('show');
@@ -2396,6 +3719,49 @@ const App = {
         this.toast('Offline — using cached data', 'e');
       }
     });
+  },
+
+
+  async forcePushToFirebase() {
+    const cos = DB.companies();
+    const cous = DB.coUsers();
+    if (!cos.length && !cous.length) {
+      this.toast('No local data found to push', 'e');
+      return;
+    }
+    // Wait for Firebase
+    setSyncStatus('loading', 'Uploading...');
+    let waited = 0;
+    while (!fdb && waited < 6000) {
+      await new Promise(r => setTimeout(r, 100));
+      waited += 100;
+    }
+    if (!fdb) {
+      this.toast('Firebase not connected. Check internet.', 'e');
+      setSyncStatus('err', 'Offline');
+      return;
+    }
+    try {
+      this.toast('Uploading to Firebase...', 'i');
+      // Push companies and users
+      await fdb.collection('meta').doc('companies').set({ data: cos, ts: Date.now() });
+      await fdb.collection('meta').doc('coUsers').set({ data: cous, ts: Date.now() });
+      // Push employees and settings for each company
+      for (const co of cos) {
+        const emps = DB.employees(co.id);
+        const sets = DB._lget(`ott_settings_${co.id}`);
+        await fdb.collection('employees').doc(co.id).set({ data: emps, ts: Date.now() });
+        if (sets) await fdb.collection('settings').doc(co.id).set({ data: sets, ts: Date.now() });
+      }
+      let totalEmps = cos.reduce((s,c) => s + DB.employees(c.id).length, 0);
+      setSyncStatus('ok', 'Live ✓');
+      this.closeMo('m-datasync');
+      this.toast(`✓ Pushed to Firebase: ${cos.length} companies, ${cous.length} users, ${totalEmps} employees`, 's');
+    } catch(e) {
+      console.error('Push failed:', e);
+      setSyncStatus('err', 'Push failed');
+      this.toast('Push failed: ' + e.message, 'e');
+    }
   },
 
   openDataSync() {
